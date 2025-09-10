@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo EstampAI - Chat com IA</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-header h1 {
+            color: #1A237E;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+        
+        .demo-section h2 {
+            color: #1A237E;
+            margin-bottom: 15px;
+        }
+        
+        .chat-demo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            color: white;
+        }
+        
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #1A237E 0%, #4DD0E1 100%);
+            color: white;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.ai .message-content {
+            background: #f0f0f0;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .demo-button {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+        
+        .demo-button:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+        }
+        
+        .demo-button.secondary {
+            background: #1A237E;
+        }
+        
+        .demo-button.secondary:hover {
+            background: #0d1a5c;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            border-color: #1A237E;
+            transform: translateY(-2px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            color: #1A237E;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .feature-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .demo-info {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .demo-info h4 {
+            color: #1A237E;
+            margin-bottom: 10px;
+        }
+        
+        .demo-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .demo-info li {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .demo-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🤖 EstampAI - Demo do Chat com IA</h1>
+            <p>Veja como funciona o sistema de chat conversacional para criação de estampas</p>
+        </div>
+        
+        <div class="demo-section">
+            <h2>💬 Exemplo de Conversa</h2>
+            <div class="chat-demo">
+                <div class="message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        Olá! Sou a EstampAI, sua assistente para criação de estampas. Descreva o que você gostaria de criar e eu farei uma estampa única para você!
+                    </div>
+                </div>
+                
+                <div class="message user">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        Quero uma estampa floral com cores pastel
+                    </div>
+                </div>
+                
+                <div class="message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        Entendi! Vou criar uma estampa baseada na sua descrição...
+                    </div>
+                </div>
+                
+                <div class="message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        Pronto! Criei sua estampa. Você pode visualizá-la no avatar ou baixar apenas a estampa.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎨 Como a IA Analisa Suas Mensagens</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-title">Detecção de Estilo</div>
+                    <div class="feature-description">
+                        "floral" → Orgânico<br>
+                        "geométrico" → Geométrico<br>
+                        "abstrato" → Abstrato<br>
+                        "figurativo" → Figurativo
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">Detecção de Cores</div>
+                    <div class="feature-description">
+                        "azul" → #1A237E<br>
+                        "vermelho" → #FF0000<br>
+                        "verde" → #4CAF50<br>
+                        "preto" → #000000
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Detecção de Intensidade</div>
+                    <div class="feature-description">
+                        "pastel" → 0.5 (suave)<br>
+                        "vibrante" → 1.0 (intenso)<br>
+                        Padrão → 0.8
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <div class="feature-title">Geração de Padrões</div>
+                    <div class="feature-description">
+                        Cada estilo tem padrões únicos:<br>
+                        Triângulos, flores, linhas abstratas, estrelas
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🚀 Funcionalidades Principais</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <div class="feature-title">Chat Conversacional</div>
+                    <div class="feature-description">
+                        Interface de chat real com mensagens do usuário e IA, sugestões rápidas e histórico salvo
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">Geração PNG</div>
+                    <div class="feature-description">
+                        Cria estampas PNG dinâmicas em tempo real usando Canvas HTML5 com alta qualidade
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <div class="feature-title">Visualização</div>
+                    <div class="feature-description">
+                        Veja a estampa no avatar 2D ou apenas a estampa isolada, com opções de download
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">Responsivo</div>
+                    <div class="feature-description">
+                        Funciona perfeitamente em desktop, tablet e mobile com interface adaptativa
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎯 Exemplos de Solicitações</h2>
+            <div class="demo-info">
+                <h4>💡 Teste estas frases no chat:</h4>
+                <ul>
+                    <li>"Quero uma estampa geométrica com triângulos azuis e brancos"</li>
+                    <li>"Crie uma estampa floral com cores pastel"</li>
+                    <li>"Faça algo abstrato e vibrante"</li>
+                    <li>"Quero uma estampa com estrelas em preto e vermelho"</li>
+                    <li>"Crie uma estampa orgânica com tons de verde"</li>
+                    <li>"Faça uma estampa figurativa minimalista"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🛠 Como Usar o Sistema Completo</h2>
+            <div class="demo-info">
+                <h4>📋 Passos para Implementação:</h4>
+                <ul>
+                    <li>1. Abra o arquivo <code>index.html</code> em um navegador</li>
+                    <li>2. Para desenvolvimento, use um servidor local (python -m http.server 8000)</li>
+                    <li>3. Digite sua solicitação no chat</li>
+                    <li>4. A IA analisará e gerará a estampa</li>
+                    <li>5. Visualize no avatar ou baixe apenas a estampa</li>
+                    <li>6. Use as sugestões para facilitar o uso</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="demo-actions">
+            <button class="demo-button" onclick="window.open('index.html', '_blank')">
+                🚀 Testar Sistema Completo
+            </button>
+            <button class="demo-button secondary" onclick="window.open('README.md', '_blank')">
+                📖 Ver Documentação
+            </button>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎨 Recursos Técnicos</h2>
+            <div class="demo-info">
+                <h4>🔧 Tecnologias Utilizadas:</h4>
+                <ul>
+                    <li><strong>HTML5 Canvas:</strong> Geração de PNG em tempo real</li>
+                    <li><strong>JavaScript:</strong> Lógica do chat e análise de linguagem natural</li>
+                    <li><strong>CSS3:</strong> Interface moderna e responsiva</li>
+                    <li><strong>LocalStorage:</strong> Salvamento automático do histórico</li>
+                    <li><strong>Canvas API:</strong> Desenho de padrões dinâmicos</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simula digitação nas mensagens
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach((message, index) => {
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    message.style.opacity = '1';
+                }, index * 500);
+            });
+        });
+        
+        // Adiciona efeito de hover nos botões
+        document.querySelectorAll('.demo-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

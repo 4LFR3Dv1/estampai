@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="500" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes para a camiseta -->
+    <linearGradient id="shirtGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradiente para a pele -->
+    <linearGradient id="skinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fdbcb4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f4a261;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradiente para o cabelo -->
+    <linearGradient id="hairGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#654321;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Padrão para estampa (será substituído dinamicamente) -->
+    <pattern id="stampPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="#1A237E" opacity="0.1"/>
+      <circle cx="50" cy="50" r="20" fill="#FF9800" opacity="0.3"/>
+    </pattern>
+    
+    <!-- Filtros para sombras -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Cabeça -->
+  <ellipse cx="200" cy="120" rx="60" ry="70" fill="url(#skinGradient)" filter="url(#shadow)"/>
+  
+  <!-- Cabelo -->
+  <path d="M 140 80 Q 200 40 260 80 Q 260 120 240 140 Q 200 150 160 140 Q 140 120 140 80" 
+        fill="url(#hairGradient)" filter="url(#shadow)"/>
+  
+  <!-- Olhos -->
+  <ellipse cx="180" cy="110" rx="8" ry="12" fill="#000000"/>
+  <ellipse cx="220" cy="110" rx="8" ry="12" fill="#000000"/>
+  <ellipse cx="182" cy="108" rx="3" ry="4" fill="#ffffff"/>
+  <ellipse cx="222" cy="108" rx="3" ry="4" fill="#ffffff"/>
+  
+  <!-- Nariz -->
+  <ellipse cx="200" cy="130" rx="3" ry="6" fill="#f4a261"/>
+  
+  <!-- Boca -->
+  <path d="M 190 150 Q 200 160 210 150" stroke="#8b0000" stroke-width="2" fill="none"/>
+  
+  <!-- Pescoço -->
+  <rect x="185" y="180" width="30" height="20" fill="url(#skinGradient)" rx="5"/>
+  
+  <!-- Corpo/Camiseta -->
+  <path d="M 150 200 L 150 450 L 250 450 L 250 200 Q 250 180 230 180 L 170 180 Q 150 180 150 200" 
+        fill="url(#shirtGradient)" filter="url(#shadow)"/>
+  
+  <!-- Área da estampa na camiseta -->
+  <rect x="160" y="220" width="80" height="100" fill="url(#stampPattern)" rx="10" opacity="0.8"/>
+  
+  <!-- Braços -->
+  <ellipse cx="130" cy="250" rx="25" ry="80" fill="url(#skinGradient)" filter="url(#shadow)"/>
+  <ellipse cx="270" cy="250" rx="25" ry="80" fill="url(#skinGradient)" filter="url(#shadow)"/>
+  
+  <!-- Mãos -->
+  <ellipse cx="130" cy="320" rx="15" ry="20" fill="url(#skinGradient)"/>
+  <ellipse cx="270" cy="320" rx="15" ry="20" fill="url(#skinGradient)"/>
+  
+  <!-- Pernas -->
+  <rect x="170" y="450" width="25" height="50" fill="#2c3e50" rx="5"/>
+  <rect x="205" y="450" width="25" height="50" fill="#2c3e50" rx="5"/>
+  
+  <!-- Pés -->
+  <ellipse cx="182" cy="510" rx="20" ry="8" fill="#34495e"/>
+  <ellipse cx="218" cy="510" rx="20" ry="8" fill="#34495e"/>
+  
+  <!-- Detalhes da camiseta -->
+  <line x1="150" y1="200" x2="250" y2="200" stroke="#e0e0e0" stroke-width="2"/>
+  <line x1="150" y1="450" x2="250" y2="450" stroke="#e0e0e0" stroke-width="2"/>
+</svg>
