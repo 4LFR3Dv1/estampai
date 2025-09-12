@@ -1753,15 +1753,28 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     // Cria o prompt otimizado
     const optimizedPrompt = `
-        A high-quality t-shirt print design featuring:
-        - Style: ${styleDescriptions[style] || 'creative design'}
-        - Theme: ${userPrompt}
-        - Colors: ${primaryColor} and ${secondaryColor}
-        - Mood: ${moodDesc}
-        - Size: ${size} scale
-        - Format: square design, transparent background, high resolution
-        - Quality: professional, print-ready, clean lines
-        - Composition: well-balanced, centered, suitable for clothing
+        Isolated illustration of ${userPrompt}
+        
+        Style: ${styleDescriptions[style] || 'creative design'}
+        Colors: ${primaryColor} and ${secondaryColor}
+        Mood: ${moodDesc}
+        Size: ${size} scale
+        
+        Technical specifications:
+        - Format: Square 1024x1024px
+        - Resolution: High quality (HD)
+        - Style: Modern, dynamic and versatile
+        - Colors: Vibrant and contrasting
+        - Composition: Centered and balanced
+        
+        DO NOT include:
+        - T-shirt, clothing, mockup, product or mannequin
+        - Colored or patterned background
+        - Text or typography
+        - Borders or frames
+        - Product design elements
+        
+        RESULT: Isolated illustration, solid black background, high quality, perfect for t-shirt printing.
     `.trim();
     
     return optimizedPrompt;

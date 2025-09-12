@@ -1007,25 +1007,26 @@ EXEMPLOS:
                 apiOptimizer.optimizePrompt(prompt) : 
                 prompt;
             
-            const fullPrompt = `Ilustração isolada de ${optimizedPrompt}
+            const fullPrompt = `Isolated illustration of ${optimizedPrompt}
 
-Fundo: PRETO SÓLIDO
+Background: SOLID BLACK
 
-Especificações técnicas:
-- Formato: Quadrado 1024x1024px
-- Resolução: Alta qualidade (HD)
-- Estilo: Moderno, dinâmico e versátil
-- Cores: Vibrantes e contrastantes
-- Composição: Centralizada e equilibrada
+Technical specifications:
+- Format: Square 1024x1024px
+- Resolution: High quality (HD)
+- Style: Modern, dynamic and versatile
+- Colors: Vibrant and contrasting
+- Composition: Centered and balanced
 
-NÃO incluir:
-- Camiseta, roupa, mockup, produto ou manequim
-- Fundo colorido ou padrão
-- Texto ou tipografia
-- Bordas ou molduras
-- Elementos de design de produto
+DO NOT include:
+- T-shirt, clothing, mockup, product or mannequin
+- Colored or patterned background
+- Text or typography
+- Borders or frames
+- Product design elements
+- Any clothing or fabric
 
-RESULTADO: Ilustração isolada, fundo preto sólido, alta qualidade, perfeita para estampa de camiseta.`;
+RESULT: Isolated illustration, solid black background, high quality, perfect for t-shirt printing.`;
             
             // Usa retry com backoff se disponível
             const makeRequest = () => fetch('https://api.openai.com/v1/images/generations', {
