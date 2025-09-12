@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstampAI - Minimal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #888888;
+        }
+        
+        .chat-box {
+            background: #111111;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333333;
+        }
+        
+        .messages {
+            height: 200px;
+            overflow-y: auto;
+            background: #0a0a0a;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #222222;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .message.user {
+            background: #667eea;
+            color: white;
+            text-align: right;
+        }
+        
+        .message.ai {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #333333;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .send-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            background: #667eea;
+            color: white;
+        }
+        
+        .send-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .send-btn:disabled {
+            background: #333333;
+            color: #666666;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: #1b2d1b;
+            color: #51cf66;
+        }
+        
+        .status.error {
+            background: #2d1b1b;
+            color: #ff6b6b;
+        }
+        
+        .status.warning {
+            background: #2d2b1b;
+            color: #ffd43b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 EstampAI</h1>
+            <p>Versão Minimal para Framer</p>
+        </div>
+        
+        <div id="status" class="status warning">
+            🔄 Carregando...
+        </div>
+        
+        <div class="chat-box">
+            <div class="messages" id="messages">
+                <div class="message ai">
+                    Olá! Sou a EstampAI. Como posso ajudar com sua estampa?
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="messageInput" 
+                    placeholder="Digite sua mensagem..."
+                >
+                <button class="send-btn" id="sendBtn">
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado simples
+        var isGenerating = false;
+        
+        // Elementos
+        var messagesContainer = document.getElementById('messages');
+        var messageInput = document.getElementById('messageInput');
+        var sendBtn = document.getElementById('sendBtn');
+        var status = document.getElementById('status');
+        
+        // Respostas pré-definidas
+        var responses = [
+            "Que ideia interessante! Para uma estampa com esse tema, sugiro usar cores vibrantes.",
+            "Ótimo conceito! Considere adicionar elementos gráficos criativos.",
+            "Essa é uma abordagem única! Que tal experimentar com tipografias diferentes?",
+            "Excelente direção! Recomendo um layout equilibrado com espaços estratégicos.",
+            "Muito criativo! Considere usar gradientes para dar profundidade ao design.",
+            "Interessante! Que tal explorar estilos como minimalista ou vintage?",
+            "Ótima ideia! Sugiro focar na legibilidade e impacto visual.",
+            "Criativo! Considere adicionar elementos decorativos complementares."
+        ];
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('EstampAI Minimal iniciando...');
+            
+            // Verifica se está em iframe
+            var isIframe = window !== window.top;
+            if (isIframe) {
+                console.log('Executando em iframe (Framer)');
+                status.textContent = '📱 Modo Framer ativo';
+                status.className = 'status success';
+            } else {
+                console.log('Executando em janela normal');
+                status.textContent = '🌐 Modo normal ativo';
+                status.className = 'status success';
+            }
+            
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+        
+        function addMessage(type, content) {
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + type;
+            messageDiv.textContent = content;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function getRandomResponse() {
+            var randomIndex = Math.floor(Math.random() * responses.length);
+            return responses[randomIndex];
+        }
+        
+        function sendMessage() {
+            var message = messageInput.value.trim();
+            
+            if (!message || isGenerating) return;
+            
+            console.log('Enviando mensagem:', message);
+            
+            // Marca como gerando
+            isGenerating = true;
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Enviando...';
+            
+            // Adiciona mensagem do usuário
+            addMessage('user', message);
+            messageInput.value = '';
+            
+            // Simula resposta
+            setTimeout(function() {
+                var response = getRandomResponse();
+                addMessage('ai', response);
+                
+                // Libera o botão
+                isGenerating = false;
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Enviar';
+                
+                console.log('Resposta enviada');
+            }, 1000 + Math.random() * 2000);
+        }
+    </script>
+</body>
+</html>

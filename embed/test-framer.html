@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Framer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-box {
+            background: #111111;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            border-color: #51cf66;
+            background: #1b2d1b;
+        }
+        
+        .error {
+            border-color: #ff6b6b;
+            background: #2d1b1b;
+        }
+        
+        .warning {
+            border-color: #ffd43b;
+            background: #2d2b1b;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 10px;
+        }
+        
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .button:hover {
+            background: #5a6fd8;
+        }
+        
+        .log {
+            background: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Compatibilidade com Framer</h1>
+    
+    <div class="test-box" id="basic-test">
+        <h2>✅ Teste Básico</h2>
+        <p>Se você está vendo esta página, o HTML básico está funcionando!</p>
+    </div>
+    
+    <div class="test-box" id="css-test">
+        <h2>🎨 Teste CSS</h2>
+        <p>Se você vê cores e estilos, o CSS está funcionando!</p>
+    </div>
+    
+    <div class="test-box" id="js-test">
+        <h2>⚡ Teste JavaScript</h2>
+        <p id="js-status">Testando JavaScript...</p>
+    </div>
+    
+    <div class="test-box" id="iframe-test">
+        <h2>📱 Teste Iframe</h2>
+        <p id="iframe-status">Verificando se está em iframe...</p>
+    </div>
+    
+    <div class="test-box" id="api-test">
+        <h2>🌐 Teste de APIs</h2>
+        <p id="api-status">Testando APIs disponíveis...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>🔧 Ações de Teste</h2>
+        <button class="button" onclick="testLocalStorage()">Testar localStorage</button>
+        <button class="button" onclick="testFetch()">Testar Fetch</button>
+        <button class="button" onclick="testConsole()">Testar Console</button>
+        <button class="button" onclick="clearLog()">Limpar Log</button>
+    </div>
+    
+    <div class="test-box">
+        <h2>📝 Log de Testes</h2>
+        <div class="log" id="test-log">
+            Iniciando testes...<br>
+        </div>
+    </div>
+    
+    <div class="test-box">
+        <h2>🔗 Links de Teste</h2>
+        <p>Teste estas versões do EstampAI:</p>
+        <a href="framer-static.html" class="button">Versão Estática</a>
+        <a href="framer-minimal.html" class="button">Versão Minimal</a>
+        <a href="framer-compatible.html" class="button">Versão Compatível</a>
+        <a href="framer-debug.html" class="button">Versão Debug</a>
+    </div>
+
+    <script>
+        var log = document.getElementById('test-log');
+        var jsStatus = document.getElementById('js-status');
+        var iframeStatus = document.getElementById('iframe-status');
+        var apiStatus = document.getElementById('api-status');
+        
+        function addLog(message) {
+            var timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += '[' + timestamp + '] ' + message + '<br>';
+            log.scrollTop = log.scrollHeight;
+            console.log('[TEST] ' + message);
+        }
+        
+        function clearLog() {
+            log.innerHTML = 'Log limpo...<br>';
+        }
+        
+        // Teste JavaScript
+        function testJavaScript() {
+            try {
+                jsStatus.textContent = '✅ JavaScript funcionando!';
+                jsStatus.parentElement.className = 'test-box success';
+                addLog('✅ JavaScript funcionando');
+                return true;
+            } catch (e) {
+                jsStatus.textContent = '❌ JavaScript com erro: ' + e.message;
+                jsStatus.parentElement.className = 'test-box error';
+                addLog('❌ JavaScript com erro: ' + e.message);
+                return false;
+            }
+        }
+        
+        // Teste Iframe
+        function testIframe() {
+            try {
+                var isIframe = window !== window.top;
+                if (isIframe) {
+                    iframeStatus.textContent = '✅ Executando em iframe (Framer)';
+                    iframeStatus.parentElement.className = 'test-box success';
+                    addLog('✅ Executando em iframe (Framer)');
+                } else {
+                    iframeStatus.textContent = 'ℹ️ Executando em janela normal';
+                    iframeStatus.parentElement.className = 'test-box warning';
+                    addLog('ℹ️ Executando em janela normal');
+                }
+                return true;
+            } catch (e) {
+                iframeStatus.textContent = '❌ Erro ao detectar iframe: ' + e.message;
+                iframeStatus.parentElement.className = 'test-box error';
+                addLog('❌ Erro ao detectar iframe: ' + e.message);
+                return false;
+            }
+        }
+        
+        // Teste APIs
+        function testAPIs() {
+            var results = [];
+            
+            // Teste localStorage
+            try {
+                localStorage.setItem('test', 'ok');
+                localStorage.removeItem('test');
+                results.push('✅ localStorage');
+                addLog('✅ localStorage disponível');
+            } catch (e) {
+                results.push('❌ localStorage');
+                addLog('❌ localStorage bloqueado: ' + e.message);
+            }
+            
+            // Teste fetch
+            if (typeof fetch !== 'undefined') {
+                results.push('✅ fetch');
+                addLog('✅ fetch disponível');
+            } else {
+                results.push('❌ fetch');
+                addLog('❌ fetch não disponível');
+            }
+            
+            // Teste XMLHttpRequest
+            if (typeof XMLHttpRequest !== 'undefined') {
+                results.push('✅ XMLHttpRequest');
+                addLog('✅ XMLHttpRequest disponível');
+            } else {
+                results.push('❌ XMLHttpRequest');
+                addLog('❌ XMLHttpRequest não disponível');
+            }
+            
+            apiStatus.textContent = results.join(' | ');
+            if (results.some(r => r.includes('❌'))) {
+                apiStatus.parentElement.className = 'test-box warning';
+            } else {
+                apiStatus.parentElement.className = 'test-box success';
+            }
+        }
+        
+        // Testes específicos
+        function testLocalStorage() {
+            try {
+                localStorage.setItem('framer_test', 'ok');
+                var value = localStorage.getItem('framer_test');
+                localStorage.removeItem('framer_test');
+                addLog('✅ localStorage test: ' + value);
+            } catch (e) {
+                addLog('❌ localStorage test: ' + e.message);
+            }
+        }
+        
+        function testFetch() {
+            addLog('🔄 Testando fetch...');
+            fetch('https://api.openai.com/v1/models', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer test'
+                }
+            })
+            .then(response => {
+                addLog('✅ Fetch test: ' + response.status + ' ' + response.statusText);
+            })
+            .catch(error => {
+                addLog('❌ Fetch test: ' + error.message);
+            });
+        }
+        
+        function testConsole() {
+            console.log('Teste de console do Framer');
+            addLog('✅ Console test executado');
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 Iniciando testes de compatibilidade...');
+            
+            testJavaScript();
+            testIframe();
+            testAPIs();
+            
+            addLog('✅ Todos os testes básicos concluídos');
+        });
+    </script>
+</body>
+</html>

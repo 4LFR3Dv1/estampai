@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstampAI - Static</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #888888;
+        }
+        
+        .info-box {
+            background: #111111;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333333;
+            text-align: center;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .info-box p {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature {
+            background: #111111;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333333;
+            text-align: center;
+        }
+        
+        .feature h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .feature p {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: #1b2d1b;
+            color: #51cf66;
+        }
+        
+        .status.warning {
+            background: #2d2b1b;
+            color: #ffd43b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 EstampAI</h1>
+            <p>Gerador de Estampas com IA</p>
+        </div>
+        
+        <div class="status success">
+            ✅ EstampAI carregado com sucesso no Framer
+        </div>
+        
+        <div class="info-box">
+            <h3>🚀 Funcionalidade Completa Disponível</h3>
+            <p>
+                Para acessar todas as funcionalidades do EstampAI, incluindo geração de estampas com IA, 
+                clique no botão abaixo para abrir a versão completa em uma nova janela.
+            </p>
+            <a href="https://estampai.onrender.com" target="_blank" class="cta-button">
+                🎨 Abrir EstampAI Completo
+            </a>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">🤖</span>
+                <h4>IA Avançada</h4>
+                <p>Gera estampas únicas usando GPT-4 e DALL-E 3</p>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">🎨</span>
+                <h4>Design Personalizado</h4>
+                <p>Crie estampas personalizadas com suas próprias ideias</p>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <h4>Rápido e Fácil</h4>
+                <p>Interface intuitiva para criação em minutos</p>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">💾</span>
+                <h4>Download Direto</h4>
+                <p>Baixe suas estampas em alta qualidade</p>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>📱 Por que esta versão?</h3>
+            <p>
+                O Framer tem limitações que impedem o funcionamento completo de aplicações com IA. 
+                Esta versão estática garante que você sempre tenha acesso ao EstampAI, 
+                mesmo dentro do Framer.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Script mínimo para detectar ambiente
+        (function() {
+            var isIframe = window !== window.top;
+            console.log('EstampAI Static carregado em:', isIframe ? 'iframe (Framer)' : 'janela normal');
+            
+            // Notifica o Framer se estiver em iframe
+            if (isIframe) {
+                try {
+                    window.parent.postMessage({
+                        type: 'estampai',
+                        event: 'loaded',
+                        data: { version: 'static' }
+                    }, '*');
+                } catch (e) {
+                    console.log('Comunicação com Framer não disponível');
+                }
+            }
+        })();
+    </script>
+</body>
+</html>
