@@ -751,12 +751,16 @@
             
             if (!message || isGenerating) return;
             
+            // Marca como gerando para evitar múltiplas requisições
+            isGenerating = true;
+            
             // Verifica rate limiting
             if (rateLimiter) {
                 const rateCheck = rateLimiter.canProceed(userId, 'chat');
                 if (!rateCheck.allowed) {
                     const resetTime = new Date(rateCheck.resetTime);
                     addMessage('ai', `Muitas mensagens! Tente novamente em ${resetTime.toLocaleTimeString()}`);
+                    isGenerating = false;
                     return;
                 }
             }
@@ -770,16 +774,18 @@
             addMessage('ai', '🤔 Pensando...');
             
             try {
-                // Chat com IA (com debounce)
-                const debouncedChat = apiOptimizer ? 
+                // Chat com IA (com debounce seguro)
+                const debouncedChat = (apiOptimizer && typeof apiOptimizer.debounce === 'function') ? 
                     apiOptimizer.debounce(chatWithAI, 500) : 
                     chatWithAI;
                 
                 const response = await debouncedChat(message);
                 
-                // Remove loading e adiciona resposta
+                // Remove loading e adiciona resposta (com verificação de segurança)
                 const messages = document.getElementById('messagesContainer');
-                messages.removeChild(messages.lastChild);
+                if (messages && messages.lastChild) {
+                    messages.removeChild(messages.lastChild);
+                }
                 addMessage('ai', response);
                 
                 // Analytics
@@ -790,13 +796,18 @@
             } catch (error) {
                 console.error('Erro no chat:', error);
                 const messages = document.getElementById('messagesContainer');
-                messages.removeChild(messages.lastChild);
+                if (messages && messages.lastChild) {
+                    messages.removeChild(messages.lastChild);
+                }
                 addMessage('ai', 'Desculpe, estou com dificuldades técnicas. Tente novamente!');
                 
                 // Analytics de erro
                 if (analytics) {
                     analytics.trackError(error, 'chat');
                 }
+            } finally {
+                // Sempre libera o flag de geração
+                isGenerating = false;
             }
         }
         
@@ -918,7 +929,9 @@ Quando o usuário mencionar uma ideia de estampa:
 
 Seja conversacional e amigável!`
                         },
-                        ...conversationHistory.slice(-10)
+                        ...conversationHistory.filter(msg => 
+                            msg && msg.role && msg.content
+                        ).slice(-10)
                     ],
                     max_tokens: 300,
                     temperature: 0.8
@@ -926,7 +939,8 @@ Seja conversacional e amigável!`
             });
             
             if (!response.ok) {
-                throw new Error(`Erro da API: ${response.status}`);
+                const errorText = await response.text().catch(() => 'Erro desconhecido');
+                throw new Error(`Erro da API: ${response.status} - ${errorText}`);
             }
             
             const data = await response.json();

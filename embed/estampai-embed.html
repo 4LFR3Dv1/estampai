@@ -797,7 +797,7 @@
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             
-            if (!message || isGenerating) return;
+            if (!message || isGenerating) return; isGenerating = true;
             
             // Verifica rate limiting
             if (rateLimiter) {
@@ -819,7 +819,7 @@
             
             try {
                 // Chat com IA (com debounce)
-                const debouncedChat = apiOptimizer ? 
+                const debouncedChat = apiOptimizer && typeof apiOptimizer.debounce === 'function' ? 
                     apiOptimizer.debounce(chatWithAI, 500) : 
                     chatWithAI;
                 
@@ -827,7 +827,7 @@
                 
                 // Remove loading e adiciona resposta
                 const messages = document.getElementById('messagesContainer');
-                messages.removeChild(messages.lastChild);
+                if (messages && messages.lastChild) { messages.removeChild(messages.lastChild); }
                 addMessage('ai', response);
                 
                 // Analytics
@@ -838,7 +838,7 @@
             } catch (error) {
                 console.error('Erro no chat:', error);
                 const messages = document.getElementById('messagesContainer');
-                messages.removeChild(messages.lastChild);
+                if (messages && messages.lastChild) { messages.removeChild(messages.lastChild); }
                 addMessage('ai', 'Desculpe, estou com dificuldades técnicas. Tente novamente!');
                 
                 // Analytics de erro
@@ -966,7 +966,7 @@ Quando o usuário mencionar uma ideia de estampa:
 
 Seja conversacional e amigável!`
                         },
-                        ...conversationHistory.slice(-10)
+                        ...conversationHistory.filter(msg => msg && msg.role && msg.content).slice(-10)
                     ],
                     max_tokens: 300,
                     temperature: 0.8
@@ -974,7 +974,7 @@ Seja conversacional e amigável!`
             });
             
             if (!response.ok) {
-                throw new Error(`Erro da API: ${response.status}`);
+                const errorText = await response.text().catch(() => 'Erro desconhecido'); throw new Error(`Erro da API: ${response.status} - ${errorText}`);
             }
             
             const data = await response.json();
@@ -1030,7 +1030,7 @@ EXEMPLOS:
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`Erro da API: ${response.status}`);
+                    const errorText = await response.text().catch(() => 'Erro desconhecido'); throw new Error(`Erro da API: ${response.status} - ${errorText}`);
                 }
                 
                 const data = await response.json();
@@ -1054,7 +1054,7 @@ EXEMPLOS:
         
         async function generateStampWithAI(prompt) {
             // Otimiza prompt se disponível
-            const optimizedPrompt = apiOptimizer ? 
+            const optimizedPrompt = apiOptimizer && typeof apiOptimizer.debounce === 'function' ? 
                 apiOptimizer.optimizePrompt(prompt) : 
                 prompt;
             
@@ -1094,12 +1094,12 @@ RESULTADO: Ilustração isolada, fundo preto sólido, alta qualidade, perfeita p
                 })
             });
             
-            const response = apiOptimizer ? 
+            const response = apiOptimizer && typeof apiOptimizer.debounce === 'function' ? 
                 await apiOptimizer.retryRequest(makeRequest) : 
                 await makeRequest();
             
             if (!response.ok) {
-                throw new Error(`Erro da API: ${response.status}`);
+                const errorText = await response.text().catch(() => 'Erro desconhecido'); throw new Error(`Erro da API: ${response.status} - ${errorText}`);
             }
             
             const data = await response.json();
