@@ -577,6 +577,86 @@
             transform: translateY(-1px);
         }
 
+        /* Abas de visualização de estampa */
+        .stamp-view {
+            display: none;
+        }
+        
+        .stamp-view.active {
+            display: block;
+        }
+        
+        .view-buttons {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            background: var(--gray-100);
+            padding: var(--space-1);
+            border-radius: var(--radius-lg);
+        }
+        
+        .view-btn {
+            flex: 1;
+            padding: var(--space-3) var(--space-4);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--gray-600);
+        }
+        
+        .view-btn.active {
+            background: white;
+            color: var(--primary-700);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .view-btn:hover:not(.active) {
+            background: var(--gray-50);
+            color: var(--gray-700);
+        }
+        
+        /* Container de avatar com mockup */
+        .avatar-mockup-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .avatar-mockup {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Container de PNG */
+        .png-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .png-image {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
         /* Responsive design */
         @media (max-width: 1024px) {
             .main {
@@ -734,15 +814,29 @@
             </div>
             
             <div class="view-buttons">
-                <button class="view-btn active" id="canvasView">Canvas</button>
-                <button class="view-btn" id="isolatedView">Isolada</button>
+                <button class="view-btn active" data-view="avatar" onclick="switchStampView('avatar')">Avatar</button>
+                <button class="view-btn" data-view="png" onclick="switchStampView('png')">PNG</button>
             </div>
             
-            <div class="canvas-container" id="canvasContainer">
-                <div class="empty-state">
-                    <div class="empty-state-icon">🎨</div>
-                    <h3>Nenhuma estampa gerada ainda</h3>
-                    <p>Comece uma conversa com a IA para criar sua primeira estampa!</p>
+            <!-- Aba Avatar -->
+            <div class="stamp-view active" id="avatarView">
+                <div class="canvas-container" id="avatarContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👤</div>
+                        <h3>Nenhuma estampa gerada ainda</h3>
+                        <p>Comece uma conversa com a IA para ver sua estampa no avatar!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Aba PNG -->
+            <div class="stamp-view" id="pngView">
+                <div class="canvas-container" id="pngContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🖼️</div>
+                        <h3>Nenhuma estampa gerada ainda</h3>
+                        <p>Comece uma conversa com a IA para ver a imagem PNG!</p>
+                    </div>
                 </div>
             </div>
             

@@ -505,8 +505,16 @@ async function processWithAI(userMessage, predefinedAnalysis = null) {
         currentStamp = stamp;
         
         await updateAvatarDisplay(stamp);
-        updateStampDisplay(stamp);
+        displayAvatarWithStamp(stamp);
+        displayPNGImage(stamp);
         updateStampInfo(stamp);
+        
+        // Mostra o botão de download
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.style.display = 'flex';
+            updateDownloadButton('avatar'); // Avatar é a aba padrão
+        }
         
         addAIMessage(CONFIG.ai.responses.completed);
         
@@ -1694,6 +1702,193 @@ function switchView(view) {
     }
 }
 
+// ===== SISTEMA DE ABAS DE ESTAMPA =====
+function switchStampView(view) {
+    // Remove active de todos os botões
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Adiciona active ao botão selecionado
+    const selectedButton = document.querySelector(`[data-view="${view}"]`);
+    if (selectedButton) {
+        selectedButton.classList.add('active');
+    }
+    
+    // Remove active de todas as views
+    document.querySelectorAll('.stamp-view').forEach(stampView => {
+        stampView.classList.remove('active');
+    });
+    
+    // Adiciona active à view selecionada
+    const targetView = document.getElementById(`${view}View`);
+    if (targetView) {
+        targetView.classList.add('active');
+    }
+    
+    // Atualiza o botão de download baseado na aba ativa
+    updateDownloadButton(view);
+}
+
+function updateDownloadButton(activeView) {
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (!downloadBtn) return;
+    
+    if (activeView === 'avatar') {
+        downloadBtn.innerHTML = '<span>📥</span><span>Baixar Avatar</span>';
+        downloadBtn.onclick = downloadAvatar;
+    } else if (activeView === 'png') {
+        downloadBtn.innerHTML = '<span>📥</span><span>Baixar PNG</span>';
+        downloadBtn.onclick = downloadPNG;
+    }
+}
+
+function displayAvatarWithStamp(stamp) {
+    const avatarContainer = document.getElementById('avatarContainer');
+    if (!avatarContainer) return;
+    
+    // Remove estado vazio
+    const emptyState = avatarContainer.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+    
+    // Cria container do mockup
+    const mockupContainer = document.createElement('div');
+    mockupContainer.className = 'avatar-mockup-container';
+    
+    // Cria canvas para o avatar com estampa
+    const canvas = document.createElement('canvas');
+    canvas.id = 'avatarDisplayCanvas';
+    canvas.width = 400;
+    canvas.height = 500;
+    canvas.className = 'avatar-mockup';
+    
+    mockupContainer.appendChild(canvas);
+    avatarContainer.appendChild(mockupContainer);
+    
+    // Desenha o avatar com a estampa
+    drawAvatarWithStamp(canvas, stamp);
+}
+
+function displayPNGImage(stamp) {
+    const pngContainer = document.getElementById('pngContainer');
+    if (!pngContainer) return;
+    
+    // Remove estado vazio
+    const emptyState = pngContainer.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+    
+    // Cria container da imagem PNG
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'png-container';
+    
+    // Cria elemento de imagem
+    const img = document.createElement('img');
+    img.className = 'png-image';
+    img.alt = 'Estampa PNG gerada pela IA';
+    
+    if (stamp.imageUrl) {
+        img.src = stamp.imageUrl;
+        img.onload = () => {
+            console.log('✅ Imagem PNG carregada com sucesso');
+        };
+        img.onerror = () => {
+            console.error('❌ Erro ao carregar imagem PNG');
+            // Fallback para canvas se a imagem falhar
+            createFallbackPNG(imageContainer, stamp);
+        };
+    } else {
+        // Se não há URL da IA, cria fallback
+        createFallbackPNG(imageContainer, stamp);
+    }
+    
+    imageContainer.appendChild(img);
+    pngContainer.appendChild(imageContainer);
+}
+
+function createFallbackPNG(container, stamp) {
+    // Remove imagem se existir
+    const existingImg = container.querySelector('img');
+    if (existingImg) {
+        existingImg.remove();
+    }
+    
+    // Cria canvas como fallback
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 400;
+    canvas.className = 'png-image';
+    
+    const ctx = canvas.getContext('2d');
+    drawStamp(ctx, canvas.width, canvas.height, stamp);
+    
+    container.appendChild(canvas);
+}
+
+function drawAvatarWithStamp(canvas, stamp) {
+    const ctx = canvas.getContext('2d');
+    
+    // Limpa o canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Carrega a imagem do avatar
+    const avatarImg = new Image();
+    avatarImg.crossOrigin = 'anonymous';
+    
+    avatarImg.onload = function() {
+        // Desenha o avatar
+        ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
+        
+        // Aplica a estampa se existir
+        if (stamp && stamp.pattern) {
+            applyStampToAvatar(ctx, canvas.width, canvas.height, stamp);
+        }
+        
+        console.log('✅ Avatar com estampa desenhado');
+    };
+    
+    avatarImg.onerror = function() {
+        console.warn('⚠️ Erro ao carregar avatar, usando fallback');
+        // Fallback para avatar desenhado
+        drawDrawnAvatar(ctx, canvas.width, canvas.height, stamp);
+    };
+    
+    // Tenta carregar a imagem do avatar
+    if (window.ESTAMPAI_CONFIG?.avatar?.imagePath) {
+        avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imagePath;
+    } else if (window.ESTAMPAI_CONFIG?.avatar?.imageUrl) {
+        avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imageUrl;
+    } else {
+        // Fallback para avatar desenhado
+        drawDrawnAvatar(ctx, canvas.width, canvas.height, stamp);
+    }
+}
+
+function downloadPNG() {
+    if (!currentStamp) return;
+    
+    if (currentStamp.imageUrl) {
+        // Se há URL da IA, baixa diretamente
+        const link = document.createElement('a');
+        link.href = currentStamp.imageUrl;
+        link.download = `estampai-png-${currentStamp.id}.png`;
+        link.target = '_blank';
+        link.click();
+    } else {
+        // Se não há URL, baixa do canvas
+        const canvas = document.querySelector('#pngContainer canvas');
+        if (canvas) {
+            const link = document.createElement('a');
+            link.download = `estampai-png-${currentStamp.id}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    }
+}
+
 // ===== SISTEMA DE DOWNLOAD =====
 function downloadAvatar() {
     if (!currentStamp) return;
@@ -2320,5 +2515,7 @@ window.generateStampFromConversation = generateStampFromConversation;
 window.restartConversation = restartConversation;
 window.addMoreDetails = addMoreDetails;
 window.processExtraDetails = processExtraDetails;
+window.switchStampView = switchStampView;
+window.downloadPNG = downloadPNG;
 
 console.log('🚀 EstampAI Chat carregado com sucesso!');
