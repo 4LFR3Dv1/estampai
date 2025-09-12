@@ -63,13 +63,7 @@ function setupEventListeners() {
 }
 
 function initializeCanvas() {
-    const avatarCanvas = document.getElementById('avatarCanvas');
     const stampCanvas = document.getElementById('stampCanvas');
-    
-    if (avatarCanvas) {
-        avatarCanvas.width = CONFIG.canvas.avatar.width;
-        avatarCanvas.height = CONFIG.canvas.avatar.height;
-    }
     
     if (stampCanvas) {
         stampCanvas.width = CONFIG.canvas.stamp.width;
@@ -341,60 +335,13 @@ async function generateStamp(analysis) {
 }
 
 async function updateAvatarDisplay(stamp) {
+    // Avatar display simplificado - apenas atualiza o stamp display
     console.log('🎨 Avatar display atualizado:', stamp);
-    
-    const canvas = document.getElementById('avatarCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    if (!canvas || !ctx) {
-        console.error('❌ Canvas do avatar não encontrado');
-        updateStampDisplay(stamp);
-        return;
-    }
-    
-    // Limpa o canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Carrega a imagem da estampa
-    if (stamp.imageUrl) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = function() {
-            // Calcula dimensões para manter proporção
-            const maxWidth = canvas.width;
-            const maxHeight = canvas.height;
-            let { width, height } = img;
-            
-            if (width > maxWidth) {
-                height = (height * maxWidth) / width;
-                width = maxWidth;
-            }
-            if (height > maxHeight) {
-                width = (width * maxHeight) / height;
-                height = maxHeight;
-            }
-            
-            // Centraliza a imagem
-            const x = (canvas.width - width) / 2;
-            const y = (canvas.height - height) / 2;
-            
-            ctx.drawImage(img, x, y, width, height);
-            
-            // Atualiza o display
-            updateStampDisplay(stamp);
-        };
-        img.onerror = function() {
-            console.error('Erro ao carregar imagem da estampa');
-            updateStampDisplay(stamp);
-        };
-        img.src = stamp.imageUrl;
-    } else {
-        updateStampDisplay(stamp);
-    }
+    updateStampDisplay(stamp);
 }
 
 function updateStampDisplay(stamp) {
-    const canvas = document.getElementById('avatarCanvas');
+    const canvas = document.getElementById('stampCanvas');
     const ctx = canvas.getContext('2d');
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1365,9 +1312,9 @@ function downloadAvatar() {
 function downloadStamp() {
     if (!currentStamp) return;
     
-    const canvas = document.getElementById('avatarCanvas');
+    const canvas = document.getElementById('stampCanvas');
     const link = document.createElement('a');
-    link.download = `estampai-avatar-${currentStamp.id}.png`;
+    link.download = `estampai-stamp-${currentStamp.id}.png`;
     link.href = canvas.toDataURL();
     link.click();
 }
