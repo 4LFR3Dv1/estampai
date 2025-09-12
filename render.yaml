@@ -1,0 +1,60 @@
+# Render.com Configuration for EstampAI
+# Este arquivo configura o deploy automático no Render
+
+services:
+  # Serviço principal do EstampAI
+  - type: web
+    name: estampai-main
+    env: static
+    buildCommand: echo "No build needed for static site"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: /*
+        name: Access-Control-Allow-Methods
+        value: "GET, POST, OPTIONS"
+      - path: /*
+        name: Access-Control-Allow-Headers
+        value: "Content-Type, Authorization"
+      - path: /embed/*
+        name: X-Frame-Options
+        value: "ALLOWALL"
+      - path: /embed/*
+        name: Content-Security-Policy
+        value: "frame-ancestors *;"
+
+  # Serviço para o embed (opcional - separado)
+  - type: web
+    name: estampai-embed
+    env: static
+    buildCommand: echo "No build needed for embed"
+    staticPublishPath: embed
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /embed/estampai-embed.html
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: /*
+        name: X-Frame-Options
+        value: "ALLOWALL"
+      - path: /*
+        name: Content-Security-Policy
+        value: "frame-ancestors *;"
+
+# Variáveis de ambiente (configure no dashboard do Render)
+envVars:
+  - key: OPENAI_API_KEY
+    sync: false  # Configure manualmente no dashboard
+  - key: NODE_ENV
+    value: production
+  - key: RENDER
+    value: true

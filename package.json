@@ -1,0 +1,72 @@
+{
+  "name": "estampai",
+  "version": "1.0.0",
+  "description": "Sistema de chat conversacional com IA para criação de estampas PNG dinâmicas",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 embed/cors-server.py 8000",
+    "dev-https": "python3 embed/https-server.py 8443",
+    "build": "echo 'No build step needed for static site'",
+    "deploy": "echo 'Deploy via Render dashboard'"
+  },
+  "keywords": [
+    "ai",
+    "chat",
+    "stamps",
+    "design",
+    "openai",
+    "dall-e",
+    "framer",
+    "embed"
+  ],
+  "author": "Renan Melo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/EstampAI.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.7.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "render": {
+    "type": "static",
+    "buildCommand": "echo 'No build needed'",
+    "publishPath": ".",
+    "headers": [
+      {
+        "source": "/*",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET, POST, OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Authorization"
+          }
+        ]
+      },
+      {
+        "source": "/embed/*",
+        "headers": [
+          {
+            "key": "X-Frame-Options",
+            "value": "ALLOWALL"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "frame-ancestors *;"
+          }
+        ]
+      }
+    ]
+  }
+}

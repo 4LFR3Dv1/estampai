@@ -278,4 +278,4 @@ Avatar Base → Estampa PNG → Image Edit → Avatar Final
 - ✅ **API estável** e disponível
 
 **O EstampAI pode se tornar ainda mais profissional com essas novas tecnologias!** 🚀
-a
+ay
