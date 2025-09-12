@@ -118,8 +118,8 @@ function loadInitialAvatar() {
     canvas.width = 800;
     canvas.height = 1000;
     canvas.className = 'avatar-mockup';
-    canvas.style.maxWidth = '100%';
-    canvas.style.height = 'auto';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
     
     mockupContainer.appendChild(canvas);
     avatarContainer.appendChild(mockupContainer);
