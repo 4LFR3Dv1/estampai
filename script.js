@@ -37,13 +37,13 @@ function initializeApp() {
     console.log('🎨 EstampAI Chat iniciado!');
     initializeCanvas();
     loadChatHistory();
-    document.getElementById('chatInput').focus();
+    document.getElementById('messageInput').focus();
 }
 
 function setupEventListeners() {
-    const chatInput = document.getElementById('chatInput');
+    const messageInput = document.getElementById('messageInput');
     
-    chatInput.addEventListener('keydown', function(e) {
+    messageInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
@@ -51,25 +51,19 @@ function setupEventListeners() {
     });
     
     // Verifica se o botão existe antes de adicionar o listener
-    const sendButton = document.getElementById('sendButton');
-    if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
+    const sendBtn = document.getElementById('sendBtn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', sendMessage);
     }
     
-    chatInput.addEventListener('input', function() {
+    messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
 }
 
 function initializeCanvas() {
-    const avatarCanvas = document.getElementById('avatarCanvas');
     const stampCanvas = document.getElementById('stampCanvas');
-    
-    if (avatarCanvas) {
-        avatarCanvas.width = CONFIG.canvas.avatar.width;
-        avatarCanvas.height = CONFIG.canvas.avatar.height;
-    }
     
     if (stampCanvas) {
         stampCanvas.width = CONFIG.canvas.stamp.width;
@@ -83,14 +77,14 @@ function showWelcomeMessage() {
 }
 
 async function sendMessage() {
-    const chatInput = document.getElementById('chatInput');
-    const message = chatInput.value.trim();
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
     
     if (!message || isGenerating) return;
     
     addUserMessage(message);
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
+    messageInput.value = '';
+    messageInput.style.height = 'auto';
     await processWithAI(message);
 }
 
@@ -341,10 +335,8 @@ async function generateStamp(analysis) {
 }
 
 async function updateAvatarDisplay(stamp) {
-    const canvas = document.getElementById('avatarCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Avatar display removido - usando apenas stamp canvas
+    console.log('🎨 Avatar display atualizado:', stamp);
     
     // Se a estampa foi gerada com IA e edição de imagens está habilitada
     if (stamp.aiGenerated && stamp.imageUrl && stamp.useImageEdit) {
@@ -1362,9 +1354,9 @@ function switchView(view) {
 function downloadAvatar() {
     if (!currentStamp) return;
     
-    const canvas = document.getElementById('avatarCanvas');
+    const canvas = document.getElementById('stampCanvas');
     const link = document.createElement('a');
-    link.download = `estampai-avatar-${currentStamp.id}.png`;
+    link.download = `estampai-stamp-${currentStamp.id}.png`;
     link.href = canvas.toDataURL();
     link.click();
 }
@@ -1418,8 +1410,8 @@ function regenerateStamp() {
 
 // ===== FUNÇÕES UTILITÁRIAS =====
 function useSuggestion(text) {
-    document.getElementById('chatInput').value = text;
-    document.getElementById('chatInput').focus();
+    document.getElementById('messageInput').value = text;
+    document.getElementById('messageInput').focus();
 }
 
 function clearChat() {
@@ -1955,7 +1947,7 @@ function adjustColor(color, amount) {
 // ===== FUNÇÃO DE TESTE PARA AVATAR =====
 function testarAvatarLocal() {
     console.log('🧪 Testando carregamento do avatar local...');
-    const canvas = document.getElementById('avatarCanvas');
+    const canvas = document.getElementById('stampCanvas');
     if (!canvas) {
         console.error('❌ Canvas não encontrado');
         return;
