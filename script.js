@@ -25,6 +25,19 @@ const CONFIG = {
 let chatHistory = [];
 let currentStamp = null;
 let isGenerating = false;
+let currentConversation = {
+    stage: 'greeting', // greeting, collecting_info, confirming, generating
+    collectedInfo: {
+        theme: null,
+        style: null,
+        colors: null,
+        mood: null,
+        size: null,
+        details: []
+    },
+    questions: [],
+    currentQuestion: 0
+};
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener('DOMContentLoaded', function() {
@@ -80,6 +93,304 @@ function initializeCanvas() {
 // ===== SISTEMA DE CHAT =====
 function showWelcomeMessage() {
     addAIMessage(CONFIG.ai.responses.greeting);
+    setTimeout(() => {
+        startInteractiveConversation();
+    }, 1500);
+}
+
+function startInteractiveConversation() {
+    currentConversation.stage = 'collecting_info';
+    currentConversation.questions = [
+        {
+            question: "🎨 Qual é o tema principal da sua estampa? (ex: natureza, tecnologia, música, esportes, etc.)",
+            type: 'theme',
+            suggestions: ['Natureza', 'Tecnologia', 'Música', 'Esportes', 'Arte', 'Animais', 'Viagem', 'Comida']
+        },
+        {
+            question: "🎭 Que estilo você prefere?",
+            type: 'style',
+            suggestions: ['Geométrico', 'Orgânico', 'Abstrato', 'Realista', 'Minimalista', 'Vintage']
+        },
+        {
+            question: "🌈 Quais cores você gostaria? (pode escolher 2-3 cores)",
+            type: 'colors',
+            suggestions: ['Azul e Branco', 'Vermelho e Preto', 'Verde e Amarelo', 'Roxo e Rosa', 'Laranja e Azul', 'Preto e Dourado']
+        },
+        {
+            question: "😊 Que tipo de humor/energia você quer transmitir?",
+            type: 'mood',
+            suggestions: ['Energético', 'Calmo', 'Elegante', 'Divertido', 'Misterioso', 'Inspirador']
+        },
+        {
+            question: "📏 Qual o tamanho ideal?",
+            type: 'size',
+            suggestions: ['Pequeno e Sutil', 'Médio e Equilibrado', 'Grande e Chamativo']
+        }
+    ];
+    
+    askNextQuestion();
+}
+
+function askNextQuestion() {
+    if (currentConversation.currentQuestion < currentConversation.questions.length) {
+        const question = currentConversation.questions[currentConversation.currentQuestion];
+        addAIMessage(question.question);
+        
+        // Adiciona sugestões como botões
+        setTimeout(() => {
+            addSuggestions(question.suggestions, question.type);
+        }, 500);
+    } else {
+        // Todas as perguntas foram respondidas, vamos confirmar
+        confirmStampDetails();
+    }
+}
+
+function addSuggestions(suggestions, type) {
+    const chatMessages = document.getElementById('messages');
+    if (!chatMessages) return;
+    
+    const suggestionsElement = document.createElement('div');
+    suggestionsElement.className = 'suggestions-container';
+    suggestionsElement.innerHTML = `
+        <div class="suggestions-label">💡 Sugestões:</div>
+        <div class="suggestions-buttons">
+            ${suggestions.map(suggestion => 
+                `<button class="suggestion-btn" onclick="selectSuggestion('${suggestion}', '${type}')">${suggestion}</button>`
+            ).join('')}
+        </div>
+    `;
+    
+    chatMessages.appendChild(suggestionsElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function selectSuggestion(suggestion, type) {
+    // Remove sugestões
+    const suggestionsContainer = document.querySelector('.suggestions-container');
+    if (suggestionsContainer) {
+        suggestionsContainer.remove();
+    }
+    
+    // Adiciona resposta do usuário
+    addUserMessage(suggestion);
+    
+    // Processa a resposta
+    processUserResponse(suggestion, type);
+}
+
+function processUserResponse(response, type) {
+    // Salva a informação coletada
+    currentConversation.collectedInfo[type] = response;
+    currentConversation.currentQuestion++;
+    
+    // Adiciona confirmação da IA
+    const confirmations = {
+        theme: `Perfeito! Tema "${response}" escolhido.`,
+        style: `Ótimo! Estilo "${response}" selecionado.`,
+        colors: `Excelente! Cores "${response}" definidas.`,
+        mood: `Perfeito! Humor "${response}" escolhido.`,
+        size: `Ótimo! Tamanho "${response}" definido.`
+    };
+    
+    addAIMessage(confirmations[type]);
+    
+    // Continua para próxima pergunta
+    setTimeout(() => {
+        askNextQuestion();
+    }, 1000);
+}
+
+function confirmStampDetails() {
+    currentConversation.stage = 'confirming';
+    
+    const info = currentConversation.collectedInfo;
+    const summary = `
+        🎯 Resumo da sua estampa:
+        
+        📝 Tema: ${info.theme}
+        🎨 Estilo: ${info.style}
+        🌈 Cores: ${info.colors}
+        😊 Humor: ${info.mood}
+        📏 Tamanho: ${info.size}
+        
+        Está tudo certo? Quer ajustar alguma coisa ou posso criar sua estampa?
+    `;
+    
+    addAIMessage(summary);
+    
+    // Adiciona botões de ação
+    setTimeout(() => {
+        addActionButtons();
+    }, 1000);
+}
+
+function addActionButtons() {
+    const chatMessages = document.getElementById('messages');
+    if (!chatMessages) return;
+    
+    const actionsElement = document.createElement('div');
+    actionsElement.className = 'actions-container';
+    actionsElement.innerHTML = `
+        <div class="actions-label">🚀 O que você quer fazer?</div>
+        <div class="actions-buttons">
+            <button class="action-btn primary" onclick="generateStampFromConversation()">✨ Criar Estampa</button>
+            <button class="action-btn secondary" onclick="restartConversation()">🔄 Refazer</button>
+            <button class="action-btn secondary" onclick="addMoreDetails()">➕ Adicionar Detalhes</button>
+        </div>
+    `;
+    
+    chatMessages.appendChild(actionsElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function generateStampFromConversation() {
+    // Remove botões de ação
+    const actionsContainer = document.querySelector('.actions-container');
+    if (actionsContainer) {
+        actionsContainer.remove();
+    }
+    
+    currentConversation.stage = 'generating';
+    
+    // Cria análise baseada na conversa
+    const analysis = createAnalysisFromConversation();
+    
+    // Processa a geração
+    processWithAI(analysis.description, analysis);
+}
+
+function createAnalysisFromConversation() {
+    const info = currentConversation.collectedInfo;
+    
+    // Mapeia respostas para valores do sistema
+    const styleMap = {
+        'Geométrico': 'geometric',
+        'Orgânico': 'organic',
+        'Abstrato': 'abstract',
+        'Realista': 'figurative',
+        'Minimalista': 'symbols',
+        'Vintage': 'abstract'
+    };
+    
+    const moodMap = {
+        'Energético': 'energetic',
+        'Calmo': 'calm',
+        'Elegante': 'elegant',
+        'Divertido': 'fun',
+        'Misterioso': 'neutral',
+        'Inspirador': 'energetic'
+    };
+    
+    const sizeMap = {
+        'Pequeno e Sutil': 'small',
+        'Médio e Equilibrado': 'medium',
+        'Grande e Chamativo': 'large'
+    };
+    
+    // Extrai cores
+    const colorMap = {
+        'Azul e Branco': ['#1A237E', '#FFFFFF'],
+        'Vermelho e Preto': ['#F44336', '#000000'],
+        'Verde e Amarelo': ['#4CAF50', '#FFEB3B'],
+        'Roxo e Rosa': ['#9C27B0', '#E91E63'],
+        'Laranja e Azul': ['#FF9800', '#2196F3'],
+        'Preto e Dourado': ['#000000', '#FFD700']
+    };
+    
+    const description = `${info.theme} em estilo ${info.style.toLowerCase()}, cores ${info.colors.toLowerCase()}, humor ${info.mood.toLowerCase()}, tamanho ${info.size.toLowerCase()}`;
+    
+    return {
+        description: description,
+        style: styleMap[info.style] || 'geometric',
+        colors: colorMap[info.colors] || ['#1A237E', '#FF9800'],
+        mood: moodMap[info.mood] || 'neutral',
+        size: sizeMap[info.size] || 'medium',
+        intensity: info.mood === 'Energético' ? 1.0 : info.mood === 'Calmo' ? 0.4 : 0.8,
+        pattern: styleMap[info.style] || 'triangles'
+    };
+}
+
+function restartConversation() {
+    // Remove botões de ação
+    const actionsContainer = document.querySelector('.actions-container');
+    if (actionsContainer) {
+        actionsContainer.remove();
+    }
+    
+    // Reseta conversa
+    currentConversation = {
+        stage: 'greeting',
+        collectedInfo: {
+            theme: null,
+            style: null,
+            colors: null,
+            mood: null,
+            size: null,
+            details: []
+        },
+        questions: [],
+        currentQuestion: 0
+    };
+    
+    addAIMessage("Perfeito! Vamos começar do zero. 🎨");
+    setTimeout(() => {
+        startInteractiveConversation();
+    }, 1000);
+}
+
+function addMoreDetails() {
+    // Remove botões de ação
+    const actionsContainer = document.querySelector('.actions-container');
+    if (actionsContainer) {
+        actionsContainer.remove();
+    }
+    
+    addAIMessage("Claro! Me conte mais detalhes sobre sua estampa. O que mais você gostaria de adicionar?");
+    
+    // Adiciona campo de texto para detalhes extras
+    setTimeout(() => {
+        addDetailsInput();
+    }, 500);
+}
+
+function addDetailsInput() {
+    const chatMessages = document.getElementById('messages');
+    if (!chatMessages) return;
+    
+    const detailsElement = document.createElement('div');
+    detailsElement.className = 'details-input-container';
+    detailsElement.innerHTML = `
+        <div class="details-label">✍️ Adicione mais detalhes:</div>
+        <textarea class="details-textarea" placeholder="Ex: quero que tenha elementos de fogo, ou que seja mais minimalista, ou que tenha texto específico..."></textarea>
+        <button class="details-btn" onclick="processExtraDetails()">✅ Adicionar</button>
+    `;
+    
+    chatMessages.appendChild(detailsElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function processExtraDetails() {
+    const detailsTextarea = document.querySelector('.details-textarea');
+    const extraDetails = detailsTextarea.value.trim();
+    
+    if (extraDetails) {
+        // Remove input
+        const detailsContainer = document.querySelector('.details-input-container');
+        if (detailsContainer) {
+            detailsContainer.remove();
+        }
+        
+        // Adiciona detalhes
+        currentConversation.collectedInfo.details.push(extraDetails);
+        addUserMessage(extraDetails);
+        addAIMessage("Perfeito! Adicionei esses detalhes. Agora posso criar sua estampa! ✨");
+        
+        // Volta para confirmação
+        setTimeout(() => {
+            confirmStampDetails();
+        }, 1000);
+    }
 }
 
 async function sendMessage() {
@@ -91,7 +402,39 @@ async function sendMessage() {
     addUserMessage(message);
     messageInput.value = '';
     messageInput.style.height = 'auto';
-    await processWithAI(message);
+    
+    // Se estamos em modo de coleta de informações, processa a resposta
+    if (currentConversation.stage === 'collecting_info') {
+        processTextResponse(message);
+    } else {
+        // Modo livre - processa diretamente
+        await processWithAI(message);
+    }
+}
+
+function processTextResponse(message) {
+    const currentQuestion = currentConversation.questions[currentConversation.currentQuestion];
+    if (currentQuestion) {
+        // Salva a resposta
+        currentConversation.collectedInfo[currentQuestion.type] = message;
+        currentConversation.currentQuestion++;
+        
+        // Adiciona confirmação da IA
+        const confirmations = {
+            theme: `Perfeito! Tema "${message}" escolhido.`,
+            style: `Ótimo! Estilo "${message}" selecionado.`,
+            colors: `Excelente! Cores "${message}" definidas.`,
+            mood: `Perfeito! Humor "${message}" escolhido.`,
+            size: `Ótimo! Tamanho "${message}" definido.`
+        };
+        
+        addAIMessage(confirmations[currentQuestion.type]);
+        
+        // Continua para próxima pergunta
+        setTimeout(() => {
+            askNextQuestion();
+        }, 1000);
+    }
 }
 
 function addUserMessage(text) {
@@ -145,14 +488,14 @@ function renderMessage(message) {
     }
 }
 
-async function processWithAI(userMessage) {
+async function processWithAI(userMessage, predefinedAnalysis = null) {
     isGenerating = true;
     showLoadingOverlay("Analisando sua solicitação...");
     
     try {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        const analysis = analyzeUserRequest(userMessage);
+        const analysis = predefinedAnalysis || analyzeUserRequest(userMessage);
         addAIMessage(CONFIG.ai.responses.processing);
         
         showLoadingOverlay("Criando sua estampa...");
@@ -1972,5 +2315,10 @@ window.useSuggestion = useSuggestion;
 window.clearChat = clearChat;
 window.exportChat = exportChat;
 window.testarAvatarLocal = testarAvatarLocal;
+window.selectSuggestion = selectSuggestion;
+window.generateStampFromConversation = generateStampFromConversation;
+window.restartConversation = restartConversation;
+window.addMoreDetails = addMoreDetails;
+window.processExtraDetails = processExtraDetails;
 
 console.log('🚀 EstampAI Chat carregado com sucesso!');
