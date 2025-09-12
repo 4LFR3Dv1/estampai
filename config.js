@@ -16,7 +16,7 @@ const ESTAMPAI_CONFIG = {
     ai: {
         // Configuração da API da OpenAI (DALL-E 3)
         openai: {
-            apiKey: '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', // ✅ API KEY CONFIGURADA
+            apiKey: 'YOUR_OPENAI_API_KEY_HERE', // ✅ Substitua pela sua API key
             model: 'dall-e-3',
             size: '1024x1024',
             quality: 'standard',
