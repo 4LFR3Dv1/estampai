@@ -7,7 +7,7 @@
     "start": "python3 -m http.server 8000",
     "dev": "python3 embed/cors-server.py 8000",
     "dev-https": "python3 embed/https-server.py 8443",
-    "build": "echo 'No build step needed for static site'",
+    "build": "./build.sh",
     "deploy": "echo 'Deploy via Render dashboard'"
   },
   "keywords": [
@@ -34,7 +34,7 @@
   "devDependencies": {},
   "render": {
     "type": "static",
-    "buildCommand": "echo 'No build needed'",
+    "buildCommand": "./build.sh",
     "publishPath": ".",
     "headers": [
       {
