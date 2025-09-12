@@ -50,6 +50,7 @@ function initializeApp() {
     console.log('🎨 EstampAI Chat iniciado!');
     initializeCanvas();
     loadChatHistory();
+    loadInitialAvatar();
     document.getElementById('messageInput').focus();
 }
 
@@ -88,6 +89,118 @@ function initializeCanvas() {
         stampCanvas.width = CONFIG.canvas.stamp.width;
         stampCanvas.height = CONFIG.canvas.stamp.height;
     }
+}
+
+function loadInitialAvatar() {
+    const avatarContainer = document.getElementById('avatarContainer');
+    if (!avatarContainer) return;
+    
+    // Remove estado vazio
+    const emptyState = avatarContainer.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+    
+    // Cria container do mockup
+    const mockupContainer = document.createElement('div');
+    mockupContainer.className = 'avatar-mockup-container';
+    
+    // Cria canvas para o avatar
+    const canvas = document.createElement('canvas');
+    canvas.id = 'initialAvatarCanvas';
+    canvas.width = 400;
+    canvas.height = 500;
+    canvas.className = 'avatar-mockup';
+    
+    mockupContainer.appendChild(canvas);
+    avatarContainer.appendChild(mockupContainer);
+    
+    // Desenha o avatar sem estampa
+    drawInitialAvatar(canvas);
+    
+    // Adiciona mensagem explicativa
+    addAvatarExplanation();
+}
+
+function drawInitialAvatar(canvas) {
+    const ctx = canvas.getContext('2d');
+    
+    // Limpa o canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Carrega a imagem do avatar
+    const avatarImg = new Image();
+    avatarImg.crossOrigin = 'anonymous';
+    
+    avatarImg.onload = function() {
+        // Desenha o avatar
+        ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
+        
+        // Adiciona overlay sutil indicando onde a estampa vai aparecer
+        addStampPreviewOverlay(ctx, canvas.width, canvas.height);
+        
+        console.log('✅ Avatar inicial carregado');
+    };
+    
+    avatarImg.onerror = function() {
+        console.warn('⚠️ Erro ao carregar avatar, usando fallback');
+        // Fallback para avatar desenhado
+        drawDrawnAvatar(ctx, canvas.width, canvas.height, null);
+        addStampPreviewOverlay(ctx, canvas.width, canvas.height);
+    };
+    
+    // Tenta carregar a imagem do avatar
+    if (window.ESTAMPAI_CONFIG?.avatar?.imagePath) {
+        avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imagePath;
+    } else if (window.ESTAMPAI_CONFIG?.avatar?.imageUrl) {
+        avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imageUrl;
+    } else {
+        // Fallback para avatar desenhado
+        drawDrawnAvatar(ctx, canvas.width, canvas.height, null);
+        addStampPreviewOverlay(ctx, canvas.width, canvas.height);
+    }
+}
+
+function addStampPreviewOverlay(ctx, width, height) {
+    // Área onde a estampa vai aparecer (baseado na função drawDrawnAvatar)
+    const stampX = width/2 - 80;
+    const stampY = 250;
+    const stampWidth = 160;
+    const stampHeight = 160;
+    
+    // Overlay sutil indicando a área da estampa
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(stampX, stampY, stampWidth, stampHeight);
+    
+    // Borda pontilhada
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.strokeRect(stampX, stampY, stampWidth, stampHeight);
+    ctx.setLineDash([]);
+    
+    // Texto indicativo
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sua estampa aparecerá aqui', width/2, stampY + stampHeight/2);
+}
+
+function addAvatarExplanation() {
+    const avatarContainer = document.getElementById('avatarContainer');
+    if (!avatarContainer) return;
+    
+    // Cria elemento de explicação
+    const explanation = document.createElement('div');
+    explanation.className = 'avatar-explanation';
+    explanation.innerHTML = `
+        <div class="explanation-content">
+            <h4>👤 Seu Avatar</h4>
+            <p>Esta é uma prévia do seu avatar. Quando você gerar uma estampa, ela aparecerá na área destacada da camiseta!</p>
+        </div>
+    `;
+    
+    avatarContainer.appendChild(explanation);
 }
 
 // ===== SISTEMA DE CHAT =====
@@ -1747,7 +1860,17 @@ function displayAvatarWithStamp(stamp) {
     const avatarContainer = document.getElementById('avatarContainer');
     if (!avatarContainer) return;
     
-    // Remove estado vazio
+    // Remove avatar inicial se existir
+    const initialCanvas = avatarContainer.querySelector('#initialAvatarCanvas');
+    const explanation = avatarContainer.querySelector('.avatar-explanation');
+    if (initialCanvas) {
+        initialCanvas.parentElement.remove();
+    }
+    if (explanation) {
+        explanation.remove();
+    }
+    
+    // Remove estado vazio se existir
     const emptyState = avatarContainer.querySelector('.empty-state');
     if (emptyState) {
         emptyState.remove();
