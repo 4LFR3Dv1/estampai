@@ -93,6 +93,7 @@ python -m http.server 8000
 - **Netlify**: Arraste a pasta para netlify.com
 - **Vercel**: Conecte repositório GitHub
 - **GitHub Pages**: Ative nas configurações
+- **Render**: Deploy automático via GitHub
 
 ## 📁 Estrutura do Projeto
 
@@ -101,8 +102,12 @@ EstampAI/
 ├── index.html          # Interface principal do chat
 ├── styles.css          # Estilos do chat e visualizações
 ├── script.js           # Lógica do chat e geração de estampas
+├── config.js           # Configurações centralizadas
+├── render.yaml         # Configuração para deploy no Render
+├── package.json        # Metadados do projeto
 ├── README.md           # Esta documentação
-└── assets/             # Recursos (se necessário)
+├── embed/              # Sistema de embed para Framer
+└── assets/             # Recursos (imagens, ícones, mockups)
 ```
 
 ## 🎯 Como Funciona a IA
@@ -234,4 +239,4 @@ Use livremente para fins educacionais e comerciais.
 
 **Desenvolvido com ❤️ por Renan Melo**
 
-*Sistema de chat conversacional com IA para criação de estampas PNG dinâmicas.*# EstampaAI
+*Sistema de chat conversacional com IA para criação de estampas PNG dinâmicas.*
