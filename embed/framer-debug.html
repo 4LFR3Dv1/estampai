@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstampAI - Debug Framer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .debug-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .debug-section {
+            background: #111111;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333333;
+        }
+        
+        .debug-title {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .debug-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #222222;
+        }
+        
+        .debug-item:last-child {
+            border-bottom: none;
+        }
+        
+        .debug-label {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .debug-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-pass {
+            background: #1b2d1b;
+            color: #51cf66;
+        }
+        
+        .status-fail {
+            background: #2d1b1b;
+            color: #ff6b6b;
+        }
+        
+        .status-warning {
+            background: #2d2b1b;
+            color: #ffd43b;
+        }
+        
+        .debug-log {
+            background: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #ffffff;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>🔍 EstampAI - Debug Framer</h1>
+        
+        <div class="debug-section">
+            <div class="debug-title">🌐 Ambiente</div>
+            <div class="debug-item">
+                <span class="debug-label">User Agent</span>
+                <span class="debug-status status-pass" id="user-agent">✅ Detectado</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">URL Atual</span>
+                <span class="debug-status status-pass" id="current-url">✅ Detectado</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">É iframe?</span>
+                <span class="debug-status status-warning" id="is-iframe">⚠️ Verificando</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">Parent Domain</span>
+                <span class="debug-status status-warning" id="parent-domain">⚠️ Verificando</span>
+            </div>
+        </div>
+        
+        <div class="debug-section">
+            <div class="debug-title">🔧 APIs Disponíveis</div>
+            <div class="debug-item">
+                <span class="debug-label">localStorage</span>
+                <span class="debug-status status-pass" id="localStorage-test">✅ OK</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">IndexedDB</span>
+                <span class="debug-status status-pass" id="indexeddb-test">✅ OK</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">Fetch API</span>
+                <span class="debug-status status-pass" id="fetch-test">✅ OK</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">Canvas</span>
+                <span class="debug-status status-pass" id="canvas-test">✅ OK</span>
+            </div>
+        </div>
+        
+        <div class="debug-section">
+            <div class="debug-title">🚫 CORS e Segurança</div>
+            <div class="debug-item">
+                <span class="debug-label">CORS Headers</span>
+                <span class="debug-status status-warning" id="cors-test">⚠️ Testando</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">X-Frame-Options</span>
+                <span class="debug-status status-warning" id="frame-options-test">⚠️ Testando</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">Content Security Policy</span>
+                <span class="debug-status status-warning" id="csp-test">⚠️ Testando</span>
+            </div>
+        </div>
+        
+        <div class="debug-section">
+            <div class="debug-title">🧪 Testes</div>
+            <button class="test-button" onclick="testAPICall()">Testar API Call</button>
+            <button class="test-button" onclick="testAvatarLoad()">Testar Avatar</button>
+            <button class="test-button" onclick="testChat()">Testar Chat</button>
+            <button class="test-button" onclick="clearLogs()">Limpar Logs</button>
+        </div>
+        
+        <div class="debug-section">
+            <div class="debug-title">📝 Logs</div>
+            <div class="debug-log" id="debug-log">Aguardando testes...\n</div>
+        </div>
+    </div>
+
+    <script>
+        let debugLog = document.getElementById('debug-log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            debugLog.textContent += `[${timestamp}] ${message}\n`;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[DEBUG] ${message}`);
+        }
+        
+        function clearLogs() {
+            debugLog.textContent = 'Logs limpos...\n';
+        }
+        
+        // Verificações iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🔍 Iniciando debug do EstampAI...');
+            
+            // User Agent
+            document.getElementById('user-agent').textContent = navigator.userAgent.includes('Framer') ? '🎨 Framer' : '🌐 Browser';
+            
+            // URL Atual
+            document.getElementById('current-url').textContent = window.location.href;
+            
+            // É iframe?
+            const isIframe = window !== window.top;
+            document.getElementById('is-iframe').textContent = isIframe ? '✅ Sim' : '❌ Não';
+            document.getElementById('is-iframe').className = isIframe ? 'debug-status status-pass' : 'debug-status status-fail';
+            
+            // Parent Domain
+            try {
+                const parentDomain = window.parent.location.hostname;
+                document.getElementById('parent-domain').textContent = parentDomain;
+                document.getElementById('parent-domain').className = 'debug-status status-pass';
+                log(`✅ Parent domain: ${parentDomain}`);
+            } catch (e) {
+                document.getElementById('parent-domain').textContent = '❌ Bloqueado';
+                document.getElementById('parent-domain').className = 'debug-status status-fail';
+                log(`❌ Parent domain bloqueado: ${e.message}`);
+            }
+            
+            // Teste de APIs
+            testAPIs();
+            
+            // Teste de CORS
+            testCORS();
+        });
+        
+        function testAPIs() {
+            log('🧪 Testando APIs...');
+            
+            // localStorage
+            try {
+                localStorage.setItem('test', 'ok');
+                localStorage.removeItem('test');
+                log('✅ localStorage funcionando');
+            } catch (e) {
+                log(`❌ localStorage erro: ${e.message}`);
+                document.getElementById('localStorage-test').textContent = '❌ Erro';
+                document.getElementById('localStorage-test').className = 'debug-status status-fail';
+            }
+            
+            // IndexedDB
+            if ('indexedDB' in window) {
+                log('✅ IndexedDB disponível');
+            } else {
+                log('❌ IndexedDB não disponível');
+                document.getElementById('indexeddb-test').textContent = '❌ Não disponível';
+                document.getElementById('indexeddb-test').className = 'debug-status status-fail';
+            }
+            
+            // Fetch
+            if ('fetch' in window) {
+                log('✅ Fetch API disponível');
+            } else {
+                log('❌ Fetch API não disponível');
+                document.getElementById('fetch-test').textContent = '❌ Não disponível';
+                document.getElementById('fetch-test').className = 'debug-status status-fail';
+            }
+            
+            // Canvas
+            const canvas = document.createElement('canvas');
+            if (canvas.getContext) {
+                log('✅ Canvas disponível');
+            } else {
+                log('❌ Canvas não disponível');
+                document.getElementById('canvas-test').textContent = '❌ Não disponível';
+                document.getElementById('canvas-test').className = 'debug-status status-fail';
+            }
+        }
+        
+        async function testCORS() {
+            log('🌐 Testando CORS...');
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/models', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer test-key'
+                    }
+                });
+                
+                if (response.status === 401) {
+                    log('✅ CORS funcionando (401 esperado)');
+                    document.getElementById('cors-test').textContent = '✅ OK';
+                    document.getElementById('cors-test').className = 'debug-status status-pass';
+                } else {
+                    log(`⚠️ CORS resposta inesperada: ${response.status}`);
+                    document.getElementById('cors-test').textContent = '⚠️ Inesperado';
+                    document.getElementById('cors-test').className = 'debug-status status-warning';
+                }
+            } catch (e) {
+                log(`❌ CORS erro: ${e.message}`);
+                document.getElementById('cors-test').textContent = '❌ Erro';
+                document.getElementById('cors-test').className = 'debug-status status-fail';
+            }
+        }
+        
+        async function testAPICall() {
+            log('🚀 Testando chamada da API...');
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_OPENAI_API_KEY_HERE'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: 'test' }],
+                        max_tokens: 10
+                    })
+                });
+                
+                log(`📡 Resposta da API: ${response.status} ${response.statusText}`);
+                
+                if (response.status === 401) {
+                    log('✅ API key não configurada (esperado)');
+                } else if (response.status === 400) {
+                    log('⚠️ Bad Request - possível problema com a requisição');
+                } else {
+                    log(`ℹ️ Status inesperado: ${response.status}`);
+                }
+                
+            } catch (e) {
+                log(`❌ Erro na chamada da API: ${e.message}`);
+            }
+        }
+        
+        async function testAvatarLoad() {
+            log('🖼️ Testando carregamento do avatar...');
+            
+            try {
+                const img = new Image();
+                img.onload = function() {
+                    log('✅ Avatar carregado com sucesso');
+                };
+                img.onerror = function() {
+                    log('❌ Erro ao carregar avatar');
+                };
+                img.src = 'https://estampai.onrender.com/AVATAR.png';
+            } catch (e) {
+                log(`❌ Erro no teste do avatar: ${e.message}`);
+            }
+        }
+        
+        async function testChat() {
+            log('💬 Testando funcionalidade do chat...');
+            
+            // Simula o que acontece no chat
+            try {
+                const conversationHistory = [];
+                const message = 'teste';
+                
+                conversationHistory.push({
+                    role: 'user',
+                    content: message,
+                    timestamp: new Date()
+                });
+                
+                log(`✅ Mensagem adicionada ao histórico: ${message}`);
+                log(`📊 Histórico tem ${conversationHistory.length} mensagens`);
+                
+                // Testa se consegue fazer a requisição
+                await testAPICall();
+                
+            } catch (e) {
+                log(`❌ Erro no teste do chat: ${e.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
