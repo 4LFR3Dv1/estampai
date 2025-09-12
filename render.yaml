@@ -6,7 +6,7 @@ services:
   - type: web
     name: estampai-main
     env: static
-    buildCommand: echo "No build needed for static site"
+    buildCommand: ./build.sh
     staticPublishPath: .
     routes:
       - type: rewrite
@@ -33,7 +33,7 @@ services:
   - type: web
     name: estampai-embed
     env: static
-    buildCommand: echo "No build needed for embed"
+    buildCommand: ./build.sh
     staticPublishPath: embed
     routes:
       - type: rewrite
