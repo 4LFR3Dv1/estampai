@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
-    console.log('🎨 EstampAI Chat iniciado! (v2.0 - IDs corrigidos)');
+    console.log('🎨 EstampAI Chat iniciado!');
     initializeCanvas();
     loadChatHistory();
     document.getElementById('messageInput').focus();
@@ -1354,9 +1354,9 @@ function switchView(view) {
 function downloadAvatar() {
     if (!currentStamp) return;
     
-    const canvas = document.getElementById('stampCanvas');
+    const canvas = document.getElementById('avatarCanvas');
     const link = document.createElement('a');
-    link.download = `estampai-stamp-${currentStamp.id}.png`;
+    link.download = `estampai-avatar-${currentStamp.id}.png`;
     link.href = canvas.toDataURL();
     link.click();
 }
@@ -1947,7 +1947,7 @@ function adjustColor(color, amount) {
 // ===== FUNÇÃO DE TESTE PARA AVATAR =====
 function testarAvatarLocal() {
     console.log('🧪 Testando carregamento do avatar local...');
-    const canvas = document.getElementById('stampCanvas');
+    const canvas = document.getElementById('avatarCanvas');
     if (!canvas) {
         console.error('❌ Canvas não encontrado');
         return;
