@@ -79,7 +79,7 @@ function initializeCanvas() {
 
 // ===== SISTEMA DE CHAT =====
 function showWelcomeMessage() {
-    addAIMessage(ESTAMPAI_CONFIG.ai.responses.greeting);
+    addAIMessage(CONFIG.ai.responses.greeting);
 }
 
 async function sendMessage() {
@@ -153,7 +153,7 @@ async function processWithAI(userMessage) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         const analysis = analyzeUserRequest(userMessage);
-        addAIMessage(ESTAMPAI_CONFIG.ai.responses.processing);
+        addAIMessage(CONFIG.ai.responses.processing);
         
         showLoadingOverlay("Criando sua estampa...");
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -165,11 +165,11 @@ async function processWithAI(userMessage) {
         updateStampDisplay(stamp);
         updateStampInfo(stamp);
         
-        addAIMessage(ESTAMPAI_CONFIG.ai.responses.completed);
+        addAIMessage(CONFIG.ai.responses.completed);
         
     } catch (error) {
         console.error('Erro ao processar com IA:', error);
-        addAIMessage(ESTAMPAI_CONFIG.ai.responses.error);
+        addAIMessage(CONFIG.ai.responses.error);
     } finally {
         isGenerating = false;
         hideLoadingOverlay();
@@ -319,14 +319,14 @@ async function generateStamp(analysis) {
     };
     
     // Tenta gerar com IA primeiro
-    if (ESTAMPAI_CONFIG.ai.openai.apiKey) {
+    if (window.ESTAMPAI_CONFIG && window.ESTAMPAI_CONFIG.ai.openai.apiKey) {
         try {
             // Primeiro, gera a estampa standalone
             const stampImageUrl = await generateStampWithAI(analysis.description, analysis);
             if (stampImageUrl) {
                 stamp.aiGenerated = true;
                 stamp.imageUrl = stampImageUrl;
-                stamp.useImageEdit = ESTAMPAI_CONFIG.ai.imageEdit.enabled;
+                stamp.useImageEdit = window.ESTAMPAI_CONFIG && window.ESTAMPAI_CONFIG.ai.imageEdit.enabled;
                 console.log('✅ Estampa gerada com IA:', stampImageUrl);
                 console.log('🎯 Usando edição de imagens:', stamp.useImageEdit);
             } else {
@@ -417,7 +417,7 @@ function updateStampInfo(stamp) {
 // ===== DESENHO =====
 function drawAvatar(ctx, width, height, stamp) {
     // SEMPRE tenta carregar avatar real primeiro
-    if (ESTAMPAI_CONFIG.avatar.useRealImage) {
+    if (window.ESTAMPAI_CONFIG && window.ESTAMPAI_CONFIG.avatar.useRealImage) {
         loadRealAvatar(ctx, width, height, stamp);
     } else {
         // Fallback para avatar desenhado
@@ -447,20 +447,20 @@ function loadRealAvatar(ctx, width, height, stamp) {
     
     img.onerror = function() {
         console.warn('Erro ao carregar avatar, tentando fallback');
-        if (ESTAMPAI_CONFIG.avatar.fallbackToDrawn) {
+        if (window.ESTAMPAI_CONFIG && window.ESTAMPAI_CONFIG.avatar.fallbackToDrawn) {
             drawDrawnAvatar(ctx, width, height, stamp);
         }
     };
     
     // FORÇA carregamento da imagem local
-    console.log('🖼️ Carregando avatar:', ESTAMPAI_CONFIG.avatar.imagePath);
+    console.log('🖼️ Carregando avatar:', window.ESTAMPAI_CONFIG?.avatar?.imagePath);
     
-    if (ESTAMPAI_CONFIG.avatar.imagePath) {
-        img.src = ESTAMPAI_CONFIG.avatar.imagePath;
-        console.log('✅ Tentando carregar:', ESTAMPAI_CONFIG.avatar.imagePath);
-    } else if (ESTAMPAI_CONFIG.avatar.imageUrl) {
-        img.src = ESTAMPAI_CONFIG.avatar.imageUrl;
-        console.log('✅ Tentando carregar URL:', ESTAMPAI_CONFIG.avatar.imageUrl);
+    if (window.ESTAMPAI_CONFIG?.avatar?.imagePath) {
+        img.src = window.ESTAMPAI_CONFIG.avatar.imagePath;
+        console.log('✅ Tentando carregar:', window.ESTAMPAI_CONFIG.avatar.imagePath);
+    } else if (window.ESTAMPAI_CONFIG?.avatar?.imageUrl) {
+        img.src = window.ESTAMPAI_CONFIG.avatar.imageUrl;
+        console.log('✅ Tentando carregar URL:', window.ESTAMPAI_CONFIG.avatar.imageUrl);
     } else {
         console.warn('❌ Nenhuma imagem de avatar configurada');
         drawDrawnAvatar(ctx, width, height, stamp);
@@ -468,7 +468,7 @@ function loadRealAvatar(ctx, width, height, stamp) {
 }
 
 function applyStampToRealAvatar(ctx, width, height, stamp) {
-    const stampPos = ESTAMPAI_CONFIG.avatar.stampPosition;
+    const stampPos = window.ESTAMPAI_CONFIG?.avatar?.stampPosition || { x: 0, y: 0, width: 160, height: 160 };
     
     // Cria um canvas temporário para a estampa
     const stampCanvas = document.createElement('canvas');
@@ -1505,7 +1505,7 @@ function loadChatHistory() {
  * @returns {Promise<string|null>} URL da imagem gerada ou null se falhar
  */
 async function generateStampWithAI(prompt, analysis) {
-    const config = ESTAMPAI_CONFIG.ai.openai;
+    const config = window.ESTAMPAI_CONFIG?.ai?.openai;
     
     // Verifica se a API Key está configurada
     if (!config.apiKey) {
@@ -1556,7 +1556,7 @@ async function generateStampWithAI(prompt, analysis) {
         const imageUrl = data.data[0].url;
         
         // Cache da imagem se habilitado
-        if (ESTAMPAI_CONFIG.ai.cache.enabled) {
+        if (window.ESTAMPAI_CONFIG?.ai?.cache?.enabled) {
             cacheImage(imageUrl, optimizedPrompt);
         }
         
@@ -1575,7 +1575,7 @@ async function generateStampWithAI(prompt, analysis) {
  * @returns {Promise<string|null>} URL da imagem gerada ou null se falhar
  */
 async function generateStampWithGPT5(prompt, analysis) {
-    const config = ESTAMPAI_CONFIG.ai.openai;
+    const config = window.ESTAMPAI_CONFIG?.ai?.openai;
     
     if (!config.apiKey) {
         console.warn('API Key da OpenAI não configurada. Usando sistema de fallback.');
@@ -1607,7 +1607,7 @@ async function generateStampWithGPT5(prompt, analysis) {
         
         if (imageGeneration && imageGeneration.result) {
             // Cache da imagem se habilitado
-            if (ESTAMPAI_CONFIG.ai.cache.enabled) {
+            if (window.ESTAMPAI_CONFIG?.ai?.cache?.enabled) {
                 cacheImage(imageGeneration.result, optimizedPrompt);
             }
             
@@ -1629,8 +1629,8 @@ async function generateStampWithGPT5(prompt, analysis) {
  * @returns {Promise<string|null>} URL da imagem editada ou null se falhar
  */
 async function applyStampToAvatarWithAI(stampPrompt, avatarCanvas) {
-    const config = ESTAMPAI_CONFIG.ai.openai;
-    const imageEditConfig = ESTAMPAI_CONFIG.ai.imageEdit;
+    const config = window.ESTAMPAI_CONFIG?.ai?.openai;
+    const imageEditConfig = window.ESTAMPAI_CONFIG?.ai?.imageEdit;
     
     if (!config.apiKey) {
         console.warn('API Key da OpenAI não configurada. Usando sistema de fallback.');
@@ -1792,7 +1792,7 @@ function cacheImage(url, prompt) {
     });
     
     // Limpa cache antigo se necessário
-    if (imageCache.size > ESTAMPAI_CONFIG.ai.cache.maxSize) {
+    if (imageCache.size > (window.ESTAMPAI_CONFIG?.ai?.cache?.maxSize || 50)) {
         const oldestKey = imageCache.keys().next().value;
         imageCache.delete(oldestKey);
     }
@@ -1809,7 +1809,7 @@ function getCachedImage(prompt) {
     
     if (cached) {
         const age = Date.now() - cached.timestamp;
-        if (age < ESTAMPAI_CONFIG.ai.cache.ttl) {
+        if (age < (window.ESTAMPAI_CONFIG?.ai?.cache?.ttl || 3600000)) {
             return cached.url;
         } else {
             imageCache.delete(cacheKey);
@@ -1955,7 +1955,7 @@ function testarAvatarLocal() {
     }
     
     const ctx = canvas.getContext('2d');
-    console.log('📁 Caminho configurado:', ESTAMPAI_CONFIG.avatar.imagePath);
+    console.log('📁 Caminho configurado:', window.ESTAMPAI_CONFIG?.avatar?.imagePath);
     
     // Força carregamento da imagem
     loadRealAvatar(ctx, canvas.width, canvas.height, null);
