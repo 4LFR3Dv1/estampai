@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
-    console.log('🎨 EstampAI Chat iniciado! (v2.0 - IDs corrigidos)');
+    console.log('🎨 EstampAI Chat iniciado!');
     initializeCanvas();
     loadChatHistory();
     document.getElementById('messageInput').focus();
@@ -335,61 +335,9 @@ async function generateStamp(analysis) {
 }
 
 async function updateAvatarDisplay(stamp) {
-    // Avatar display removido - usando apenas stamp canvas
+    // Avatar display simplificado - apenas atualiza o stamp display
     console.log('🎨 Avatar display atualizado:', stamp);
-    
-    // Se a estampa foi gerada com IA e edição de imagens está habilitada
-    if (stamp.aiGenerated && stamp.imageUrl && stamp.useImageEdit) {
-        try {
-            console.log('🎯 Aplicando estampa no avatar com edição de IA...');
-            
-            // Primeiro, desenha o avatar base
-            drawAvatar(ctx, canvas.width, canvas.height, stamp);
-            
-            // Aplica a estampa usando edição de imagens
-            const editedImageUrl = await applyStampToAvatarWithAI(stamp.analysis.description, canvas);
-            
-            if (editedImageUrl) {
-                // Carrega a imagem editada
-                const success = await loadAndApplyImage(editedImageUrl, canvas);
-                if (success) {
-                    console.log('✅ Estampa aplicada com edição de IA com sucesso!');
-                } else {
-                    console.log('⚠️ Falha ao carregar imagem editada, usando estampa sobreposta');
-                    // Fallback: aplica a estampa sobreposta
-                    await loadAndApplyImage(stamp.imageUrl, canvas);
-                }
-            } else {
-                console.log('⚠️ Edição de IA falhou, usando estampa sobreposta');
-                // Fallback: aplica a estampa sobreposta
-                await loadAndApplyImage(stamp.imageUrl, canvas);
-            }
-            
-        } catch (error) {
-            console.error('❌ Erro na edição de IA:', error);
-            // Fallback: usa sistema manual
-            drawAvatar(ctx, canvas.width, canvas.height, stamp);
-        }
-    } 
-    // Se a estampa foi gerada com IA mas sem edição
-    else if (stamp.aiGenerated && stamp.imageUrl) {
-        try {
-            const success = await loadAndApplyImage(stamp.imageUrl, canvas);
-            if (success) {
-                console.log('✅ Imagem da IA aplicada com sucesso');
-            } else {
-                console.log('⚠️ Falha ao carregar imagem da IA, usando sistema de fallback');
-                drawAvatar(ctx, canvas.width, canvas.height, stamp);
-            }
-        } catch (error) {
-            console.error('❌ Erro ao carregar imagem da IA:', error);
-            drawAvatar(ctx, canvas.width, canvas.height, stamp);
-        }
-    } 
-    // Usa o sistema de fallback (desenho manual)
-    else {
-        drawAvatar(ctx, canvas.width, canvas.height, stamp);
-    }
+    updateStampDisplay(stamp);
 }
 
 function updateStampDisplay(stamp) {
@@ -1354,9 +1302,9 @@ function switchView(view) {
 function downloadAvatar() {
     if (!currentStamp) return;
     
-    const canvas = document.getElementById('stampCanvas');
+    const canvas = document.getElementById('avatarCanvas');
     const link = document.createElement('a');
-    link.download = `estampai-stamp-${currentStamp.id}.png`;
+    link.download = `estampai-avatar-${currentStamp.id}.png`;
     link.href = canvas.toDataURL();
     link.click();
 }
@@ -1947,7 +1895,7 @@ function adjustColor(color, amount) {
 // ===== FUNÇÃO DE TESTE PARA AVATAR =====
 function testarAvatarLocal() {
     console.log('🧪 Testando carregamento do avatar local...');
-    const canvas = document.getElementById('stampCanvas');
+    const canvas = document.getElementById('avatarCanvas');
     if (!canvas) {
         console.error('❌ Canvas não encontrado');
         return;
