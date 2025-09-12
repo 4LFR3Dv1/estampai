@@ -3,794 +3,616 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EstampAI - Chat com IA</title>
+    <title>EstampAI - Gerador de Estampas com IA</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="design-system.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        /* Estilos específicos do EstampAI */
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+            min-height: 100vh;
         }
         
+        /* Header moderno */
         .header {
-            background: #1A237E;
+            background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-600) 100%);
             color: white;
-            padding: 20px;
+            padding: var(--space-6) 0;
             text-align: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
         
         .header h1 {
-            font-size: 2em;
-            margin-bottom: 5px;
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
+        .header p {
+            font-size: var(--font-size-lg);
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        /* Main layout */
         .main {
             flex: 1;
-            display: flex;
-            gap: 20px;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-8);
+            padding: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
         }
         
+        /* Chat section modernizada */
         .chat-section {
-            flex: 1;
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-100);
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden;
         }
         
+        .chat-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .chat-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-lg);
+        }
+        
+        .chat-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+        
+        .chat-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+        
+        /* Messages modernizadas */
         .messages {
             flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
             overflow-y: auto;
-            max-height: 400px;
+            max-height: 500px;
+            border: 1px solid var(--gray-200);
         }
         
         .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            animation: fadeIn 0.3s ease-in-out;
         }
         
-        .user {
-            background: #e3f2fd;
-            text-align: right;
+        .message.user {
+            flex-direction: row-reverse;
         }
         
-        .ai {
-            background: #f3e5f5;
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            flex-shrink: 0;
         }
         
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+        }
+        
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, var(--secondary-500), var(--secondary-600));
+            color: white;
+        }
+        
+        .message-content {
+            max-width: 80%;
+            padding: var(--space-4);
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-sm);
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+            border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
+        }
+        
+        .message.ai .message-content {
+            background: white;
+            color: var(--gray-900);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl) var(--radius-xl) var(--radius-xl) var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Input area modernizada */
         .input-area {
             display: flex;
-            gap: 10px;
+            gap: var(--space-3);
+            align-items: flex-end;
         }
         
-        .input-area textarea {
+        .input-field {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: var(--space-4);
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-xl);
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            background: white;
             resize: vertical;
-            min-height: 50px;
+            min-height: 60px;
+            max-height: 120px;
+            transition: all var(--transition-fast);
         }
         
-        .input-area button {
-            padding: 10px 20px;
-            background: #1A237E;
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        
+        .input-field::placeholder {
+            color: var(--gray-400);
+        }
+        
+        .send-btn {
+            padding: var(--space-4) var(--space-6);
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
             cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            min-height: 60px;
         }
         
-        .input-area button:hover {
-            background: #0d47a1;
+        .send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
         }
         
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Results section modernizada */
         .results-section {
-            flex: 1;
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-100);
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden;
         }
         
+        .results-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-500), var(--primary-500));
+        }
+        
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .results-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary-500), var(--primary-500));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-lg);
+        }
+        
+        .results-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+        
+        .results-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+        
+        /* View buttons modernizados */
         .view-buttons {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            background: var(--gray-100);
+            padding: var(--space-1);
+            border-radius: var(--radius-xl);
         }
         
-        .view-buttons button {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 5px;
+        .view-btn {
+            flex: 1;
+            padding: var(--space-3) var(--space-4);
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-lg);
             cursor: pointer;
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            transition: all var(--transition-fast);
         }
         
-        .view-buttons button.active {
-            background: #1A237E;
-            color: white;
+        .view-btn.active {
+            background: white;
+            color: var(--primary-600);
+            box-shadow: var(--shadow-sm);
         }
         
+        .view-btn:hover:not(.active) {
+            color: var(--gray-900);
+        }
+        
+        /* Canvas container modernizado */
         .canvas-container {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #f9f9f9;
-            position: relative; /* Permite posicionamento absoluto dos elementos filhos */
+            background: var(--gray-50);
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-xl);
+            position: relative;
+            min-height: 400px;
+            transition: all var(--transition-normal);
+        }
+        
+        .canvas-container:hover {
+            border-color: var(--primary-400);
+            background: var(--primary-50);
+        }
+        
+        .canvas-container.has-content {
+            border-style: solid;
+            border-color: var(--gray-200);
+            background: white;
         }
         
         canvas {
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            max-width: 100%;
+            height: auto;
         }
         
-        #estampaIsolada {
-            display: none;
+        /* Loading states */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+            color: var(--gray-600);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+            color: var(--gray-500);
             text-align: center;
-            margin-top: 20px;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 10px;
         }
         
-        #estampaIsolada img {
-            max-width: 200px;
-            border-radius: 5px;
-            margin: 10px 0;
+        .empty-state-icon {
+            font-size: var(--font-size-4xl);
+            opacity: 0.5;
         }
         
+        /* Download button modernizado */
         .download-btn {
-            background: #4CAF50;
+            margin-top: var(--space-6);
+            width: 100%;
+            padding: var(--space-4) var(--space-6);
+            background: linear-gradient(135deg, var(--success-500), var(--success-600));
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
             cursor: pointer;
-            margin: 5px;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
         }
         
         .download-btn:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, var(--success-600), var(--success-700));
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .main {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+                padding: var(--space-6);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: var(--space-4) 0;
+            }
+            
+            .header h1 {
+                font-size: var(--font-size-3xl);
+            }
+            
+            .main {
+                padding: var(--space-4);
+                gap: var(--space-4);
+            }
+            
+            .chat-section,
+            .results-section {
+                padding: var(--space-6);
+            }
+            
+            .input-area {
+                flex-direction: column;
+                gap: var(--space-3);
+            }
+            
+            .send-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .view-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: var(--font-size-2xl);
+            }
+            
+            .chat-section,
+            .results-section {
+                padding: var(--space-4);
+            }
+            
+            .message-content {
+                max-width: 90%;
+            }
+        }
+        
+        /* Animações específicas */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Status indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+        
+        .status-online {
+            background: var(--success-50);
+            color: var(--success-700);
+        }
+        
+        .status-offline {
+            background: var(--error-50);
+            color: var(--error-700);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🤖 EstampAI</h1>
-        <p>Chat com IA para Criação de Estampas</p>
-    </div>
-    
-    <div class="main">
-        <div class="chat-section">
+    <!-- Header modernizado -->
+    <header class="header">
+        <div class="header-content">
+            <h1>🎨 EstampAI</h1>
+            <p>Crie estampas incríveis com Inteligência Artificial</p>
+            <div class="status-indicator status-online">
+                <div class="status-dot"></div>
+                <span>Sistema Online</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+        <!-- Chat Section -->
+        <section class="chat-section">
+            <div class="chat-header">
+                <div class="chat-icon">💬</div>
+                <div>
+                    <h2 class="chat-title">Chat com IA</h2>
+                    <p class="chat-subtitle">Descreva sua estampa e veja a mágica acontecer</p>
+                </div>
+            </div>
+            
             <div class="messages" id="messages">
-                <!-- Mensagens aparecerão aqui -->
+                <div class="message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        Olá! Sou a EstampAI. Conte-me sobre a estampa que você gostaria de criar. 
+                        Seja específico sobre cores, estilo, tema e qualquer detalhe importante!
+                    </div>
+                </div>
             </div>
             
             <div class="input-area">
-                <textarea id="chatInput" placeholder="Conte-me sobre sua ideia de estampa..."></textarea>
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <button onclick="sendMessage()">💬 Enviar</button>
-                    <button onclick="generateStampNow()" style="background: #4CAF50; font-size: 12px;">🎨 Gerar Estampa</button>
+                <textarea 
+                    class="input-field" 
+                    id="messageInput" 
+                    placeholder="Ex: Uma estampa de gato fofo com estilo minimalista, cores pastel..."
+                    rows="3"
+                ></textarea>
+                <button class="send-btn" id="sendBtn">
+                    <span>Enviar</span>
+                    <span>🚀</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <div class="results-header">
+                <div class="results-icon">🎨</div>
+                <div>
+                    <h2 class="results-title">Sua Estampa</h2>
+                    <p class="results-subtitle">Visualize e baixe sua criação</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="results-section">
+            
             <div class="view-buttons">
-                <button class="active" onclick="showView('avatar')">👤 Avatar</button>
-                <button onclick="showView('stamp')">🎨 Estampa</button>
-                <button onclick="carregarSuaImagem()" style="background: #4CAF50; color: white;">🔄 Carregar Avatar</button>
+                <button class="view-btn active" id="canvasView">Canvas</button>
+                <button class="view-btn" id="isolatedView">Isolada</button>
             </div>
             
-            <div class="canvas-container">
-                <canvas id="avatarCanvas" width="400" height="500" style="display: block;"></canvas>
-                <canvas id="stampCanvas" width="400" height="400" style="display: none;"></canvas>
+            <div class="canvas-container" id="canvasContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🎨</div>
+                    <h3>Nenhuma estampa gerada ainda</h3>
+                    <p>Comece uma conversa com a IA para criar sua primeira estampa!</p>
+                </div>
             </div>
             
-            <div id="estampaIsolada" style="display: none; text-align: center; margin-top: 20px; padding: 20px; background: #f5f5f5; border-radius: 10px;">
-                <!-- Estampa gerada pela IA aparecerá aqui -->
-            </div>
-        </div>
-    </div>
+            <button class="download-btn" id="downloadBtn" style="display: none;">
+                <span>📥</span>
+                <span>Baixar Estampa</span>
+            </button>
+        </section>
+    </main>
 
-    <script>
-        // Configuração da API
-        const API_KEY = 'YOUR_OPENAI_API_KEY_HERE'; // Substitua pela sua API key
-        
-        // Estado da conversa
-        let conversationHistory = [];
-        let isGeneratingStamp = false;
-        let currentStampPrompt = '';
+    <!-- Canvas oculto para geração -->
+    <canvas id="stampCanvas" style="display: none;"></canvas>
+    <div id="estampaIsolada" style="display: none;"></div>
 
-        // Função para mostrar diferentes visualizações
-        function showView(view) {
-            // Remove active de todos os botões
-            document.querySelectorAll('.view-buttons button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Adiciona active ao botão clicado
-            event.target.classList.add('active');
-            
-            // Mostra/esconde canvas
-            if (view === 'avatar') {
-                document.getElementById('avatarCanvas').style.display = 'block';
-                document.getElementById('stampCanvas').style.display = 'none';
-            } else {
-                document.getElementById('avatarCanvas').style.display = 'none';
-                document.getElementById('stampCanvas').style.display = 'block';
-            }
-        }
-
-        // Função para carregar a imagem do avatar
-        function carregarSuaImagem() {
-            console.log('🖼️ Carregando sua imagem AVATAR.png...');
-            
-            const canvas = document.getElementById('avatarCanvas');
-            if (!canvas) {
-                console.error('❌ Canvas não encontrado!');
-                return;
-            }
-            
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-                console.error('❌ Contexto do canvas não encontrado!');
-                return;
-            }
-            
-            // Limpa o canvas primeiro
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Desenha um fundo temporário
-            ctx.fillStyle = '#f0f0f0';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#333';
-            ctx.font = '16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Carregando avatar...', canvas.width/2, canvas.height/2);
-            
-            const img = new Image();
-            img.onload = function() {
-                console.log('✅ Sua imagem carregada com sucesso!');
-                console.log('📏 Dimensões da imagem:', img.width, 'x', img.height);
-                console.log('📏 Dimensões do canvas:', canvas.width, 'x', canvas.height);
-                
-                // Limpa o canvas
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // Desenha a imagem
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                console.log('✅ Avatar atualizado com sua imagem!');
-            };
-            
-            img.onerror = function() {
-                console.error('❌ Erro ao carregar sua imagem');
-                console.error('❌ URL tentada:', img.src);
-                
-                // Desenha um placeholder de erro
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#ffebee';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#d32f2f';
-                ctx.font = '16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Erro ao carregar avatar', canvas.width/2, canvas.height/2 - 20);
-                ctx.font = '12px Arial';
-                ctx.fillText('Verifique se o arquivo existe', canvas.width/2, canvas.height/2 + 10);
-            };
-            
-            // Define a URL da imagem
-            img.src = 'assets/images/AVATAR.png';
-            console.log('🔗 Tentando carregar:', img.src);
-        }
-
-        // Função para adicionar mensagens
-        function addMessage(type, text) {
-            const messages = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.textContent = text;
-            messages.appendChild(messageDiv);
-            messages.scrollTop = messages.scrollHeight;
-            
-            // Adiciona ao histórico da conversa
-            conversationHistory.push({
-                role: type === 'user' ? 'user' : 'assistant',
-                content: text,
-                timestamp: new Date()
-            });
-        }
-
-        // Função para chat conversacional com GPT
-        async function chatWithAI(userMessage) {
-            try {
-                // Adiciona mensagem do usuário ao histórico
-                conversationHistory.push({
-                    role: 'user',
-                    content: userMessage,
-                    timestamp: new Date()
-                });
-
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-4',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `Você é a EstampAI, uma assistente especializada em criação de estampas para camisetas. 
-
-Sua personalidade:
-- Criativa e entusiasmada
-- Conhece tendências de moda e streetwear
-- Ajuda a refinar ideias de estampas
-- Faz perguntas para entender melhor o que o usuário quer
-- Sugere melhorias e variações
-
-IMPORTANTE: Só sugira gerar a estampa quando o usuário mencionar elementos específicos como:
-- Dragão, caveira, cruz, fogo, moto, carro, brasão, símbolo, logo, ícone
-- Ou quando o usuário explicitamente pedir para gerar
-
-Quando o usuário mencionar uma ideia de estampa:
-1. Faça perguntas para entender melhor (estilo, cores, público-alvo)
-2. Sugira melhorias ou variações
-3. Só pergunte se quer gerar quando tiver elementos específicos
-
-Exemplos de perguntas:
-- "Que estilo você prefere? Minimalista, realista, cartoon?"
-- "Para que público? Jovem, adulto, infantil?"
-- "Que cores você imagina?"
-- "Alguma referência visual?"
-
-Seja conversacional e amigável!`
-                            },
-                            ...conversationHistory.slice(-10) // Últimas 10 mensagens para contexto
-                        ],
-                        max_tokens: 300,
-                        temperature: 0.8
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro da API: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-                
-                // Adiciona resposta da IA ao histórico
-                conversationHistory.push({
-                    role: 'assistant',
-                    content: aiResponse,
-                    timestamp: new Date()
-                });
-
-                return aiResponse;
-
-            } catch (error) {
-                console.error('❌ Erro no chat:', error);
-                return 'Desculpe, estou com dificuldades técnicas. Pode tentar novamente?';
-            }
-        }
-
-        // Função para detectar intenção de gerar estampa
-        function shouldGenerateStamp(message) {
-            const generateKeywords = [
-                'gerar estampa', 'criar estampa', 'fazer estampa', 
-                'vamos criar', 'pode gerar', 'quero gerar', 'gerar agora',
-                'criar agora', 'fazer agora', 'produzir estampa'
-            ];
-            
-            return generateKeywords.some(keyword => 
-                message.toLowerCase().includes(keyword)
-            );
-        }
-
-        // Função para extrair prompt da conversa usando contexto inteligente
-        async function extractStampPrompt() {
-            // Se não há histórico suficiente, usa a última mensagem
-            if (conversationHistory.length < 2) {
-                return conversationHistory[conversationHistory.length - 1]?.content || '';
-            }
-            
-            try {
-                // Usa GPT para extrair contexto relevante da conversa
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-4',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `Você é um especialista em extrair informações relevantes para criação de estampas.
-
-Sua tarefa: Analisar a conversa e extrair APENAS os elementos visuais específicos que devem aparecer na estampa.
-
-INSTRUÇÕES:
-1. Identifique elementos visuais específicos (objetos, pessoas, animais, símbolos, etc.)
-2. Identifique estilo visual (vintage, minimalista, realista, cartoon, etc.)
-3. Identifique cores mencionadas
-4. Identifique composição (centralizada, grande, pequena, etc.)
-5. IGNORE informações sobre público-alvo, marca, negócio, etc.
-
-FORMATO DE RESPOSTA:
-Se houver elementos visuais específicos, retorne APENAS uma descrição concisa dos elementos visuais.
-Se NÃO houver elementos visuais específicos, retorne "INSUFICIENTE".
-
-EXEMPLOS:
-- "dragão flamejante em estilo vintage"
-- "caveira punk com espinhos em preto e branco"
-- "jogador de futebol em estádio com bandeiras do Brasil no estilo pôster vintage"
-- "INSUFICIENTE" (se só mencionar "marca", "negócio", "público-alvo", etc.)`
-                            },
-                            {
-                                role: 'user',
-                                content: `Analise esta conversa e extraia os elementos visuais para estampa:\n\n${conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`
-                            }
-                        ],
-                        max_tokens: 100,
-                        temperature: 0.3
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro da API: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const extractedPrompt = data.choices[0].message.content.trim();
-                
-                console.log('🧠 Contexto extraído:', extractedPrompt);
-                
-                // Se retornou "INSUFICIENTE", não gera estampa
-                if (extractedPrompt === 'INSUFICIENTE') {
-                    return null;
-                }
-                
-                return extractedPrompt;
-
-            } catch (error) {
-                console.error('❌ Erro ao extrair contexto:', error);
-                // Fallback para método anterior
-                const userMessages = conversationHistory
-                    .filter(msg => msg.role === 'user')
-                    .map(msg => msg.content)
-                    .join(' ');
-                return userMessages;
-            }
-        }
-
-        // Função para criar prompt inteligente
-        function criarPromptInteligente(descricaoUsuario) {
-            // Se a descrição é null ou vazia, retorna erro
-            if (!descricaoUsuario || descricaoUsuario === 'null') {
-                throw new Error('Descrição da estampa não encontrada');
-            }
-            
-            return `Ilustração isolada de ${descricaoUsuario}
-
-Fundo: PRETO SÓLIDO
-
-Especificações técnicas:
-- Formato: Quadrado 1024x1024px
-- Resolução: Alta qualidade (HD)
-- Estilo: Moderno, dinâmico e versátil
-- Cores: Vibrantes e contrastantes
-- Composição: Centralizada e equilibrada
-
-NÃO incluir:
-- Camiseta, roupa, mockup, produto ou manequim
-- Fundo colorido ou padrão
-- Texto ou tipografia
-- Bordas ou molduras
-- Elementos de design de produto
-
-RESULTADO: Ilustração isolada, fundo preto sólido, alta qualidade, perfeita para estampa de camiseta.`;
-        }
-
-        // Função para gerar estampa com IA
-        async function gerarEstampaComIA(promptUsuario) {
-            console.log('🚀 Iniciando geração com IA...');
-            console.log('📝 Prompt recebido:', promptUsuario);
-            
-            // Verifica se o prompt é válido
-            if (!promptUsuario || promptUsuario === 'null') {
-                throw new Error('Prompt inválido para geração de estampa');
-            }
-            
-            const prompt = criarPromptInteligente(promptUsuario);
-            console.log('📝 Prompt criado:', prompt);
-            
-            try {
-                const response = await fetch('https://api.openai.com/v1/images/generations', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: 'dall-e-3',
-                        prompt: prompt,
-                        n: 1,
-                        size: '1024x1024',
-                        response_format: 'url'
-                    })
-                });
-                
-                console.log('📡 Resposta da API:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`Erro da API: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('✅ Dados recebidos:', data);
-                
-                if (data.data && data.data[0] && data.data[0].url) {
-                    const imageUrl = data.data[0].url;
-                    console.log('🎨 URL da imagem:', imageUrl);
-                    return imageUrl;
-                } else {
-                    throw new Error('URL da imagem não encontrada na resposta');
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro ao gerar estampa:', error);
-                throw error;
-            }
-        }
-
-        // Função para aplicar estampa no avatar (usando mesma lógica do visualizador)
-        function aplicarEstampaIA(urlImagem) {
-            console.log('🎯 Aplicando estampa IA:', urlImagem);
-            
-            // Usa a mesma lógica do visualizador de estampas - cria elemento img
-            const avatarContainer = document.querySelector('.canvas-container');
-            
-            // Remove estampa anterior se existir
-            const existingStamp = document.getElementById('avatarStamp');
-            if (existingStamp) {
-                existingStamp.remove();
-            }
-            
-            // Cria elemento img para a estampa (mesma lógica do visualizador)
-            const stampImg = document.createElement('img');
-            stampImg.id = 'avatarStamp';
-            stampImg.src = urlImagem;
-            stampImg.alt = 'Estampa gerada';
-            stampImg.style.cssText = `
-                position: absolute;
-                top: 20%;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 120px;
-                height: 120px;
-                z-index: 10;
-                border-radius: 5px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            `;
-            
-            stampImg.onload = function() {
-                console.log('✅ Estampa carregada e exibida no avatar!');
-                console.log('📏 Dimensões da estampa:', stampImg.width, 'x', stampImg.height);
-            };
-            
-            stampImg.onerror = function() {
-                console.error('❌ Erro ao carregar estampa no avatar');
-                // Remove a imagem com erro
-                stampImg.remove();
-                
-                // Cria fallback visual
-                const fallback = document.createElement('div');
-                fallback.id = 'avatarStampFallback';
-                fallback.style.cssText = `
-                    position: absolute;
-                    top: 20%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 120px;
-                    height: 120px;
-                    background: #ff5722;
-                    border-radius: 5px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 12px;
-                    text-align: center;
-                    z-index: 10;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                `;
-                fallback.innerHTML = 'ESTAMP<br>GERADA';
-                avatarContainer.appendChild(fallback);
-                
-                console.log('✅ Fallback visual aplicado no avatar');
-            };
-            
-            // Adiciona a estampa ao container
-            avatarContainer.appendChild(stampImg);
-            console.log('🔗 Estampa adicionada ao avatar');
-            
-            // Também desenha no canvas de estampa (que funciona)
-            const stampCanvas = document.getElementById('stampCanvas');
-            const stampCtx = stampCanvas.getContext('2d');
-            const canvasImg = new Image();
-            canvasImg.onload = function() {
-                stampCtx.clearRect(0, 0, stampCanvas.width, stampCanvas.height);
-                stampCtx.drawImage(canvasImg, 0, 0, stampCanvas.width, stampCanvas.height);
-                console.log('✅ Estampa também aplicada no canvas de estampa!');
-            };
-            canvasImg.src = urlImagem;
-        }
-
-        // Função para mostrar estampa isolada
-        function mostrarEstampaIsolada(urlImagem) {
-            const estampaDiv = document.getElementById('estampaIsolada');
-            estampaDiv.innerHTML = `
-                <h3>🎨 Sua Estampa Gerada</h3>
-                <img src="${urlImagem}" alt="Estampa gerada" style="max-width: 300px; border-radius: 10px; margin: 10px 0;">
-                <br>
-                <button class="download-btn" onclick="downloadImage('${urlImagem}', 'estampa.png')">📥 Baixar Estampa</button>
-            `;
-            estampaDiv.style.display = 'block';
-        }
-
-        // Função para baixar imagem
-        function downloadImage(url, filename) {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.click();
-        }
-
-        // Função para gerar estampa imediatamente
-        async function generateStampNow() {
-            if (isGeneratingStamp) return;
-            
-            const prompt = await extractStampPrompt();
-            if (!prompt) {
-                addMessage('ai', 'Preciso de mais detalhes! Me conte sobre o que você quer na estampa: dragão, caveira, cruz, símbolo, logo, etc. 😊');
-                return;
-            }
-            
-            isGeneratingStamp = true;
-            addMessage('ai', '🎨 Gerando sua estampa agora...');
-            
-            try {
-                // Gera estampa com IA
-                const imageUrl = await gerarEstampaComIA(prompt);
-                
-                // Aplica no avatar
-                aplicarEstampaIA(imageUrl);
-                
-                // Mostra estampa isolada
-                mostrarEstampaIsolada(imageUrl);
-                
-                addMessage('ai', '✨ Pronto! Sua estampa foi criada!');
-                isGeneratingStamp = false;
-                
-            } catch (error) {
-                console.error('❌ Erro:', error);
-                addMessage('ai', 'Desculpe, não consegui gerar sua estampa. Tente novamente!');
-                isGeneratingStamp = false;
-            }
-        }
-
-        // Função para enviar mensagem
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message || isGeneratingStamp) return;
-            
-            // Adiciona mensagem do usuário
-            addMessage('user', message);
-            input.value = '';
-            
-            // Mostra indicador de digitação
-            addMessage('ai', '🤔 Pensando...');
-            
-            try {
-                // Chat conversacional com IA
-                const aiResponse = await chatWithAI(message);
-                
-                // Remove a mensagem "Pensando..." e adiciona a resposta real
-                const messages = document.getElementById('messages');
-                messages.removeChild(messages.lastChild);
-                addMessage('ai', aiResponse);
-                
-                // Verifica se deve gerar estampa
-                if (shouldGenerateStamp(message) || shouldGenerateStamp(aiResponse)) {
-                    isGeneratingStamp = true;
-                    addMessage('ai', '🎨 Perfeito! Vou gerar sua estampa agora...');
-                    
-                    // Extrai o prompt da conversa
-                    currentStampPrompt = await extractStampPrompt();
-                    console.log('📝 Prompt extraído da conversa:', currentStampPrompt);
-                    
-                    // Verifica se o prompt é válido
-                    if (!currentStampPrompt || currentStampPrompt === 'null') {
-                        addMessage('ai', 'Ops! Preciso de mais detalhes específicos. Me conte sobre o que você quer na estampa: jogador, estádio, bandeira, etc.');
-                        isGeneratingStamp = false;
-                        return;
-                    }
-                    
-                    // Gera estampa com IA
-                    const imageUrl = await gerarEstampaComIA(currentStampPrompt);
-                    
-                    // Aplica no avatar
-                    aplicarEstampaIA(imageUrl);
-                    
-                    // Mostra estampa isolada
-                    mostrarEstampaIsolada(imageUrl);
-                    
-                    addMessage('ai', '✨ Pronto! Sua estampa foi criada! Veja como ficou no avatar e baixe se quiser!');
-                    isGeneratingStamp = false;
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro:', error);
-                // Remove a mensagem "Pensando..." se houver erro
-                const messages = document.getElementById('messages');
-                if (messages.lastChild && messages.lastChild.textContent === '🤔 Pensando...') {
-                    messages.removeChild(messages.lastChild);
-                }
-                addMessage('ai', 'Desculpe, estou com dificuldades técnicas. Pode tentar novamente?');
-            }
-        }
-
-        // Inicialização
-        window.onload = function() {
-            console.log('🚀 EstampAI iniciando...');
-            
-            // Mostra mensagem de boas-vindas
-            addMessage('ai', 'Olá! 👋 Sou a EstampAI, sua assistente para criação de estampas! \n\nConte-me sobre sua ideia: que tipo de estampa você gostaria de criar? Pode ser qualquer coisa - desde símbolos simples até ilustrações complexas!');
-            
-            // Carrega a imagem do avatar
-            setTimeout(() => {
-                console.log('⏰ Carregando avatar...');
-                carregarSuaImagem();
-            }, 1000);
-            
-            // Adiciona suporte para Enter no textarea
-            document.getElementById('chatInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        };
-    </script>
+    <!-- Scripts existentes -->
+    <script src="script.js"></script>
+    <script src="config.js"></script>
 </body>
 </html>
