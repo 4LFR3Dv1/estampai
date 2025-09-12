@@ -23,6 +23,12 @@ if [ -f "index.html" ]; then
     echo "✅ index.html atualizado"
 fi
 
+# index-modern.html (arquivo principal com melhorias)
+if [ -f "index-modern.html" ]; then
+    sed -i "s/YOUR_OPENAI_API_KEY_HERE/$OPENAI_API_KEY/g" index-modern.html
+    echo "✅ index-modern.html atualizado"
+fi
+
 # config.js
 if [ -f "config.js" ]; then
     sed -i "s/YOUR_OPENAI_API_KEY_HERE/$OPENAI_API_KEY/g" config.js

@@ -11,7 +11,7 @@ services:
     routes:
       - type: rewrite
         source: /*
-        destination: /index.html
+        destination: /index-modern.html
     headers:
       - path: /*
         name: Access-Control-Allow-Origin
