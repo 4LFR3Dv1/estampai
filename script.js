@@ -158,14 +158,36 @@ function drawInitialAvatar(canvas) {
     };
     
     avatarImg.onerror = function() {
-        console.warn('⚠️ Erro ao carregar avatar, usando fallback');
+        console.error('❌ ERRO: Não foi possível carregar AVATAR.png');
         console.log('❌ URL que falhou:', avatarImg.src);
-        // Fallback para avatar desenhado
-        drawDrawnAvatar(ctx, canvas.width, canvas.height, null);
-        addStampPreviewOverlay(ctx, canvas.width, canvas.height);
+        console.log('🔍 Verificando se o arquivo existe em:', window.ESTAMPAI_CONFIG?.avatar?.imagePath);
+        
+        // Tenta carregar diretamente sem CORS
+        const directImg = new Image();
+        directImg.onload = function() {
+            console.log('✅ AVATAR.png carregado diretamente!');
+            ctx.drawImage(directImg, 0, 0, canvas.width, canvas.height);
+            addStampPreviewOverlay(ctx, canvas.width, canvas.height);
+        };
+        directImg.onerror = function() {
+            console.error('❌ AVATAR.png não encontrado! Verifique se o arquivo existe.');
+            // Mostra mensagem de erro no canvas
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#dc3545';
+            ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('AVATAR.png não encontrado', canvas.width/2, canvas.height/2 - 20);
+            ctx.fillText('Verifique se o arquivo existe em:', canvas.width/2, canvas.height/2);
+            ctx.fillText('assets/images/AVATAR.png', canvas.width/2, canvas.height/2 + 20);
+        };
+        directImg.src = window.ESTAMPAI_CONFIG?.avatar?.imagePath || 'assets/images/AVATAR.png';
     };
     
     // Tenta carregar a imagem do avatar
+    console.log('🔍 Verificando imagePath:', window.ESTAMPAI_CONFIG?.avatar?.imagePath);
+    console.log('🔍 Verificando imageUrl:', window.ESTAMPAI_CONFIG?.avatar?.imageUrl);
+    
     if (window.ESTAMPAI_CONFIG?.avatar?.imagePath) {
         console.log('📁 Tentando carregar arquivo local:', window.ESTAMPAI_CONFIG.avatar.imagePath);
         avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imagePath;
@@ -173,10 +195,12 @@ function drawInitialAvatar(canvas) {
         console.log('🌐 Tentando carregar URL:', window.ESTAMPAI_CONFIG.avatar.imageUrl);
         avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imageUrl;
     } else {
-        console.warn('❌ Nenhuma configuração de avatar encontrada, usando fallback');
-        // Fallback para avatar desenhado
-        drawDrawnAvatar(ctx, canvas.width, canvas.height, null);
-        addStampPreviewOverlay(ctx, canvas.width, canvas.height);
+        console.warn('❌ Nenhuma configuração de avatar encontrada, tentando carregar diretamente');
+        console.log('🔍 Config completo:', window.ESTAMPAI_CONFIG);
+        
+        // Tenta carregar diretamente o AVATAR.png
+        console.log('📁 Tentando carregar AVATAR.png diretamente...');
+        avatarImg.src = 'assets/images/AVATAR.png';
     }
 }
 
@@ -540,7 +564,7 @@ async function sendMessage() {
         processTextResponse(message);
     } else {
         // Modo livre - processa diretamente
-        await processWithAI(message);
+    await processWithAI(message);
     }
 }
 
@@ -871,7 +895,7 @@ async function updateAvatarDisplay(stamp) {
             updateStampDisplay(stamp);
         };
         img.src = stamp.imageUrl;
-    } else {
+            } else {
         updateStampDisplay(stamp);
     }
 }
