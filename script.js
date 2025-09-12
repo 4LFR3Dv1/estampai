@@ -115,8 +115,8 @@ function loadInitialAvatar() {
     // Cria canvas para o avatar
     const canvas = document.createElement('canvas');
     canvas.id = 'initialAvatarCanvas';
-    canvas.width = 600;
-    canvas.height = 750;
+    canvas.width = 800;
+    canvas.height = 1000;
     canvas.className = 'avatar-mockup';
     canvas.style.maxWidth = '100%';
     canvas.style.height = 'auto';
