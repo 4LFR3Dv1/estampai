@@ -133,6 +133,7 @@ function loadInitialAvatar() {
 
 function drawInitialAvatar(canvas) {
     console.log('🎨 Desenhando avatar inicial...');
+    console.log('🔍 Função drawInitialAvatar chamada - NÃO deve chamar drawDrawnAvatar');
     const ctx = canvas.getContext('2d');
     
     // Limpa o canvas
