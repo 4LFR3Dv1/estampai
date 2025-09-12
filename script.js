@@ -92,13 +92,20 @@ function initializeCanvas() {
 }
 
 function loadInitialAvatar() {
+    console.log('🚀 Iniciando carregamento do avatar...');
     const avatarContainer = document.getElementById('avatarContainer');
-    if (!avatarContainer) return;
+    if (!avatarContainer) {
+        console.error('❌ Container do avatar não encontrado');
+        return;
+    }
+    
+    console.log('✅ Container do avatar encontrado');
     
     // Remove estado vazio
     const emptyState = avatarContainer.querySelector('.empty-state');
     if (emptyState) {
         emptyState.remove();
+        console.log('✅ Estado vazio removido');
     }
     
     // Cria container do mockup
@@ -115,6 +122,8 @@ function loadInitialAvatar() {
     mockupContainer.appendChild(canvas);
     avatarContainer.appendChild(mockupContainer);
     
+    console.log('✅ Canvas criado e adicionado ao container');
+    
     // Desenha o avatar sem estampa
     drawInitialAvatar(canvas);
     
@@ -123,27 +132,34 @@ function loadInitialAvatar() {
 }
 
 function drawInitialAvatar(canvas) {
+    console.log('🎨 Desenhando avatar inicial...');
     const ctx = canvas.getContext('2d');
     
     // Limpa o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Verifica se o config está carregado
+    console.log('🔍 Verificando configuração:', window.ESTAMPAI_CONFIG);
+    console.log('🔍 Avatar config:', window.ESTAMPAI_CONFIG?.avatar);
     
     // Carrega a imagem do avatar
     const avatarImg = new Image();
     avatarImg.crossOrigin = 'anonymous';
     
     avatarImg.onload = function() {
+        console.log('✅ Imagem do avatar carregada com sucesso!');
         // Desenha o avatar
         ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
         
         // Adiciona overlay sutil indicando onde a estampa vai aparecer
         addStampPreviewOverlay(ctx, canvas.width, canvas.height);
         
-        console.log('✅ Avatar inicial carregado');
+        console.log('✅ Avatar inicial desenhado no canvas');
     };
     
     avatarImg.onerror = function() {
         console.warn('⚠️ Erro ao carregar avatar, usando fallback');
+        console.log('❌ URL que falhou:', avatarImg.src);
         // Fallback para avatar desenhado
         drawDrawnAvatar(ctx, canvas.width, canvas.height, null);
         addStampPreviewOverlay(ctx, canvas.width, canvas.height);
@@ -151,10 +167,13 @@ function drawInitialAvatar(canvas) {
     
     // Tenta carregar a imagem do avatar
     if (window.ESTAMPAI_CONFIG?.avatar?.imagePath) {
+        console.log('📁 Tentando carregar arquivo local:', window.ESTAMPAI_CONFIG.avatar.imagePath);
         avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imagePath;
     } else if (window.ESTAMPAI_CONFIG?.avatar?.imageUrl) {
+        console.log('🌐 Tentando carregar URL:', window.ESTAMPAI_CONFIG.avatar.imageUrl);
         avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imageUrl;
     } else {
+        console.warn('❌ Nenhuma configuração de avatar encontrada, usando fallback');
         // Fallback para avatar desenhado
         drawDrawnAvatar(ctx, canvas.width, canvas.height, null);
         addStampPreviewOverlay(ctx, canvas.width, canvas.height);
