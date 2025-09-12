@@ -621,27 +621,27 @@
             userId = generateUserId();
             
             // Inicializa cache
-            if (CONFIG.cacheEnabled && window.stampCache) {
-                stampCache = window.stampCache;
+            if (CONFIG.cacheEnabled && window.StampCacheManager) {
+                stampCache = new window.StampCacheManager();
                 await stampCache.init();
                 console.log('✅ Cache inicializado');
             }
             
             // Inicializa otimizador de API
-            if (window.apiOptimizer) {
-                apiOptimizer = window.apiOptimizer;
+            if (window.APIOptimizer) {
+                apiOptimizer = new window.APIOptimizer();
                 console.log('✅ API Optimizer inicializado');
             }
             
             // Inicializa rate limiter
-            if (CONFIG.rateLimitEnabled && window.rateLimiter) {
-                rateLimiter = window.rateLimiter;
+            if (CONFIG.rateLimitEnabled && window.RateLimiter) {
+                rateLimiter = new window.RateLimiter();
                 console.log('✅ Rate Limiter inicializado');
             }
             
             // Inicializa analytics
-            if (CONFIG.analyticsEnabled && window.analytics) {
-                analytics = window.analytics;
+            if (CONFIG.analyticsEnabled && window.Analytics) {
+                analytics = new window.Analytics();
                 console.log('✅ Analytics inicializado');
             }
         }
@@ -681,7 +681,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             };
-            img.src = 'AVATAR.png';
+            img.src = '../AVATAR.png';
         }
         
         function addMessage(type, content) {

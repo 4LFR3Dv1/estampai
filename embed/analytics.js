@@ -189,4 +189,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-export default Analytics;
+// Exportação removida para compatibilidade com script tags
+window.Analytics = Analytics;

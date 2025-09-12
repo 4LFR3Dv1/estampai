@@ -136,4 +136,5 @@ class RateLimiter {
 // Instância global
 window.rateLimiter = new RateLimiter();
 
-export default RateLimiter;
+// Exportação removida para compatibilidade com script tags
+window.RateLimiter = RateLimiter;

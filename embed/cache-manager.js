@@ -350,4 +350,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-export default StampCacheManager;
+// Exportação removida para compatibilidade com script tags
+window.StampCacheManager = StampCacheManager;

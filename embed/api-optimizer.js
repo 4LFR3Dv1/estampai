@@ -114,4 +114,5 @@ class APIOptimizer {
 // Instância global
 window.apiOptimizer = new APIOptimizer();
 
-export default APIOptimizer;
+// Exportação removida para compatibilidade com script tags
+window.APIOptimizer = APIOptimizer;

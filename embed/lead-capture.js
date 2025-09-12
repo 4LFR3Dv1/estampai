@@ -432,4 +432,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-export default LeadCapture;
+// Exportação removida para compatibilidade com script tags
+window.LeadCapture = LeadCapture;
