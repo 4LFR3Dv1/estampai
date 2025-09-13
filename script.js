@@ -260,9 +260,299 @@ function showWelcomeMessage() {
     }, 1500);
 }
 
+// Sistema de chat mais humano e consultivo
+let conversationContext = {
+    brandName: null,
+    brandStyle: null,
+    targetAudience: null,
+    inspiration: null,
+    colors: null,
+    mood: null,
+    references: []
+};
+
+let conversationStep = 'greeting';
+let isConsulting = false;
+
+// Inicializa o chat consultivo
 function startInteractiveConversation() {
-    // Conversa natural - sem perguntas sequenciais
-    addAIMessage("Olá! Sou a EstampAI, sua assistente para criação de estampas. Descreva o que você gostaria de criar e eu farei uma estampa única para você!");
+    conversationContext = {
+        brandName: null,
+        brandStyle: null,
+        targetAudience: null,
+        inspiration: null,
+        colors: null,
+        mood: null,
+        references: []
+    };
+    conversationStep = 'greeting';
+    isConsulting = true;
+    
+    addAIMessage("Olá! Sou a EstampAI, sua consultora especializada em criação de estampas para marcas. Vou te ajudar a criar uma estampa única que represente perfeitamente sua marca! 🎨✨");
+    
+    setTimeout(() => {
+        askAboutBrand();
+    }, 1500);
+}
+
+// Pergunta sobre a marca
+function askAboutBrand() {
+    addAIMessage("Primeiro, me conta um pouco sobre sua marca! Qual é o nome da sua marca e que tipo de negócio vocês fazem? 🏷️");
+    conversationStep = 'brand_info';
+}
+
+// Pergunta sobre estilo e referências
+function askAboutStyle() {
+    addAIMessage("Perfeito! Agora me conta sobre o estilo da sua marca. Vocês são mais streetwear, minimalista, vintage, ou têm alguma referência específica? 🎭");
+    addAIMessage("Por exemplo, algumas marcas que admiro: Supreme (streetwear), Uniqlo (minimalista), Stüssy (vintage), Off-White (futurista)... Qual se aproxima mais do que vocês buscam? 💭");
+    conversationStep = 'style_references';
+}
+
+// Pergunta sobre público-alvo
+function askAboutAudience() {
+    addAIMessage("Ótimo! Agora me conta sobre o público da sua marca. Quem são seus clientes? Jovens, adultos, qual faixa etária? E que estilo de vida eles têm? 👥");
+    conversationStep = 'audience';
+}
+
+// Pergunta sobre cores e mood
+function askAboutColors() {
+    addAIMessage("Perfeito! Agora vamos falar de cores e mood. Que cores representam sua marca? E que sensação vocês querem passar? Energia, sofisticação, rebeldia, elegância? 🌈");
+    conversationStep = 'colors_mood';
+}
+
+// Pergunta sobre inspiração específica
+function askAboutInspiration() {
+    addAIMessage("Excelente! Agora me conta sobre a inspiração específica para esta estampa. É para uma coleção especial? Tem algum tema, evento ou conceito que vocês querem explorar? 🎨");
+    conversationStep = 'inspiration';
+}
+
+// Finaliza a consultoria e gera a estampa
+function finalizeConsultation() {
+    addAIMessage("Perfeito! Agora tenho todas as informações que preciso para criar uma estampa única para sua marca! 🎯");
+    
+    // Cria análise baseada no contexto da conversa
+    const analysis = createAnalysisFromContext();
+    
+    addAIMessage("Vou criar uma estampa que combine:");
+    addAIMessage(`🏷️ **Marca**: ${conversationContext.brandName}`);
+    addAIMessage(`🎭 **Estilo**: ${conversationContext.brandStyle}`);
+    addAIMessage(`👥 **Público**: ${conversationContext.targetAudience}`);
+    addAIMessage(`🌈 **Cores**: ${conversationContext.colors}`);
+    addAIMessage(`💭 **Mood**: ${conversationContext.mood}`);
+    
+    if (conversationContext.references.length > 0) {
+        addAIMessage(`✨ **Inspirações**: ${conversationContext.references.join(', ')}`);
+    }
+    
+    addAIMessage("Agora vou criar sua estampa personalizada! 🚀");
+    
+    // Gera a estampa
+    setTimeout(() => {
+        processWithAI("", analysis);
+    }, 2000);
+}
+
+// Cria análise baseada no contexto da conversa
+function createAnalysisFromContext() {
+    const analysis = {
+        style: 'abstract',
+        colors: ['#1A237E', '#FF9800'],
+        pattern: 'custom',
+        description: `Estampa para ${conversationContext.brandName}`,
+        intensity: 0.8,
+        mood: 'neutral',
+        size: 'medium'
+    };
+    
+    // Mapeia estilo da marca para estilo da estampa
+    const brandStyleMap = {
+        'streetwear': 'abstract',
+        'minimalista': 'geometric',
+        'vintage': 'figurative',
+        'futurista': 'abstract',
+        'elegante': 'organic',
+        'rebeldia': 'abstract'
+    };
+    
+    if (conversationContext.brandStyle && brandStyleMap[conversationContext.brandStyle.toLowerCase()]) {
+        analysis.style = brandStyleMap[conversationContext.brandStyle.toLowerCase()];
+    }
+    
+    // Mapeia mood para intensidade
+    const moodMap = {
+        'energia': 1.0,
+        'rebeldia': 1.0,
+        'sofisticação': 0.6,
+        'elegância': 0.6,
+        'jovem': 0.8,
+        'adulto': 0.5
+    };
+    
+    if (conversationContext.mood && moodMap[conversationContext.mood.toLowerCase()]) {
+        analysis.intensity = moodMap[conversationContext.mood.toLowerCase()];
+    }
+    
+    // Define padrão baseado no estilo
+    switch(analysis.style) {
+        case 'organic':
+            analysis.pattern = 'flowers';
+            break;
+        case 'geometric':
+            analysis.pattern = 'triangles';
+            break;
+        case 'abstract':
+            analysis.pattern = 'splashes';
+            break;
+        case 'figurative':
+            analysis.pattern = 'figures';
+            break;
+        case 'religious':
+            analysis.pattern = 'crosses';
+            break;
+        case 'symbols':
+            analysis.pattern = 'icons';
+            break;
+    }
+    
+    return analysis;
+}
+
+// Processa mensagens do usuário durante a consultoria
+function processConsultativeMessage(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    switch(conversationStep) {
+        case 'brand_info':
+            // Extrai nome da marca e tipo de negócio
+            if (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('negócio')) {
+                conversationContext.brandName = extractBrandName(message);
+                askAboutStyle();
+            } else {
+                addAIMessage("Me conta mais sobre sua marca! Qual é o nome e que tipo de negócio vocês fazem? 🏷️");
+            }
+            break;
+            
+        case 'style_references':
+            // Detecta estilo e referências
+            conversationContext.brandStyle = detectBrandStyle(message);
+            conversationContext.references = detectReferences(message);
+            askAboutAudience();
+            break;
+            
+        case 'audience':
+            // Detecta público-alvo
+            conversationContext.targetAudience = detectAudience(message);
+            askAboutColors();
+            break;
+            
+        case 'colors_mood':
+            // Detecta cores e mood
+            conversationContext.colors = detectColors(message);
+            conversationContext.mood = detectMood(message);
+            askAboutInspiration();
+            break;
+            
+        case 'inspiration':
+            // Detecta inspiração específica
+            conversationContext.inspiration = message;
+            finalizeConsultation();
+            break;
+    }
+}
+
+// Funções auxiliares para extrair informações
+function extractBrandName(message) {
+    // Lógica simples para extrair nome da marca
+    const words = message.split(' ');
+    return words[0] || 'Sua Marca';
+}
+
+function detectBrandStyle(message) {
+    const lowerMessage = message.toLowerCase();
+    if (lowerMessage.includes('streetwear') || lowerMessage.includes('supreme')) return 'streetwear';
+    if (lowerMessage.includes('minimalista') || lowerMessage.includes('uniqlo')) return 'minimalista';
+    if (lowerMessage.includes('vintage') || lowerMessage.includes('stüssy')) return 'vintage';
+    if (lowerMessage.includes('futurista') || lowerMessage.includes('off-white')) return 'futurista';
+    if (lowerMessage.includes('elegante') || lowerMessage.includes('sofisticado')) return 'elegante';
+    return 'streetwear'; // padrão
+}
+
+function detectReferences(message) {
+    const references = [];
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('supreme')) references.push('Supreme');
+    if (lowerMessage.includes('uniqlo')) references.push('Uniqlo');
+    if (lowerMessage.includes('stüssy')) references.push('Stüssy');
+    if (lowerMessage.includes('off-white')) references.push('Off-White');
+    if (lowerMessage.includes('nike')) references.push('Nike');
+    if (lowerMessage.includes('adidas')) references.push('Adidas');
+    
+    return references;
+}
+
+function detectAudience(message) {
+    const lowerMessage = message.toLowerCase();
+    if (lowerMessage.includes('jovem') || lowerMessage.includes('teen')) return 'jovens';
+    if (lowerMessage.includes('adulto') || lowerMessage.includes('adult')) return 'adultos';
+    if (lowerMessage.includes('criança') || lowerMessage.includes('kid')) return 'crianças';
+    return 'jovens'; // padrão
+}
+
+function detectColors(message) {
+    const colors = [];
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('preto') || lowerMessage.includes('black')) colors.push('preto');
+    if (lowerMessage.includes('branco') || lowerMessage.includes('white')) colors.push('branco');
+    if (lowerMessage.includes('vermelho') || lowerMessage.includes('red')) colors.push('vermelho');
+    if (lowerMessage.includes('azul') || lowerMessage.includes('blue')) colors.push('azul');
+    if (lowerMessage.includes('verde') || lowerMessage.includes('green')) colors.push('verde');
+    if (lowerMessage.includes('amarelo') || lowerMessage.includes('yellow')) colors.push('amarelo');
+    
+    return colors.length > 0 ? colors.join(', ') : 'preto e branco';
+}
+
+function detectMood(message) {
+    const lowerMessage = message.toLowerCase();
+    if (lowerMessage.includes('energia') || lowerMessage.includes('energy')) return 'energia';
+    if (lowerMessage.includes('sofisticação') || lowerMessage.includes('sophisticated')) return 'sofisticação';
+    if (lowerMessage.includes('rebeldia') || lowerMessage.includes('rebellion')) return 'rebeldia';
+    if (lowerMessage.includes('elegância') || lowerMessage.includes('elegant')) return 'elegância';
+    if (lowerMessage.includes('jovem') || lowerMessage.includes('young')) return 'jovem';
+    return 'energia'; // padrão
+}
+
+// Função para reiniciar a consultoria
+function restartConsultation() {
+    isConsulting = false;
+    conversationStep = 'greeting';
+    conversationContext = {
+        brandName: null,
+        brandStyle: null,
+        targetAudience: null,
+        inspiration: null,
+        colors: null,
+        mood: null,
+        references: []
+    };
+    
+    addAIMessage("Perfeito! Vamos começar uma nova consultoria! 🎨");
+    setTimeout(() => {
+        startInteractiveConversation();
+    }, 1000);
+}
+
+// Melhora a extração do nome da marca
+function extractBrandName(message) {
+    // Remove palavras comuns e extrai o nome
+    const commonWords = ['minha', 'nossa', 'a', 'o', 'de', 'da', 'do', 'para', 'com', 'em', 'é', 'são'];
+    const words = message.split(' ').filter(word => 
+        word.length > 2 && !commonWords.includes(word.toLowerCase())
+    );
+    
+    // Pega as primeiras 2-3 palavras como nome da marca
+    return words.slice(0, 2).join(' ') || 'Sua Marca';
 }
 
 
@@ -287,8 +577,13 @@ async function sendMessage() {
     messageInput.value = '';
     messageInput.style.height = 'auto';
     
-    // Processa diretamente com IA
-    await processWithAI(message);
+    // Se está em modo consultivo, processa a mensagem consultiva
+    if (isConsulting) {
+        processConsultativeMessage(message);
+    } else {
+        // Processa diretamente com IA (modo antigo)
+        await processWithAI(message);
+    }
 }
 
 
@@ -2689,6 +2984,7 @@ window.exportChat = exportChat;
 window.testarAvatarLocal = testarAvatarLocal;
 window.switchStampView = switchStampView;
 window.downloadPNG = downloadPNG;
+window.restartConsultation = restartConsultation;
 
 
 console.log('🚀 EstampAI Chat carregado com sucesso!');
