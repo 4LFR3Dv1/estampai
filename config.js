@@ -232,7 +232,7 @@ const ESTAMPAI_CONFIG = {
     // ===== URLS E INTEGRAÇÕES =====
     urls: {
         checkout: "https://seusite.com/ofertas",
-        portfolio: "https://seusite.com/portfolio",
+        portfolio: "https://renanmelo.framer.ai",
         instagram: "https://instagram.com/seuusuario",
         behance: "https://behance.net/seuusuario"
     },

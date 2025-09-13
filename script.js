@@ -501,29 +501,38 @@ async function processConsultativeMessage(message) {
 function updateConversationContext(message) {
     const lowerMessage = message.toLowerCase();
     
+    console.log('🔍 Analisando mensagem:', message);
+    console.log('🔍 Lowercase:', lowerMessage);
+    
     // Detecta e atualiza informações automaticamente
     if (!conversationContext.brandName && (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('streetwear') || lowerMessage.includes('yellow') || lowerMessage.includes('dark y'))) {
         conversationContext.brandName = extractBrandName(message);
+        console.log('✅ BrandName detectado:', conversationContext.brandName);
     }
     
     if (!conversationContext.brandStyle && (lowerMessage.includes('streetwear') || lowerMessage.includes('minimalista') || lowerMessage.includes('vintage') || lowerMessage.includes('skate'))) {
         conversationContext.brandStyle = detectBrandStyle(message);
+        console.log('✅ BrandStyle detectado:', conversationContext.brandStyle);
     }
     
     if (!conversationContext.targetAudience && (lowerMessage.includes('jovem') || lowerMessage.includes('adulto') || lowerMessage.includes('criança') || lowerMessage.includes('hip hop') || lowerMessage.includes('skate'))) {
         conversationContext.targetAudience = detectAudience(message);
+        console.log('✅ TargetAudience detectado:', conversationContext.targetAudience);
     }
     
     if (!conversationContext.colors && (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('vermelho') || lowerMessage.includes('amarelo') || lowerMessage.includes('roxo') || lowerMessage.includes('black') || lowerMessage.includes('yellow') || lowerMessage.includes('purple') || lowerMessage.includes('laranja') || lowerMessage.includes('orange'))) {
         conversationContext.colors = detectColors(message);
+        console.log('✅ Colors detectado:', conversationContext.colors);
     }
     
     if (!conversationContext.mood && (lowerMessage.includes('energia') || lowerMessage.includes('sofisticação') || lowerMessage.includes('rebeldia') || lowerMessage.includes('rebelde') || lowerMessage.includes('artistico'))) {
         conversationContext.mood = detectMood(message);
+        console.log('✅ Mood detectado:', conversationContext.mood);
     }
     
     if (!conversationContext.inspiration && (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design') || lowerMessage.includes('grafite') || lowerMessage.includes('bandeira') || lowerMessage.includes('caveira') || lowerMessage.includes('fogo') || lowerMessage.includes('skatista'))) {
         conversationContext.inspiration = message;
+        console.log('✅ Inspiration detectado:', conversationContext.inspiration);
     }
     
     // Detecta referências de marcas
