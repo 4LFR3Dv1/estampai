@@ -1052,21 +1052,9 @@ class AuthManager {
             }
         }
         
-        // Verificar se temos chaves reais do Stripe
-        console.log('Verificando chaves do Stripe:', {
-            hasKeys: !!window.STRIPE_KEYS,
-            mode: window.STRIPE_KEYS?.mode,
-            publishableKey: window.STRIPE_KEYS?.publishableKey,
-            startsWithPkLive: window.STRIPE_KEYS?.publishableKey?.startsWith('pk_live_')
-        });
-        
-        if (window.STRIPE_KEYS && window.STRIPE_KEYS.mode === 'live' && window.STRIPE_KEYS.publishableKey.startsWith('pk_live_')) {
-            console.log('✅ Usando Stripe real para checkout');
-            this.processRealPayment(planType, planName);
-        } else {
-            console.log('⚠️ Usando simulação de pagamento - Chaves não configuradas ou modo teste');
-            this.processSimulatedPayment(planType, planName);
-        }
+        // SEMPRE usar Stripe real - sem fallback
+        console.log('💳 Processando pagamento real via Stripe');
+        this.processRealPayment(planType, planName);
     }
     
     processRealPayment(planType, planName) {
@@ -1146,21 +1134,7 @@ class AuthManager {
         }
     }
     
-    processSimulatedPayment(planType, planName) {
-        // Mostra loading
-        this.showUpgradeLoading(planName);
-        
-        // Simula delay e ativa o plano
-        setTimeout(() => {
-            console.log(`Processando upgrade simulado: ${planType}`);
-            if (planType === 'daily_unlimited') {
-                this.simulateUpgradeToDailyUnlimited();
-            } else {
-                this.simulateUpgradeToPremium();
-            }
-            this.hideUpgradeLoading();
-        }, 2000);
-    }
+    // Função de simulação removida - SEMPRE usar pagamento real
     
     async createStripeCheckoutSession(planType) {
         const priceId = planType === 'daily_unlimited' ? 'price_daily_unlimited' : 'price_premium';

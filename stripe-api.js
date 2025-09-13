@@ -18,42 +18,40 @@ class StripeAPI {
         }
     }
     
-    // Cria sessão real do Stripe
+    // Cria sessão real do Stripe via backend
     async createRealCheckoutSession(planType, successUrl, cancelUrl) {
         console.log(`[Stripe Real] Criando sessão real para ${planType}`);
         
-        const priceId = planType === 'daily_unlimited' ? 'price_daily_unlimited' : 'price_premium';
         const amount = this.getPlanAmount(planType);
         
         try {
-            // Tentar criar sessão real via backend
+            // Criar sessão real via backend Node.js
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    priceId: priceId,
+                    planType: planType,
                     amount: amount,
-                    currency: 'brl',
+                    currency: 'BRL',
                     successUrl: successUrl,
-                    cancelUrl: cancelUrl,
-                    planType: planType
+                    cancelUrl: cancelUrl
                 })
             });
             
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
             
             const session = await response.json();
-            console.log('Sessão real criada:', session);
+            console.log('✅ Sessão real criada via backend:', session);
             return session;
             
         } catch (error) {
-            console.error('Erro ao criar sessão real:', error);
-            console.log('Fallback para simulação');
-            return await this.createSimulatedCheckoutSession(planType, successUrl, cancelUrl);
+            console.error('❌ Erro ao criar sessão real:', error);
+            throw error; // Não fazer fallback para simulação
         }
     }
     

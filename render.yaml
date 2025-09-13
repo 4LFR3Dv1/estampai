@@ -2,7 +2,28 @@
 # Este arquivo configura o deploy automático no Render
 
 services:
-  # Serviço principal do EstampAI
+  # Backend Node.js para Stripe
+  - type: web
+    name: estampai-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_MODE
+        value: live
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: GOOGLE_ANALYTICS_ID
+        value: G-E0Z97STDKV
+
+  # Serviço principal do EstampAI (Frontend)
   - type: web
     name: estampai-main
     env: static
