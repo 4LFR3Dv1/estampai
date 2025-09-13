@@ -3,6 +3,8 @@ stripe-keys.js
 .env
 .env.local
 .env.production
+.env.example
+*.env
 
 # Logs
 *.log
