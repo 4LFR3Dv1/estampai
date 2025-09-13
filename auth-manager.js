@@ -1153,7 +1153,9 @@ class AuthManager {
         }
         
         // Redireciona para Payment Link do Stripe
-        window.open('https://buy.stripe.com/bJefZgaji3F0g4J7EG2Nq01', '_blank');
+        const successUrl = `${window.location.origin}/chat.html?payment=success&plan=daily_unlimited`;
+        const paymentUrl = `https://buy.stripe.com/bJefZgaji3F0g4J7EG2Nq01?prefilled_email=${encodeURIComponent(this.getUserEmail())}&success_url=${encodeURIComponent(successUrl)}`;
+        window.open(paymentUrl, '_blank');
     }
     
     simulateUpgradeToDailyUnlimited() {
@@ -1185,7 +1187,9 @@ class AuthManager {
         }
         
         // Redireciona para Payment Link do Stripe
-        window.open('https://buy.stripe.com/cNiaEW8baa3o19Pgbc2Nq02', '_blank');
+        const successUrl = `${window.location.origin}/chat.html?payment=success&plan=premium`;
+        const paymentUrl = `https://buy.stripe.com/cNiaEW8baa3o19Pgbc2Nq02?prefilled_email=${encodeURIComponent(this.getUserEmail())}&success_url=${encodeURIComponent(successUrl)}`;
+        window.open(paymentUrl, '_blank');
     }
     
     simulateUpgradeToPremium() {
