@@ -327,6 +327,12 @@ async function finalizeConsultation() {
         if (window.authManager && window.authManager.isAuthenticated) {
             window.authManager.incrementStampUsage();
         }
+        
+        // Trackear geração de estampa no analytics
+        if (window.estampaiAnalytics) {
+            const analysis = createAnalysisFromContext();
+            window.estampaiAnalytics.trackStampGeneration(analysis.style, analysis.colors.join(','), 'generated');
+        }
     }, 2000);
 }
 

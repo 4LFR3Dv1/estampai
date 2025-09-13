@@ -75,6 +75,11 @@ class AuthManager {
             // Faz login automático após registro
             await this.login(email, password);
             
+            // Trackear registro no analytics
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackRegister(email, 'free');
+            }
+            
             return { success: true, message: 'Conta criada com sucesso!' };
             
         } catch (error) {
@@ -112,6 +117,11 @@ class AuthManager {
             
             // Atualiza interface
             this.updateUI();
+            
+            // Trackear login no analytics
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackLogin(email);
+            }
             
             return { success: true, message: 'Login realizado com sucesso!' };
             
@@ -445,6 +455,11 @@ class AuthManager {
             return;
         }
         
+        // Trackear clique em upgrade
+        if (window.estampaiAnalytics) {
+            window.estampaiAnalytics.trackUpgradeClick('daily_unlimited', 9.90);
+        }
+        
         // Redireciona para checkout do Stripe
         if (window.redirectToCheckout) {
             window.redirectToCheckout('daily_unlimited');
@@ -466,6 +481,11 @@ class AuthManager {
         this.updateUsageDisplay();
         this.updateHeader();
         
+        // Trackear sucesso do pagamento
+        if (window.estampaiAnalytics) {
+            window.estampaiAnalytics.trackPaymentSuccess('daily_unlimited', 9.90, 'sim_' + Date.now());
+        }
+        
         this.showMessage('Plano Dia Ilimitado ativado! Válido por 24 horas.', 'success');
     }
     
@@ -473,6 +493,11 @@ class AuthManager {
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
             return;
+        }
+        
+        // Trackear clique em upgrade
+        if (window.estampaiAnalytics) {
+            window.estampaiAnalytics.trackUpgradeClick('premium', 29.90);
         }
         
         // Redireciona para checkout do Stripe
@@ -495,6 +520,11 @@ class AuthManager {
         this.saveUserData();
         this.updateUsageDisplay();
         this.updateHeader();
+        
+        // Trackear sucesso do pagamento
+        if (window.estampaiAnalytics) {
+            window.estampaiAnalytics.trackPaymentSuccess('premium', 29.90, 'sim_' + Date.now());
+        }
         
         this.showMessage('Plano Premium ativado! Válido por 30 dias.', 'success');
     }

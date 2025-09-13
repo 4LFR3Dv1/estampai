@@ -636,7 +636,18 @@
     <script src="stripe-api.js?v=1"></script>
     <script src="stripe-config.js?v=1"></script>
     
+    <!-- Scripts do Analytics -->
+    <script src="analytics-config.js?v=1"></script>
+    <script src="analytics-events.js?v=1"></script>
+    
     <script>
+        // Inicializar Analytics
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.initializeAnalytics) {
+                window.initializeAnalytics();
+            }
+        });
+        
         // Funções de navegação
         function goToLogin() {
             window.location.href = 'login.html';

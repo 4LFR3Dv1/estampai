@@ -1126,6 +1126,8 @@
     <script src="stripe-keys.js?v=1"></script>
     <script src="stripe-api.js?v=1"></script>
     <script src="stripe-config.js?v=1"></script>
+    <script src="analytics-config.js?v=1"></script>
+    <script src="analytics-events.js?v=1"></script>
     <script src="auth-manager.js?v=1"></script>
     <script src="script.js?v=7"></script>
     
@@ -1140,6 +1142,11 @@
     <script>
         // Verifica autenticação ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar Analytics
+            if (window.initializeAnalytics) {
+                window.initializeAnalytics();
+            }
+            
             if (!window.authManager.isAuthenticated) {
                 window.location.href = 'login.html';
             }
