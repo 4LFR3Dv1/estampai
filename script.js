@@ -3022,10 +3022,11 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - Detailed stamp design (can be complex and elaborate)
         - Pure black background (#000000) - NO other colors in background
         - 1024x1024px square format
-        - Design centered in middle of frame
+        - Design FILLS THE ENTIRE FRAME - use full canvas space
         - High quality illustration with details
         - Rich colors and textures
         - Professional stamp quality
+        - Design should extend to edges and corners of the frame
         
         ABSOLUTELY FORBIDDEN:
         - NO scenes, NO landscapes, NO environments
@@ -3064,6 +3065,9 @@ function createOptimizedPrompt(userPrompt, analysis) {
         
         CRITICAL: Generate ONLY the design itself, NOT a screenshot of software or interface.
         The image should be the pure design element, not displayed on any screen or software.
+        
+        IMPORTANT: The design must FILL THE ENTIRE CANVAS - do not leave empty space around the design.
+        The stamp should extend to all edges and corners of the 1024x1024 frame.
     `.trim();
     
     // Adiciona instruções específicas para estética militar
