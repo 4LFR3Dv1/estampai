@@ -121,22 +121,26 @@ function loadInitialAvatar() {
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     
-    // Cria overlay com texto
-    const overlay = document.createElement('div');
-    overlay.className = 'avatar-overlay';
+    // Cria overlay com texto (apenas se não existir)
+    let overlay = mockupContainer.querySelector('.avatar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'avatar-overlay';
+        
+        const overlayText = document.createElement('div');
+        overlayText.className = 'avatar-overlay-text';
+        overlayText.innerHTML = `
+            <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;">👤 Seu Avatar</div>
+            <div style="font-size: 1rem; font-weight: 400; line-height: 1.5; max-width: 400px;">
+                Esta é uma prévia do seu avatar. Quando você gerar uma estampa, ela aparecerá na área destacada da camiseta!
+            </div>
+        `;
+        
+        overlay.appendChild(overlayText);
+        mockupContainer.appendChild(overlay);
+    }
     
-    const overlayText = document.createElement('div');
-    overlayText.className = 'avatar-overlay-text';
-    overlayText.innerHTML = `
-        <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;">👤 Seu Avatar</div>
-        <div style="font-size: 1rem; font-weight: 400; line-height: 1.5; max-width: 400px;">
-            Esta é uma prévia do seu avatar. Quando você gerar uma estampa, ela aparecerá na área destacada da camiseta!
-        </div>
-    `;
-    
-    overlay.appendChild(overlayText);
     mockupContainer.appendChild(canvas);
-    mockupContainer.appendChild(overlay);
     avatarContainer.appendChild(mockupContainer);
     
     console.log('✅ Canvas e overlay criados e adicionados ao container');
@@ -1925,12 +1929,16 @@ function displayAvatarWithStamp(stamp) {
     const initialCanvas = avatarContainer.querySelector('#initialAvatarCanvas');
     const overlay = avatarContainer.querySelector('.avatar-overlay');
     const explanation = avatarContainer.querySelector('.avatar-explanation');
-    if (initialCanvas) {
+    
+    // Remove todo o container do avatar inicial
+    if (initialCanvas && initialCanvas.parentElement) {
         initialCanvas.parentElement.remove();
     }
-    if (overlay) {
-        overlay.remove();
-    }
+    
+    // Remove overlays que possam ter ficado
+    const allOverlays = avatarContainer.querySelectorAll('.avatar-overlay');
+    allOverlays.forEach(overlay => overlay.remove());
+    
     if (explanation) {
         explanation.remove();
     }
