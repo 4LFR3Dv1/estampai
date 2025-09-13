@@ -502,27 +502,27 @@ function updateConversationContext(message) {
     const lowerMessage = message.toLowerCase();
     
     // Detecta e atualiza informações automaticamente
-    if (!conversationContext.brandName && (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('streetwear') || lowerMessage.includes('yellow'))) {
+    if (!conversationContext.brandName && (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('streetwear') || lowerMessage.includes('yellow') || lowerMessage.includes('dark y'))) {
         conversationContext.brandName = extractBrandName(message);
     }
     
-    if (!conversationContext.brandStyle && (lowerMessage.includes('streetwear') || lowerMessage.includes('minimalista') || lowerMessage.includes('vintage'))) {
+    if (!conversationContext.brandStyle && (lowerMessage.includes('streetwear') || lowerMessage.includes('minimalista') || lowerMessage.includes('vintage') || lowerMessage.includes('skate'))) {
         conversationContext.brandStyle = detectBrandStyle(message);
     }
     
-    if (!conversationContext.targetAudience && (lowerMessage.includes('jovem') || lowerMessage.includes('adulto') || lowerMessage.includes('criança') || lowerMessage.includes('hip hop'))) {
+    if (!conversationContext.targetAudience && (lowerMessage.includes('jovem') || lowerMessage.includes('adulto') || lowerMessage.includes('criança') || lowerMessage.includes('hip hop') || lowerMessage.includes('skate'))) {
         conversationContext.targetAudience = detectAudience(message);
     }
     
-    if (!conversationContext.colors && (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('vermelho') || lowerMessage.includes('amarelo') || lowerMessage.includes('roxo') || lowerMessage.includes('black') || lowerMessage.includes('yellow') || lowerMessage.includes('purple'))) {
+    if (!conversationContext.colors && (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('vermelho') || lowerMessage.includes('amarelo') || lowerMessage.includes('roxo') || lowerMessage.includes('black') || lowerMessage.includes('yellow') || lowerMessage.includes('purple') || lowerMessage.includes('laranja') || lowerMessage.includes('orange'))) {
         conversationContext.colors = detectColors(message);
     }
     
-    if (!conversationContext.mood && (lowerMessage.includes('energia') || lowerMessage.includes('sofisticação') || lowerMessage.includes('rebeldia'))) {
+    if (!conversationContext.mood && (lowerMessage.includes('energia') || lowerMessage.includes('sofisticação') || lowerMessage.includes('rebeldia') || lowerMessage.includes('rebelde') || lowerMessage.includes('artistico'))) {
         conversationContext.mood = detectMood(message);
     }
     
-    if (!conversationContext.inspiration && (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design') || lowerMessage.includes('grafite') || lowerMessage.includes('bandeira'))) {
+    if (!conversationContext.inspiration && (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design') || lowerMessage.includes('grafite') || lowerMessage.includes('bandeira') || lowerMessage.includes('caveira') || lowerMessage.includes('fogo') || lowerMessage.includes('skatista'))) {
         conversationContext.inspiration = message;
     }
     
@@ -765,6 +765,7 @@ function extractBrandName(message) {
 function detectBrandStyle(message) {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('streetwear') || lowerMessage.includes('supreme')) return 'streetwear';
+    if (lowerMessage.includes('skate') || lowerMessage.includes('skatista')) return 'skate';
     if (lowerMessage.includes('minimalista') || lowerMessage.includes('uniqlo')) return 'minimalista';
     if (lowerMessage.includes('vintage') || lowerMessage.includes('stüssy')) return 'vintage';
     if (lowerMessage.includes('futurista') || lowerMessage.includes('off-white')) return 'futurista';
@@ -815,9 +816,10 @@ function detectMood(message) {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('energia') || lowerMessage.includes('energy')) return 'energia';
     if (lowerMessage.includes('sofisticação') || lowerMessage.includes('sophisticated')) return 'sofisticação';
-    if (lowerMessage.includes('rebeldia') || lowerMessage.includes('rebellion')) return 'rebeldia';
+    if (lowerMessage.includes('rebeldia') || lowerMessage.includes('rebellion') || lowerMessage.includes('rebelde')) return 'rebeldia';
     if (lowerMessage.includes('elegância') || lowerMessage.includes('elegant')) return 'elegância';
     if (lowerMessage.includes('jovem') || lowerMessage.includes('young')) return 'jovem';
+    if (lowerMessage.includes('artistico') || lowerMessage.includes('artistic')) return 'artistico';
     return 'energia'; // padrão
 }
 
