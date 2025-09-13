@@ -2646,37 +2646,42 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     const moodDesc = moodDescriptions[mood] || 'balanced';
     
-    // Cria o prompt otimizado - focado em elementos gráficos vetoriais
+    // Cria o prompt otimizado - EXTREMAMENTE específico para evitar cenas
     const optimizedPrompt = `
-        Create a vector graphic design element: ${userPrompt}
+        Create a SINGLE SYMBOL or ICON: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
         Mood: ${moodDesc}
         
-        CRITICAL REQUIREMENTS:
-        - Vector-style graphic element (clean lines, solid shapes, geometric forms)
-        - Pure black background (#000000)
+        MANDATORY FORMAT:
+        - ONE single symbol/icon only (like a logo)
+        - Pure black background (#000000) - NO other colors in background
         - 1024x1024px square format
-        - Element centered in frame
-        - High contrast design
-        - Clean, simple composition
-        - Vector art style (flat design, solid colors, sharp edges)
-        - Scalable design elements
+        - Symbol centered in middle of frame
+        - Flat design with solid colors only
+        - Clean geometric shapes
+        - No details, no shading, no textures
         
-        STRICTLY FORBIDDEN:
-        - Scenes or landscapes
-        - Multiple characters or people
-        - Complex backgrounds
-        - Text or words
-        - Grid lines or overlays
-        - Product mockups
-        - Clothing or garments
-        - Environmental elements
-        - Photorealistic elements
-        - Gradients or complex shading
+        ABSOLUTELY FORBIDDEN:
+        - NO scenes, NO landscapes, NO environments
+        - NO multiple characters or people
+        - NO backgrounds with colors or patterns
+        - NO text or words
+        - NO grid lines or overlays
+        - NO product mockups or clothing
+        - NO complex illustrations
+        - NO gradients or shadows
+        - NO multiple elements
         
-        Result: Vector-style graphic element on pure black background, clean and scalable.
+        EXAMPLES OF WHAT TO CREATE:
+        - A single geometric symbol
+        - A simple icon
+        - A minimalist logo
+        - A basic shape with pattern
+        - A single character silhouette (not a scene)
+        
+        Result: ONE simple symbol/icon on pure black background, like a logo.
     `.trim();
     
     return optimizedPrompt;
