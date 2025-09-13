@@ -1135,7 +1135,24 @@ class AuthManager {
         }
     }
     
-    // Função de simulação removida - SEMPRE usar pagamento real
+    // Função de simulação temporária (enquanto backend não está disponível)
+    processSimulatedPayment(planType, planName) {
+        console.log(`[Simulação Temporária] Processando upgrade: ${planType}`);
+        
+        // Mostra loading
+        this.showUpgradeLoading(planName);
+        
+        // Simula delay e ativa o plano
+        setTimeout(() => {
+            console.log(`Processando upgrade simulado: ${planType}`);
+            if (planType === 'daily_unlimited') {
+                this.simulateUpgradeToDailyUnlimited();
+            } else {
+                this.simulateUpgradeToPremium();
+            }
+            this.hideUpgradeLoading();
+        }, 2000);
+    }
     
     async createStripeCheckoutSession(planType) {
         const priceId = planType === 'daily_unlimited' ? 'price_daily_unlimited' : 'price_premium';

@@ -2,9 +2,9 @@
 # Este arquivo configura o deploy automático no Render
 
 services:
-  # Backend Node.js para Stripe
+  # Serviço unificado Node.js (Backend + Frontend)
   - type: web
-    name: estampai-backend
+    name: estampai-unified
     env: node
     buildCommand: npm install
     startCommand: npm start
@@ -22,33 +22,6 @@ services:
         sync: false
       - key: GOOGLE_ANALYTICS_ID
         value: G-E0Z97STDKV
-
-  # Serviço principal do EstampAI (Frontend)
-  - type: web
-    name: estampai-main
-    env: static
-    buildCommand: ./build.sh
-    staticPublishPath: .
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    headers:
-      - path: /*
-        name: Access-Control-Allow-Origin
-        value: "*"
-      - path: /*
-        name: Access-Control-Allow-Methods
-        value: "GET, POST, OPTIONS"
-      - path: /*
-        name: Access-Control-Allow-Headers
-        value: "Content-Type, Authorization"
-      - path: /embed/*
-        name: X-Frame-Options
-        value: "ALLOWALL"
-      - path: /embed/*
-        name: Content-Security-Policy
-        value: "frame-ancestors *;"
 
   # Serviço para o embed (opcional - separado)
   - type: web
