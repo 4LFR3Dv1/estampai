@@ -24,6 +24,9 @@ class AuthManager {
         // Verifica se precisa resetar limite diário
         this.checkDailyReset();
         
+        // Verifica expiração de planos
+        this.checkPlanExpiration();
+        
         // Atualiza interface baseada no status de autenticação
         this.updateUI();
     }
@@ -145,7 +148,17 @@ class AuthManager {
             return { canGenerate: false, reason: 'Usuário não autenticado' };
         }
         
-        // Verifica limite diário
+        // Plano Dia Ilimitado - sem limites
+        if (this.usageData.planType === 'daily_unlimited') {
+            return { canGenerate: true };
+        }
+        
+        // Plano Premium - sem limites
+        if (this.usageData.planType === 'premium') {
+            return { canGenerate: true };
+        }
+        
+        // Plano Gratuito - verifica limite diário
         if (this.usageData.stampsGenerated >= this.usageData.dailyLimit) {
             return { 
                 canGenerate: false, 
@@ -257,21 +270,40 @@ class AuthManager {
     updateUsageDisplay() {
         const usageDisplay = document.getElementById('usageDisplay');
         if (usageDisplay) {
-            const remaining = this.usageData.dailyLimit - this.usageData.stampsGenerated;
-            usageDisplay.innerHTML = `
-                <div class="usage-info">
-                    <div class="usage-stats">
-                        <span class="usage-label">Estampas hoje:</span>
-                        <span class="usage-count">${this.usageData.stampsGenerated}/${this.usageData.dailyLimit}</span>
+            // Plano Dia Ilimitado ou Premium - sem limites
+            if (this.usageData.planType === 'daily_unlimited' || this.usageData.planType === 'premium') {
+                usageDisplay.innerHTML = `
+                    <div class="usage-info">
+                        <div class="usage-stats">
+                            <span class="usage-label">Estampas geradas:</span>
+                            <span class="usage-count">${this.usageData.stampsGenerated}</span>
+                        </div>
+                        <div class="usage-progress">
+                            <div class="progress-bar" style="width: 100%; background: linear-gradient(90deg, #4CAF50, #8BC34A);"></div>
+                        </div>
+                        <div class="usage-remaining">
+                            ${this.usageData.planType === 'daily_unlimited' ? 'Ilimitado por 24h' : 'Ilimitado'}
+                        </div>
                     </div>
-                    <div class="usage-progress">
-                        <div class="progress-bar" style="width: ${(this.usageData.stampsGenerated / this.usageData.dailyLimit) * 100}%"></div>
+                `;
+            } else {
+                // Plano Gratuito - com limite
+                const remaining = this.usageData.dailyLimit - this.usageData.stampsGenerated;
+                usageDisplay.innerHTML = `
+                    <div class="usage-info">
+                        <div class="usage-stats">
+                            <span class="usage-label">Estampas hoje:</span>
+                            <span class="usage-count">${this.usageData.stampsGenerated}/${this.usageData.dailyLimit}</span>
+                        </div>
+                        <div class="usage-progress">
+                            <div class="progress-bar" style="width: ${(this.usageData.stampsGenerated / this.usageData.dailyLimit) * 100}%"></div>
+                        </div>
+                        <div class="usage-remaining">
+                            ${remaining > 0 ? `${remaining} restantes` : 'Limite atingido'}
+                        </div>
                     </div>
-                    <div class="usage-remaining">
-                        ${remaining > 0 ? `${remaining} restantes` : 'Limite atingido'}
-                    </div>
-                </div>
-            `;
+                `;
+            }
         }
     }
     
@@ -317,8 +349,8 @@ class AuthManager {
     getPlanDisplayName() {
         const plans = {
             'free': 'Gratuito',
-            'premium': 'Premium',
-            'pro': 'Pro'
+            'daily_unlimited': 'Dia Ilimitado',
+            'premium': 'Premium'
         };
         return plans[this.usageData.planType] || 'Gratuito';
     }
@@ -360,9 +392,20 @@ class AuthManager {
                     <h3>Seu Plano</h3>
                     <div class="plan-info">
                         <span class="plan-name">${this.getPlanDisplayName()}</span>
-                        <button class="upgrade-btn" onclick="authManager.showUpgrade()">
-                            Upgrade
-                        </button>
+                        ${this.usageData.planType === 'free' ? `
+                            <div class="upgrade-buttons">
+                                <button class="upgrade-btn daily" onclick="authManager.upgradeToDailyUnlimited()">
+                                    Dia Ilimitado
+                                </button>
+                                <button class="upgrade-btn premium" onclick="authManager.upgradeToPremium()">
+                                    Premium
+                                </button>
+                            </div>
+                        ` : `
+                            <button class="upgrade-btn" onclick="authManager.showUpgrade()">
+                                Gerenciar
+                            </button>
+                        `}
                     </div>
                 </div>
                 
@@ -392,6 +435,70 @@ class AuthManager {
     showUpgrade() {
         // Implementar página de upgrade
         console.log('Mostrar opções de upgrade');
+    }
+    
+    // ===== FUNÇÕES DE PLANOS =====
+    
+    upgradeToDailyUnlimited() {
+        if (!this.isAuthenticated) {
+            this.showMessage('Você precisa fazer login primeiro', 'error');
+            return;
+        }
+        
+        // Simula compra do plano Dia Ilimitado
+        this.usageData.planType = 'daily_unlimited';
+        this.usageData.dailyLimit = 999999; // Praticamente ilimitado
+        this.usageData.stampsGenerated = 0; // Reset contador
+        this.usageData.purchaseDate = new Date().toISOString();
+        this.usageData.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
+        
+        this.saveUserData();
+        this.updateUsageDisplay();
+        this.updateHeader();
+        
+        this.showMessage('Plano Dia Ilimitado ativado! Válido por 24 horas.', 'success');
+    }
+    
+    upgradeToPremium() {
+        if (!this.isAuthenticated) {
+            this.showMessage('Você precisa fazer login primeiro', 'error');
+            return;
+        }
+        
+        // Simula compra do plano Premium
+        this.usageData.planType = 'premium';
+        this.usageData.dailyLimit = 999999; // Praticamente ilimitado
+        this.usageData.stampsGenerated = 0; // Reset contador
+        this.usageData.purchaseDate = new Date().toISOString();
+        this.usageData.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 dias
+        
+        this.saveUserData();
+        this.updateUsageDisplay();
+        this.updateHeader();
+        
+        this.showMessage('Plano Premium ativado! Válido por 30 dias.', 'success');
+    }
+    
+    checkPlanExpiration() {
+        if (this.usageData.expiresAt) {
+            const now = new Date();
+            const expiresAt = new Date(this.usageData.expiresAt);
+            
+            if (now > expiresAt) {
+                // Plano expirado - volta para gratuito
+                this.usageData.planType = 'free';
+                this.usageData.dailyLimit = 3;
+                this.usageData.stampsGenerated = 0;
+                this.usageData.expiresAt = null;
+                this.usageData.purchaseDate = null;
+                
+                this.saveUserData();
+                this.updateUsageDisplay();
+                this.updateHeader();
+                
+                this.showMessage('Seu plano expirou. Voltou para o plano gratuito.', 'error');
+            }
+        }
     }
     
     // ===== TRATAMENTO DE FORMULÁRIOS =====
