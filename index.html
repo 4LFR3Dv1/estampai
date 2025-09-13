@@ -734,122 +734,6 @@
             background: #f0f0f0;
         }
         
-        /* Sugestões Visuais Premium - Tema Escuro */
-        .suggestions-container {
-            margin: var(--space-6) 0;
-            padding: var(--space-6);
-            background: #1a1a1a;
-            border-radius: var(--radius-2xl);
-            border: 1px solid #333333;
-            box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1);
-        }
-        
-        .suggestions-label {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: var(--space-4);
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .suggestions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: var(--space-4);
-        }
-        
-        .suggestion-card {
-            background: #2a2a2a;
-            border: 2px solid #333333;
-            border-radius: var(--radius-xl);
-            padding: var(--space-4);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
-        }
-        
-        .suggestion-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #ffffff, #cccccc);
-            transform: scaleX(0);
-            transition: transform var(--transition-fast);
-        }
-        
-        .suggestion-card:hover {
-            border-color: #666666;
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
-        }
-        
-        .suggestion-card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .suggestion-icon {
-            font-size: 2rem;
-            margin-bottom: var(--space-2);
-            display: block;
-        }
-        
-        .suggestion-title {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: var(--space-1);
-        }
-        
-        .suggestion-desc {
-            font-size: var(--font-size-xs);
-            color: #cccccc;
-            line-height: 1.4;
-        }
-        
-        /* Categorias específicas - Tema Escuro */
-        .suggestion-card.floral {
-            border-color: #fbbf24;
-        }
-        
-        .suggestion-card.floral:hover {
-            border-color: #f59e0b;
-            background: #2a2a1a;
-        }
-        
-        .suggestion-card.geometric {
-            border-color: #3b82f6;
-        }
-        
-        .suggestion-card.geometric:hover {
-            border-color: #2563eb;
-            background: #1a1a2a;
-        }
-        
-        .suggestion-card.abstract {
-            border-color: #8b5cf6;
-        }
-        
-        .suggestion-card.abstract:hover {
-            border-color: #7c3aed;
-            background: #2a1a2a;
-        }
-        
-        .suggestion-card.figurative {
-            border-color: #ef4444;
-        }
-        
-        .suggestion-card.figurative:hover {
-            border-color: #dc2626;
-            background: #2a1a1a;
-        }
         
         .actions-container {
             margin: var(--space-4) 0;
@@ -1145,14 +1029,6 @@
                 flex-direction: column;
             }
             
-            .suggestions-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: var(--space-3);
-            }
-            
-            .suggestion-card {
-                padding: var(--space-3);
-            }
             
             .empty-state-features {
                 grid-template-columns: repeat(3, 1fr);
@@ -1193,9 +1069,6 @@
                 max-width: 90%;
             }
             
-            .suggestions-grid {
-                grid-template-columns: 1fr;
-            }
             
             .empty-state-features {
                 grid-template-columns: 1fr;
@@ -1291,36 +1164,6 @@
                     <div class="message-content">
                         Olá! Sou a EstampAI. Conte-me sobre a estampa que você gostaria de criar. 
                         Seja específico sobre cores, estilo, tema e qualquer detalhe importante!
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Sugestões Visuais Premium -->
-            <div class="suggestions-container" id="suggestionsContainer">
-                <div class="suggestions-label">
-                    <span>💡</span>
-                    <span>Sugestões Rápidas</span>
-                </div>
-                <div class="suggestions-grid">
-                    <div class="suggestion-card floral" data-prompt="Estampa floral elegante com tons de rosa pastel">
-                        <div class="suggestion-icon">🌸</div>
-                        <div class="suggestion-title">Floral Elegante</div>
-                        <div class="suggestion-desc">Flores delicadas em tons suaves</div>
-                    </div>
-                    <div class="suggestion-card geometric" data-prompt="Design geométrico moderno em azul e branco">
-                        <div class="suggestion-icon">🔷</div>
-                        <div class="suggestion-title">Geométrico</div>
-                        <div class="suggestion-desc">Formas precisas e simétricas</div>
-                    </div>
-                    <div class="suggestion-card abstract" data-prompt="Arte abstrata vibrante e colorida">
-                        <div class="suggestion-icon">🎨</div>
-                        <div class="suggestion-title">Abstrato</div>
-                        <div class="suggestion-desc">Composições expressivas</div>
-                    </div>
-                    <div class="suggestion-card figurative" data-prompt="Estrelas e corações em preto e vermelho">
-                        <div class="suggestion-icon">⭐</div>
-                        <div class="suggestion-title">Figurativo</div>
-                        <div class="suggestion-desc">Símbolos e figuras reconhecíveis</div>
                     </div>
                 </div>
             </div>
@@ -1442,29 +1285,8 @@
     <script>
         // Funções para as melhorias da interface
         document.addEventListener('DOMContentLoaded', function() {
-            initializeSuggestions();
             initializeHeaderActions();
         });
-        
-        // Inicializar sugestões visuais
-        function initializeSuggestions() {
-            const suggestionCards = document.querySelectorAll('.suggestion-card');
-            suggestionCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const prompt = this.getAttribute('data-prompt');
-                    if (prompt) {
-                        document.getElementById('messageInput').value = prompt;
-                        document.getElementById('messageInput').focus();
-                        
-                        // Adicionar animação de clique
-                        this.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            this.style.transform = '';
-                        }, 150);
-                    }
-                });
-            });
-        }
         
         // Inicializar ações do header
         function initializeHeaderActions() {
@@ -1503,26 +1325,6 @@
             container.innerHTML = loadingHTML;
         }
         
-        // Função para esconder sugestões após primeira interação
-        function hideSuggestions() {
-            const suggestionsContainer = document.getElementById('suggestionsContainer');
-            if (suggestionsContainer) {
-                suggestionsContainer.style.opacity = '0';
-                suggestionsContainer.style.transform = 'translateY(-20px)';
-                setTimeout(() => {
-                    suggestionsContainer.style.display = 'none';
-                }, 300);
-            }
-        }
-        
-        // Interceptar envio de mensagem para esconder sugestões
-        const originalSendMessage = window.sendMessage;
-        if (originalSendMessage) {
-            window.sendMessage = function() {
-                hideSuggestions();
-                return originalSendMessage.apply(this, arguments);
-            };
-        }
     </script>
 </body>
 </html>
