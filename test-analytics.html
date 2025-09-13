@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Analytics - EstampAI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+        }
+        .test-section {
+            background: #1a1a1a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .log {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste do Google Analytics - EstampAI</h1>
+    
+    <div class="test-section">
+        <h2>📊 Status do Analytics</h2>
+        <div id="analyticsStatus">Carregando...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎯 Testar Eventos</h2>
+        <button onclick="testLogin()">Testar Login</button>
+        <button onclick="testRegister()">Testar Registro</button>
+        <button onclick="testUpgrade()">Testar Upgrade</button>
+        <button onclick="testStampGeneration()">Testar Geração de Estampa</button>
+        <button onclick="testPayment()">Testar Pagamento</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📝 Log de Eventos</h2>
+        <div id="eventLog" class="log"></div>
+        <button onclick="clearLog()">Limpar Log</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔍 Verificar no GA4</h2>
+        <p>1. Acesse <a href="https://analytics.google.com" target="_blank">analytics.google.com</a></p>
+        <p>2. Vá para "Relatórios" → "Tempo Real"</p>
+        <p>3. Clique nos botões acima e veja os eventos aparecendo</p>
+    </div>
+
+    <!-- Scripts do Analytics -->
+    <script src="analytics-config.js?v=1"></script>
+    <script src="analytics-events.js?v=1"></script>
+    
+    <script>
+        // Inicializar Analytics
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.initializeAnalytics) {
+                window.initializeAnalytics();
+                updateStatus();
+            }
+        });
+        
+        function updateStatus() {
+            const status = document.getElementById('analyticsStatus');
+            if (window.gtag && window.ANALYTICS_CONFIG) {
+                status.innerHTML = `
+                    ✅ <strong>Analytics Ativo</strong><br>
+                    📊 ID: ${window.ANALYTICS_CONFIG.measurementId}<br>
+                    🐛 Debug: ${window.ANALYTICS_CONFIG.debug ? 'Ativado' : 'Desativado'}<br>
+                    📈 DataLayer: ${window.dataLayer ? 'Carregado' : 'Não carregado'}
+                `;
+            } else {
+                status.innerHTML = '❌ Analytics não carregado';
+            }
+        }
+        
+        function logEvent(eventName, parameters) {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `[${timestamp}] ${eventName}: ${JSON.stringify(parameters)}<br>`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function testLogin() {
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackLogin('teste@estampai.com');
+                logEvent('login', { email: 'teste@estampai.com' });
+            }
+        }
+        
+        function testRegister() {
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackRegister('teste@estampai.com', 'free');
+                logEvent('register', { email: 'teste@estampai.com', plan: 'free' });
+            }
+        }
+        
+        function testUpgrade() {
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackUpgradeClick('daily_unlimited', 9.90);
+                logEvent('upgrade_click', { plan: 'daily_unlimited', price: 9.90 });
+            }
+        }
+        
+        function testStampGeneration() {
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackStampGeneration('abstract', 'red,blue', 'teste de estampa');
+                logEvent('stamp_generated', { style: 'abstract', colors: 'red,blue' });
+            }
+        }
+        
+        function testPayment() {
+            if (window.estampaiAnalytics) {
+                window.estampaiAnalytics.trackPaymentSuccess('daily_unlimited', 9.90, 'test_' + Date.now());
+                logEvent('payment_success', { plan: 'daily_unlimited', price: 9.90 });
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('eventLog').innerHTML = '';
+        }
+        
+        // Interceptar eventos do analytics para mostrar no log
+        const originalTrackEvent = window.trackEvent;
+        if (originalTrackEvent) {
+            window.trackEvent = function(eventName, parameters) {
+                logEvent(eventName, parameters);
+                return originalTrackEvent(eventName, parameters);
+            };
+        }
+    </script>
+</body>
+</html>

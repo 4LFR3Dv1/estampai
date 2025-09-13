@@ -1,7 +1,7 @@
 // 📊 Configuração do Google Analytics 4 - EstampAI
 const ANALYTICS_CONFIG = {
-    // ID de medição do GA4 (substituir pelo seu)
-    measurementId: 'G-XXXXXXXXXX', // SEU ID DE MEDIÇÃO AQUI
+    // ID de medição do GA4 - EstampAI
+    measurementId: 'G-E0Z97STDKV',
     
     // Configurações de eventos
     events: {
@@ -33,7 +33,7 @@ const ANALYTICS_CONFIG = {
     },
     
     // Configurações de debug
-    debug: false, // true para desenvolvimento
+    debug: true, // true para desenvolvimento - ativado para ver eventos
     enabled: true // false para desabilitar
 };
 
@@ -44,13 +44,13 @@ function initializeAnalytics() {
         return;
     }
     
-    // Carrega o script do GA4
+    // Carrega o script do GA4 (sua tag real)
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.measurementId}`;
     document.head.appendChild(script);
     
-    // Configura o gtag
+    // Configura o gtag (sua configuração real)
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     window.gtag = gtag;
@@ -62,7 +62,7 @@ function initializeAnalytics() {
         custom_map: ANALYTICS_CONFIG.customParameters
     });
     
-    console.log('📊 Google Analytics 4 inicializado');
+    console.log('📊 Google Analytics 4 inicializado com ID:', ANALYTICS_CONFIG.measurementId);
 }
 
 // Função para enviar eventos
