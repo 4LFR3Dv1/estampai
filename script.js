@@ -497,7 +497,7 @@ function updateConversationContext(message) {
     const lowerMessage = message.toLowerCase();
     
     // Detecta e atualiza informações automaticamente
-    if (!conversationContext.brandName && (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('streetwear'))) {
+    if (!conversationContext.brandName && (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('streetwear') || lowerMessage.includes('yellow'))) {
         conversationContext.brandName = extractBrandName(message);
     }
     
@@ -505,11 +505,11 @@ function updateConversationContext(message) {
         conversationContext.brandStyle = detectBrandStyle(message);
     }
     
-    if (!conversationContext.targetAudience && (lowerMessage.includes('jovem') || lowerMessage.includes('adulto') || lowerMessage.includes('criança'))) {
+    if (!conversationContext.targetAudience && (lowerMessage.includes('jovem') || lowerMessage.includes('adulto') || lowerMessage.includes('criança') || lowerMessage.includes('hip hop'))) {
         conversationContext.targetAudience = detectAudience(message);
     }
     
-    if (!conversationContext.colors && (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('vermelho'))) {
+    if (!conversationContext.colors && (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('vermelho') || lowerMessage.includes('amarelo') || lowerMessage.includes('roxo') || lowerMessage.includes('black') || lowerMessage.includes('yellow') || lowerMessage.includes('purple'))) {
         conversationContext.colors = detectColors(message);
     }
     
@@ -517,7 +517,7 @@ function updateConversationContext(message) {
         conversationContext.mood = detectMood(message);
     }
     
-    if (!conversationContext.inspiration && (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design'))) {
+    if (!conversationContext.inspiration && (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design') || lowerMessage.includes('grafite') || lowerMessage.includes('bandeira'))) {
         conversationContext.inspiration = message;
     }
     
@@ -675,6 +675,17 @@ function hasEnoughInfoForStamp() {
     if (conversationContext.mood) infoCount++;
     if (conversationContext.inspiration) infoCount++;
     
+    // Debug: mostra informações coletadas
+    console.log('🔍 Informações coletadas:', {
+        brandName: conversationContext.brandName,
+        brandStyle: conversationContext.brandStyle,
+        targetAudience: conversationContext.targetAudience,
+        colors: conversationContext.colors,
+        mood: conversationContext.mood,
+        inspiration: conversationContext.inspiration,
+        total: infoCount
+    });
+    
     // Precisa de pelo menos 4 informações para gerar estampa
     return infoCount >= 4;
 }
@@ -788,6 +799,9 @@ function detectColors(message) {
     if (lowerMessage.includes('azul') || lowerMessage.includes('blue')) colors.push('azul');
     if (lowerMessage.includes('verde') || lowerMessage.includes('green')) colors.push('verde');
     if (lowerMessage.includes('amarelo') || lowerMessage.includes('yellow')) colors.push('amarelo');
+    if (lowerMessage.includes('roxo') || lowerMessage.includes('purple')) colors.push('roxo');
+    if (lowerMessage.includes('laranja') || lowerMessage.includes('orange')) colors.push('laranja');
+    if (lowerMessage.includes('rosa') || lowerMessage.includes('pink')) colors.push('rosa');
     
     return colors.length > 0 ? colors.join(', ') : 'preto e branco';
 }
