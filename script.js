@@ -895,9 +895,33 @@ async function updateAvatarDisplay(stamp) {
         };
         img.onerror = function() {
             console.error('Erro ao carregar imagem da estampa - CORS ou URL inválida');
-            console.log('Usando fallback: criando estampa desenhada');
-            // Fallback: cria uma estampa desenhada
-            createFallbackStamp(stamp);
+            console.log('Tentando com proxy para contornar CORS...');
+            
+            // Tenta com proxy para contornar CORS
+            const proxyImg = new Image();
+            proxyImg.crossOrigin = 'anonymous';
+            proxyImg.onload = function() {
+                console.log('✅ Imagem carregada com sucesso via proxy');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(proxyImg, x, y, width, height);
+                updateStampDisplay(stamp);
+            };
+            proxyImg.onerror = function() {
+                console.error('Erro mesmo com proxy, usando fallback');
+                createFallbackStamp(stamp);
+            };
+            
+            // Tenta baixar a imagem e converter para base64
+            downloadImageAsBase64(stamp.imageUrl)
+                .then(base64 => {
+                    console.log('✅ Imagem convertida para base64 com sucesso');
+                    proxyImg.src = base64;
+                })
+                .catch(error => {
+                    console.error('Erro ao converter imagem:', error);
+                    createFallbackStamp(stamp);
+                });
         };
         img.src = stamp.imageUrl;
             } else {
@@ -2013,6 +2037,37 @@ function createFallbackStamp(stamp) {
     
     // Atualiza o display com a estampa de fallback
     updateStampDisplay(fallbackStamp);
+}
+
+async function downloadImageAsBase64(imageUrl) {
+    try {
+        console.log('🔄 Baixando imagem da IA...');
+        
+        // Usa fetch para baixar a imagem
+        const response = await fetch(imageUrl, {
+            mode: 'cors',
+            credentials: 'omit'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Converte para blob
+        const blob = await response.blob();
+        
+        // Converte blob para base64
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+        
+    } catch (error) {
+        console.error('Erro ao baixar imagem:', error);
+        throw error;
+    }
 }
 
 function drawAvatarWithStamp(canvas, stamp) {
