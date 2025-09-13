@@ -2646,33 +2646,29 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     const moodDesc = moodDescriptions[mood] || 'balanced';
     
-    // Cria o prompt otimizado para estampa transparente
+    // Cria o prompt otimizado - mais equilibrado
     const optimizedPrompt = `
-        Create a transparent design element: ${userPrompt}
+        Create an isolated design: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
         Mood: ${moodDesc}
         Size: ${size} scale
         
-        CRITICAL REQUIREMENTS:
-        - Design element ONLY, transparent background
-        - PNG format with alpha channel
+        Requirements:
+        - Isolated design element
+        - Solid black background
         - Square 1024x1024px format
         - High quality illustration
         - Centered composition
-        - No background color or texture
         
-        STRICTLY FORBIDDEN:
-        - T-shirt, shirt, clothing, garment, apparel
-        - Mockup, mannequin, model, person wearing
-        - Product photography, lifestyle shots
-        - Any background color, patterns, textures
-        - Text, typography, words, letters
-        - Borders, frames, decorative elements
-        - Solid backgrounds of any color
+        Do not include:
+        - T-shirt, clothing, mockup, product or mannequin
+        - Colored or patterned background
+        - Text or typography
+        - Borders or frames
         
-        OUTPUT: Transparent design element with alpha channel, ready for overlay on any mockup.
+        Result: Clean isolated design on black background, perfect for t-shirt printing.
     `.trim();
     
     return optimizedPrompt;
