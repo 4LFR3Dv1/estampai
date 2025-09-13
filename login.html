@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EstampAI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="design-system.css">
+    
+    <style>
+        /* Estilos específicos da página de Login - Tema Escuro */
+        body {
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-6);
+        }
+        
+        /* Container principal */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            border: 1px solid #333333;
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffffff, #cccccc);
+        }
+        
+        /* Header da página */
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .login-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .login-logo .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: #2a2a2a;
+            border-radius: var(--radius-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 1px solid #444444;
+        }
+        
+        .login-logo h1 {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .login-logo p {
+            color: #cccccc;
+            font-size: var(--font-size-sm);
+            margin: 0;
+        }
+        
+        /* Formulários */
+        .auth-form {
+            display: block;
+        }
+        
+        .auth-form.hidden {
+            display: none;
+        }
+        
+        .auth-form h2 {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: var(--space-6);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: var(--space-2);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: var(--space-3);
+            border: 2px solid #333333;
+            border-radius: var(--radius-lg);
+            background: #0a0a0a;
+            color: #ffffff;
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-fast);
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-group input::placeholder {
+            color: #666666;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: var(--space-4);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+        }
+        
+        .auth-btn.primary {
+            background: #ffffff;
+            color: #000000;
+        }
+        
+        .auth-btn.primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .auth-switch {
+            text-align: center;
+        }
+        
+        .auth-switch p {
+            color: #cccccc;
+            font-size: var(--font-size-sm);
+        }
+        
+        .auth-switch a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-message {
+            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            margin-top: var(--space-4);
+            text-align: center;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+        
+        .auth-message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .auth-message.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        /* Link para voltar */
+        .back-link {
+            position: absolute;
+            top: var(--space-6);
+            left: var(--space-6);
+            color: #cccccc;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            transition: color var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: #ffffff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: var(--space-6);
+                margin: var(--space-4);
+            }
+            
+            .back-link {
+                position: static;
+                margin-bottom: var(--space-4);
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Link para voltar -->
+    <a href="landing.html" class="back-link">
+        <span>←</span>
+        <span>Voltar</span>
+    </a>
+
+    <!-- Container principal -->
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-logo">
+                <div class="logo-icon">🎨</div>
+                <h1>EstampAI</h1>
+                <p>Entre na sua conta ou crie uma nova</p>
+            </div>
+        </div>
+        
+        <!-- Formulário de Login -->
+        <div id="loginForm" class="auth-form">
+            <h2>Entrar</h2>
+            <form onsubmit="authManager.handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required placeholder="seu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" required placeholder="Sua senha">
+                </div>
+                
+                <button type="submit" class="auth-btn primary">
+                    <span>🔑</span>
+                    <span>Entrar</span>
+                </button>
+            </form>
+            
+            <div class="auth-switch">
+                <p>Não tem conta? <a href="#" onclick="authManager.showRegister()">Registre-se</a></p>
+            </div>
+        </div>
+        
+        <!-- Formulário de Registro -->
+        <div id="registerForm" class="auth-form hidden">
+            <h2>Criar Conta</h2>
+            <form onsubmit="authManager.handleRegister(event)">
+                <div class="form-group">
+                    <label for="registerName">Nome</label>
+                    <input type="text" id="registerName" required placeholder="Seu nome completo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required placeholder="seu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" required placeholder="Mínimo 6 caracteres">
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPassword" required placeholder="Digite a senha novamente">
+                </div>
+                
+                <button type="submit" class="auth-btn primary">
+                    <span>📝</span>
+                    <span>Criar Conta</span>
+                </button>
+            </form>
+            
+            <div class="auth-switch">
+                <p>Já tem conta? <a href="#" onclick="authManager.showLogin()">Entre aqui</a></p>
+            </div>
+        </div>
+        
+        <!-- Mensagens de feedback -->
+        <div id="authMessage" class="auth-message" style="display: none;"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js?v=1"></script>
+    <script src="auth-manager.js?v=1"></script>
+    
+    <script>
+        // Modifica o AuthManager para redirecionar após login
+        const originalLogin = window.authManager.login;
+        window.authManager.login = async function(email, password) {
+            const result = await originalLogin.call(this, email, password);
+            if (result.success) {
+                // Redireciona para o chat após login bem-sucedido
+                setTimeout(() => {
+                    window.location.href = 'chat.html';
+                }, 1000);
+            }
+            return result;
+        };
+        
+        // Modifica o AuthManager para redirecionar após registro
+        const originalRegister = window.authManager.register;
+        window.authManager.register = async function(email, password, name) {
+            const result = await originalRegister.call(this, email, password, name);
+            if (result.success) {
+                // Redireciona para o chat após registro bem-sucedido
+                setTimeout(() => {
+                    window.location.href = 'chat.html';
+                }, 1000);
+            }
+            return result;
+        };
+        
+        // Verifica se já está logado
+        if (window.authManager.isAuthenticated) {
+            window.location.href = 'chat.html';
+        }
+    </script>
+</body>
+</html>

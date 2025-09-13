@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstampAI - Gerador de Estampas com IA</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="design-system.css">
+    
+    <style>
+        /* Estilos específicos da Landing Page - Tema Escuro */
+        body {
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Header Premium */
+        .header {
+            background: #000000;
+            color: white;
+            padding: var(--space-8) 0;
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #333333;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.05"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 1px solid #333333;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-text h1 {
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            margin-bottom: var(--space-1);
+            color: #ffffff;
+        }
+        
+        .logo-text p {
+            font-size: var(--font-size-sm);
+            color: #cccccc;
+            font-weight: 400;
+            margin: 0;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: var(--space-3);
+            align-items: center;
+        }
+        
+        .btn-header {
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .btn-secondary {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+        }
+        
+        .btn-secondary:hover {
+            background: #2a2a2a;
+            border-color: #444444;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 4px 14px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: var(--space-20) 0;
+            text-align: center;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        .hero h1 {
+            font-size: var(--font-size-6xl);
+            font-weight: 700;
+            margin-bottom: var(--space-6);
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: var(--font-size-xl);
+            color: #cccccc;
+            margin-bottom: var(--space-8);
+            line-height: 1.6;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-hero {
+            padding: var(--space-4) var(--space-8);
+            border-radius: var(--radius-2xl);
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .btn-hero.primary {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-hero.primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-hero.secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #333333;
+        }
+        
+        .btn-hero.secondary:hover {
+            background: #1a1a1a;
+            border-color: #666666;
+            transform: translateY(-2px);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: var(--space-20) 0;
+            background: #1a1a1a;
+        }
+        
+        .features-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        .features h2 {
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--space-12);
+            color: #ffffff;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-8);
+        }
+        
+        .feature-card {
+            background: #2a2a2a;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            text-align: center;
+            border: 1px solid #444444;
+            transition: all var(--transition-normal);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+            border-color: #666666;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto var(--space-6);
+            border: 1px solid #444444;
+        }
+        
+        .feature-card h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: var(--space-4);
+        }
+        
+        .feature-card p {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: var(--space-20) 0;
+            background: #000000;
+        }
+        
+        .pricing-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        .pricing h2 {
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--space-12);
+            color: #ffffff;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-8);
+        }
+        
+        .pricing-card {
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            text-align: center;
+            border: 1px solid #333333;
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+        
+        .pricing-card.featured {
+            border-color: #ffffff;
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-8px);
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff;
+            color: #000000;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: 700;
+        }
+        
+        .pricing-plan {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: var(--space-2);
+        }
+        
+        .pricing-price {
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: var(--space-1);
+        }
+        
+        .pricing-period {
+            color: #cccccc;
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-6);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: var(--space-8);
+        }
+        
+        .pricing-features li {
+            padding: var(--space-2) 0;
+            color: #cccccc;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .pricing-features li::before {
+            content: '✓';
+            color: #4CAF50;
+            font-weight: 700;
+        }
+        
+        .pricing-btn {
+            width: 100%;
+            padding: var(--space-4);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .pricing-btn.primary {
+            background: #ffffff;
+            color: #000000;
+        }
+        
+        .pricing-btn.primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        
+        .pricing-btn.secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #333333;
+        }
+        
+        .pricing-btn.secondary:hover {
+            background: #1a1a1a;
+            border-color: #666666;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            padding: var(--space-12) 0;
+            border-top: 1px solid #333333;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            text-align: center;
+        }
+        
+        .footer p {
+            color: #cccccc;
+            margin-bottom: var(--space-4);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-6);
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: var(--font-size-4xl);
+            }
+            
+            .hero p {
+                font-size: var(--font-size-lg);
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+            }
+            
+            .pricing-card.featured:hover {
+                transform: translateY(-8px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">🎨</div>
+                <div class="logo-text">
+                    <h1>EstampAI</h1>
+                    <p>Desenvolvido por Renan Melo</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-header btn-secondary" onclick="showPortfolio()">
+                    <span>👨‍🎨</span>
+                    <span>Portfolio</span>
+                </button>
+                <button class="btn-header btn-primary" onclick="goToLogin()">
+                    <span>🚀</span>
+                    <span>Começar Grátis</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Crie Estampas Incríveis com IA</h1>
+            <p>Transforme suas ideias em estampas profissionais usando inteligência artificial. Rápido, fácil e com resultados surpreendentes.</p>
+            <div class="hero-cta">
+                <button class="btn-hero primary" onclick="goToLogin()">
+                    <span>🎨</span>
+                    <span>Começar Agora</span>
+                </button>
+                <button class="btn-hero secondary" onclick="goToChat()">
+                    <span>💬</span>
+                    <span>Ver Demo</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-content">
+            <h2>Por que escolher o EstampAI?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>IA Avançada</h3>
+                    <p>Utilizamos GPT-4 e DALL-E 3 para criar estampas únicas e profissionais com base nas suas descrições.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Rápido e Fácil</h3>
+                    <p>Gere estampas em segundos. Basta descrever sua ideia e nossa IA faz o resto.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Alta Qualidade</h3>
+                    <p>Estampas em alta resolução, prontas para impressão em camisetas e outros produtos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Chat Inteligente</h3>
+                    <p>Converse naturalmente com nossa IA para refinar e personalizar suas estampas.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Responsivo</h3>
+                    <p>Funciona perfeitamente em desktop, tablet e mobile. Acesse de qualquer lugar.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Seguro</h3>
+                    <p>Seus dados e criações são protegidos com as melhores práticas de segurança.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="pricing-content">
+            <h2>Escolha seu Plano</h2>
+            <div class="pricing-grid">
+                <!-- Plano Gratuito -->
+                <div class="pricing-card">
+                    <div class="pricing-plan">Gratuito</div>
+                    <div class="pricing-price">R$ 0</div>
+                    <div class="pricing-period">para sempre</div>
+                    <ul class="pricing-features">
+                        <li>3 estampas por dia</li>
+                        <li>Chat com IA</li>
+                        <li>Download em PNG</li>
+                        <li>Suporte por email</li>
+                    </ul>
+                    <button class="pricing-btn secondary" onclick="goToLogin()">
+                        Começar Grátis
+                    </button>
+                </div>
+
+                <!-- Plano Premium -->
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Mais Popular</div>
+                    <div class="pricing-plan">Premium</div>
+                    <div class="pricing-price">R$ 29,90</div>
+                    <div class="pricing-period">por mês</div>
+                    <ul class="pricing-features">
+                        <li>Estampas ilimitadas</li>
+                        <li>Chat com IA avançado</li>
+                        <li>Download em múltiplos formatos</li>
+                        <li>Biblioteca de estampas</li>
+                        <li>Suporte prioritário</li>
+                        <li>Editor básico</li>
+                    </ul>
+                    <button class="pricing-btn primary" onclick="goToLogin()">
+                        Assinar Premium
+                    </button>
+                </div>
+
+                <!-- Plano Pro -->
+                <div class="pricing-card">
+                    <div class="pricing-plan">Pro</div>
+                    <div class="pricing-price">R$ 99,90</div>
+                    <div class="pricing-period">por mês</div>
+                    <ul class="pricing-features">
+                        <li>Estampas ilimitadas</li>
+                        <li>IA personalizada</li>
+                        <li>Editor avançado</li>
+                        <li>API de integração</li>
+                        <li>Suporte 24/7</li>
+                        <li>White-label</li>
+                        <li>Analytics avançados</li>
+                    </ul>
+                    <button class="pricing-btn secondary" onclick="goToLogin()">
+                        Assinar Pro
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2024 EstampAI. Desenvolvido por Renan Melo.</p>
+            <div class="footer-links">
+                <a href="#" onclick="showPortfolio()">Portfolio</a>
+                <a href="#" onclick="goToLogin()">Login</a>
+                <a href="#" onclick="goToChat()">Demo</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Funções de navegação
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+        
+        function goToChat() {
+            window.location.href = 'chat.html';
+        }
+        
+        function showPortfolio() {
+            // Redirecionar para portfolio do Renan
+            window.open('https://seu-portfolio.com', '_blank');
+        }
+    </script>
+</body>
+</html>
