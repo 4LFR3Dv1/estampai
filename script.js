@@ -264,29 +264,19 @@ function startInteractiveConversation() {
     currentConversation.stage = 'collecting_info';
     currentConversation.questions = [
         {
-            question: "🎨 Qual é o tema principal da sua estampa? (ex: natureza, tecnologia, música, esportes, etc.)",
+            question: "🎨 Qual é o tema principal da sua estampa?",
             type: 'theme',
-            suggestions: ['Natureza', 'Tecnologia', 'Música', 'Esportes', 'Arte', 'Animais', 'Viagem', 'Comida']
+            suggestions: ['Natureza', 'Esportes', 'Arte', 'Animais']
         },
         {
             question: "🎭 Que estilo você prefere?",
             type: 'style',
-            suggestions: ['Geométrico', 'Orgânico', 'Abstrato', 'Realista', 'Minimalista', 'Vintage']
+            suggestions: ['Geométrico', 'Abstrato', 'Minimalista']
         },
         {
-            question: "🌈 Quais cores você gostaria? (pode escolher 2-3 cores)",
+            question: "🌈 Quais cores você gostaria?",
             type: 'colors',
-            suggestions: ['Azul e Branco', 'Vermelho e Preto', 'Verde e Amarelo', 'Roxo e Rosa', 'Laranja e Azul', 'Preto e Dourado']
-        },
-        {
-            question: "😊 Que tipo de humor/energia você quer transmitir?",
-            type: 'mood',
-            suggestions: ['Energético', 'Calmo', 'Elegante', 'Divertido', 'Misterioso', 'Inspirador']
-        },
-        {
-            question: "📏 Qual o tamanho ideal?",
-            type: 'size',
-            suggestions: ['Pequeno e Sutil', 'Médio e Equilibrado', 'Grande e Chamativo']
+            suggestions: ['Azul e Branco', 'Vermelho e Preto', 'Verde e Amarelo']
         }
     ];
     
@@ -2920,5 +2910,58 @@ window.addMoreDetails = addMoreDetails;
 window.processExtraDetails = processExtraDetails;
 window.switchStampView = switchStampView;
 window.downloadPNG = downloadPNG;
+
+// ===== ESTILOS CSS PARA SUGESTÕES NO CHAT =====
+const suggestionsStyles = `
+<style>
+.suggestions-container {
+    margin: var(--space-3) 0;
+    padding: var(--space-3);
+    background: rgba(42, 42, 42, 0.5);
+    border-radius: var(--radius-lg);
+    border: 1px solid #333333;
+    backdrop-filter: blur(10px);
+}
+
+.suggestions-label {
+    font-size: var(--font-size-sm);
+    color: #cccccc;
+    margin-bottom: var(--space-2);
+    font-weight: 500;
+}
+
+.suggestions-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.suggestion-btn {
+    padding: var(--space-2) var(--space-3);
+    background: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #444444;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 400;
+}
+
+.suggestion-btn:hover {
+    background: #333333;
+    border-color: #666666;
+    transform: translateY(-1px);
+}
+
+.suggestion-btn:active {
+    transform: translateY(0);
+    background: #1a1a1a;
+}
+</style>
+`;
+
+// Adiciona os estilos ao head
+document.head.insertAdjacentHTML('beforeend', suggestionsStyles);
 
 console.log('🚀 EstampAI Chat carregado com sucesso!');
