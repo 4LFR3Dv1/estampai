@@ -121,10 +121,20 @@ function loadInitialAvatar() {
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     
+    // Cria overlay com texto
+    const overlay = document.createElement('div');
+    overlay.className = 'avatar-overlay';
+    
+    const overlayText = document.createElement('div');
+    overlayText.className = 'avatar-overlay-text';
+    overlayText.textContent = 'Seu avatar';
+    
+    overlay.appendChild(overlayText);
     mockupContainer.appendChild(canvas);
+    mockupContainer.appendChild(overlay);
     avatarContainer.appendChild(mockupContainer);
     
-    console.log('✅ Canvas criado e adicionado ao container');
+    console.log('✅ Canvas e overlay criados e adicionados ao container');
     
     // Desenha o avatar sem estampa
     drawInitialAvatar(canvas);
@@ -1906,11 +1916,15 @@ function displayAvatarWithStamp(stamp) {
     const avatarContainer = document.getElementById('avatarContainer');
     if (!avatarContainer) return;
     
-    // Remove avatar inicial se existir
+    // Remove avatar inicial e overlay se existirem
     const initialCanvas = avatarContainer.querySelector('#initialAvatarCanvas');
+    const overlay = avatarContainer.querySelector('.avatar-overlay');
     const explanation = avatarContainer.querySelector('.avatar-explanation');
     if (initialCanvas) {
         initialCanvas.parentElement.remove();
+    }
+    if (overlay) {
+        overlay.remove();
     }
     if (explanation) {
         explanation.remove();
