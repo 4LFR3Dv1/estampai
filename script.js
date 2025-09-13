@@ -2065,11 +2065,11 @@ function applyStampToAvatarMockup(canvas, stamp) {
             document.body.appendChild(tempImg); // Adiciona ao DOM temporariamente
             
             tempImg.onload = function() {
-                // Posição da estampa na camiseta (peito, mais para cima e menor)
-                const stampX = canvas.width * 0.25;  // 25% da largura (centralizado)
-                const stampY = canvas.height * 0.25; // 25% da altura (peito, mais para cima)
-                const stampWidth = canvas.width * 0.5;  // 50% da largura (menor)
-                const stampHeight = canvas.height * 0.25; // 25% da altura (menor)
+                // Posição da estampa na camiseta (peito, menor e mais proporcional)
+                const stampX = canvas.width * 0.3;   // 30% da largura (mais centralizado)
+                const stampY = canvas.height * 0.28; // 28% da altura (peito)
+                const stampWidth = canvas.width * 0.4;   // 40% da largura (menor)
+                const stampHeight = canvas.height * 0.2; // 20% da altura (muito menor)
                 
                 // Aplica a estampa com transparência
                 ctx.globalAlpha = 0.9;
@@ -2116,10 +2116,10 @@ function applyStampToAvatarMockup(canvas, stamp) {
 
 function applySimpleStampToAvatar(ctx, width, height, stamp) {
     // Desenha uma estampa simples na área da camiseta (mesma posição do mockup)
-    const stampX = width * 0.25;  // 25% da largura (centralizado)
-    const stampY = height * 0.25; // 25% da altura (peito, mais para cima)
-    const stampWidth = width * 0.5;  // 50% da largura (menor)
-    const stampHeight = height * 0.25; // 25% da altura (menor)
+    const stampX = width * 0.3;   // 30% da largura (mais centralizado)
+    const stampY = height * 0.28; // 28% da altura (peito)
+    const stampWidth = width * 0.4;   // 40% da largura (menor)
+    const stampHeight = height * 0.2; // 20% da altura (muito menor)
     
     // Cor de fundo da estampa
     ctx.fillStyle = stamp.colors[0] || '#F44336';
@@ -2127,7 +2127,7 @@ function applySimpleStampToAvatar(ctx, width, height, stamp) {
     
     // Texto da estampa
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 16px Arial';
+    ctx.font = 'bold 14px Arial';
     ctx.textAlign = 'center';
     ctx.fillText(stamp.pattern || 'Estampa', stampX + stampWidth/2, stampY + stampHeight/2);
     
