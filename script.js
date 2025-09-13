@@ -445,7 +445,7 @@ async function processConsultativeMessage(message) {
     // Verifica se tem informações suficientes para gerar estampa
     if (hasEnoughInfoForStamp()) {
         setTimeout(() => {
-            finalizeConsultation();
+            showGenerateStampButton();
         }, 2000);
     }
 }
@@ -635,6 +635,37 @@ function hasEnoughInfoForStamp() {
     
     // Precisa de pelo menos 4 informações para gerar estampa
     return infoCount >= 4;
+}
+
+// Mostra botão para o usuário decidir gerar a estampa
+function showGenerateStampButton() {
+    // Verifica se o botão já existe
+    if (document.getElementById('generateStampBtn')) {
+        return;
+    }
+    
+    // Cria o botão
+    const button = document.createElement('button');
+    button.id = 'generateStampBtn';
+    button.className = 'generate-stamp-btn';
+    button.innerHTML = `
+        <span class="btn-icon">🎨</span>
+        <span class="btn-text">Gerar Minha Estampa</span>
+        <span class="btn-subtitle">Tenho informações suficientes!</span>
+    `;
+    
+    // Adiciona evento de clique
+    button.addEventListener('click', () => {
+        button.style.display = 'none';
+        finalizeConsultation();
+    });
+    
+    // Adiciona o botão ao chat
+    const messagesContainer = document.getElementById('messages');
+    if (messagesContainer) {
+        messagesContainer.appendChild(button);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 }
 
 // Funções auxiliares para extrair informações
