@@ -1954,18 +1954,28 @@ function displayAvatarWithStamp(stamp) {
     const mockupContainer = document.createElement('div');
     mockupContainer.className = 'avatar-mockup-container';
     
-    // Cria canvas para o avatar com estampa
-    const canvas = document.createElement('canvas');
-    canvas.id = 'avatarDisplayCanvas';
-    canvas.width = 400;
-    canvas.height = 500;
-    canvas.className = 'avatar-mockup';
+    // Cria elemento de imagem (mesma lógica do PNG)
+    const img = document.createElement('img');
+    img.className = 'avatar-mockup';
+    img.alt = 'Avatar com estampa gerada pela IA';
     
-    mockupContainer.appendChild(canvas);
+    if (stamp.imageUrl) {
+        img.src = stamp.imageUrl;
+        img.onload = () => {
+            console.log('✅ Imagem do avatar carregada com sucesso');
+        };
+        img.onerror = () => {
+            console.error('❌ Erro ao carregar imagem do avatar');
+            // Fallback para canvas se a imagem falhar
+            createFallbackAvatar(mockupContainer, stamp);
+        };
+    } else {
+        // Se não há URL da IA, cria fallback
+        createFallbackAvatar(mockupContainer, stamp);
+    }
+    
+    mockupContainer.appendChild(img);
     avatarContainer.appendChild(mockupContainer);
-    
-    // Desenha o avatar com a estampa
-    drawAvatarWithStamp(canvas, stamp);
 }
 
 function displayPNGImage(stamp) {
@@ -2021,6 +2031,25 @@ function createFallbackPNG(container, stamp) {
     
     const ctx = canvas.getContext('2d');
     drawStamp(ctx, canvas.width, canvas.height, stamp);
+    
+    container.appendChild(canvas);
+}
+
+function createFallbackAvatar(container, stamp) {
+    // Remove imagem se existir
+    const existingImg = container.querySelector('img');
+    if (existingImg) {
+        existingImg.remove();
+    }
+    
+    // Cria canvas como fallback
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 500;
+    canvas.className = 'avatar-mockup';
+    
+    const ctx = canvas.getContext('2d');
+    drawAvatarWithStamp(canvas, stamp);
     
     container.appendChild(canvas);
 }
