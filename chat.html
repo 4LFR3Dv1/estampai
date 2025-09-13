@@ -857,6 +857,47 @@
             background: #f57c00;
         }
         
+        /* Dashboard melhorado */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--space-3);
+            background: #2a2a2a;
+            border-radius: var(--radius-lg);
+            border: 1px solid #333;
+        }
+        
+        .stat-number {
+            display: block;
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: var(--space-1);
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            color: #ccc;
+        }
+        
+        .plan-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .plan-name {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: #4CAF50;
+        }
+        
         /* Responsive design */
         @media (max-width: 1024px) {
             .main {

@@ -427,8 +427,16 @@ class AuthManager {
                             <span class="stat-label">Estampas Geradas</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">${this.usageData.dailyLimit}</span>
+                            <span class="stat-number">${this.usageData.planType === 'free' ? this.usageData.dailyLimit : '∞'}</span>
                             <span class="stat-label">Limite Diário</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${this.getSessionDuration()}</span>
+                            <span class="stat-label">Minutos Online</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${this.getDaysSinceRegistration()}</span>
+                            <span class="stat-label">Dias no EstampAI</span>
                         </div>
                     </div>
                 </div>
@@ -443,8 +451,278 @@ class AuthManager {
     }
     
     showUpgrade() {
-        // Implementar página de upgrade
-        console.log('Mostrar opções de upgrade');
+        // Mostra modal de gerenciamento de assinatura
+        this.showSubscriptionModal();
+    }
+    
+    showSubscriptionModal() {
+        const modal = document.createElement('div');
+        modal.id = 'subscriptionModal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Gerenciar Assinatura</h3>
+                    <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="current-plan">
+                        <h4>Plano Atual</h4>
+                        <div class="plan-details">
+                            <span class="plan-name">${this.getPlanDisplayName()}</span>
+                            ${this.usageData.planType !== 'free' ? `
+                                <span class="plan-price">
+                                    ${this.usageData.planType === 'daily_unlimited' ? 'R$ 9,90/dia' : 'R$ 29,90/mês'}
+                                </span>
+                                <span class="plan-expires">
+                                    ${this.usageData.expiresAt ? `Expira em: ${new Date(this.usageData.expiresAt).toLocaleDateString()}` : 'Sem expiração'}
+                                </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="upgrade-options">
+                        <h4>Upgrade de Plano</h4>
+                        <div class="plan-options">
+                            <div class="plan-option">
+                                <h5>Dia Ilimitado</h5>
+                                <p class="price">R$ 9,90</p>
+                                <p class="description">Estampas ilimitadas por 24 horas</p>
+                                <button class="btn-upgrade" onclick="authManager.upgradeToDailyUnlimited(); this.closest('.modal-overlay').remove();">
+                                    Comprar Agora
+                                </button>
+                            </div>
+                            <div class="plan-option">
+                                <h5>Premium</h5>
+                                <p class="price">R$ 29,90/mês</p>
+                                <p class="description">Estampas ilimitadas por 30 dias</p>
+                                <button class="btn-upgrade" onclick="authManager.upgradeToPremium(); this.closest('.modal-overlay').remove();">
+                                    Comprar Agora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${this.usageData.planType !== 'free' ? `
+                        <div class="cancel-option">
+                            <h4>Cancelar Assinatura</h4>
+                            <p>Você pode cancelar sua assinatura a qualquer momento.</p>
+                            <button class="btn-cancel" onclick="authManager.cancelSubscription(); this.closest('.modal-overlay').remove();">
+                                Cancelar Assinatura
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Adicionar CSS se não existir
+        if (!document.getElementById('subscriptionModalCSS')) {
+            const style = document.createElement('style');
+            style.id = 'subscriptionModalCSS';
+            style.textContent = `
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                }
+                
+                .modal-content {
+                    background: #1a1a1a;
+                    border-radius: 1rem;
+                    padding: 0;
+                    max-width: 600px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 1px solid #333;
+                }
+                
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1.5rem;
+                    border-bottom: 1px solid #333;
+                }
+                
+                .modal-header h3 {
+                    margin: 0;
+                    color: #fff;
+                }
+                
+                .modal-close {
+                    background: none;
+                    border: none;
+                    color: #fff;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    padding: 0;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .modal-body {
+                    padding: 1.5rem;
+                }
+                
+                .current-plan, .upgrade-options, .cancel-option {
+                    margin-bottom: 2rem;
+                }
+                
+                .current-plan h4, .upgrade-options h4, .cancel-option h4 {
+                    color: #fff;
+                    margin-bottom: 1rem;
+                }
+                
+                .plan-details {
+                    background: #2a2a2a;
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    border: 1px solid #333;
+                }
+                
+                .plan-name {
+                    display: block;
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: #4CAF50;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .plan-price {
+                    display: block;
+                    font-size: 1.1rem;
+                    color: #fff;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .plan-expires {
+                    display: block;
+                    font-size: 0.9rem;
+                    color: #ccc;
+                }
+                
+                .plan-options {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1rem;
+                }
+                
+                .plan-option {
+                    background: #2a2a2a;
+                    padding: 1.5rem;
+                    border-radius: 0.5rem;
+                    border: 1px solid #333;
+                    text-align: center;
+                }
+                
+                .plan-option h5 {
+                    color: #fff;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .plan-option .price {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: #4CAF50;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .plan-option .description {
+                    color: #ccc;
+                    font-size: 0.9rem;
+                    margin-bottom: 1rem;
+                }
+                
+                .btn-upgrade {
+                    background: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 0.5rem;
+                    cursor: pointer;
+                    font-weight: 600;
+                    width: 100%;
+                }
+                
+                .btn-upgrade:hover {
+                    background: #45a049;
+                }
+                
+                .btn-cancel {
+                    background: #f44336;
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 0.5rem;
+                    cursor: pointer;
+                    font-weight: 600;
+                }
+                
+                .btn-cancel:hover {
+                    background: #da190b;
+                }
+                
+                @media (max-width: 768px) {
+                    .plan-options {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+    
+    cancelSubscription() {
+        if (confirm('Tem certeza que deseja cancelar sua assinatura? Você voltará para o plano gratuito.')) {
+            // Volta para plano gratuito
+            this.usageData.planType = 'free';
+            this.usageData.dailyLimit = 3;
+            this.usageData.stampsGenerated = 0;
+            this.usageData.expiresAt = null;
+            this.usageData.purchaseDate = null;
+            
+            this.saveUserData();
+            this.updateUsageDisplay();
+            this.updateHeader();
+            
+            this.showMessage('Assinatura cancelada. Voltou para o plano gratuito.', 'success');
+        }
+    }
+    
+    // ===== FUNÇÕES AUXILIARES =====
+    
+    getSessionDuration() {
+        if (!this.usageData.sessionStart) {
+            this.usageData.sessionStart = Date.now();
+            this.saveUserData();
+        }
+        const duration = Math.floor((Date.now() - this.usageData.sessionStart) / (1000 * 60));
+        return duration;
+    }
+    
+    getDaysSinceRegistration() {
+        if (!this.currentUser || !this.currentUser.createdAt) {
+            return 0;
+        }
+        const registrationDate = new Date(this.currentUser.createdAt);
+        const now = new Date();
+        const diffTime = Math.abs(now - registrationDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
     }
     
     // ===== FUNÇÕES DE PLANOS =====
@@ -462,7 +740,13 @@ class AuthManager {
         
         // Redireciona para checkout do Stripe
         if (window.redirectToCheckout) {
-            window.redirectToCheckout('daily_unlimited');
+            try {
+                window.redirectToCheckout('daily_unlimited');
+            } catch (error) {
+                console.error('Erro no checkout:', error);
+                // Fallback para simulação local
+                this.simulateUpgradeToDailyUnlimited();
+            }
         } else {
             // Fallback para simulação local
             this.simulateUpgradeToDailyUnlimited();
@@ -502,7 +786,13 @@ class AuthManager {
         
         // Redireciona para checkout do Stripe
         if (window.redirectToCheckout) {
-            window.redirectToCheckout('premium');
+            try {
+                window.redirectToCheckout('premium');
+            } catch (error) {
+                console.error('Erro no checkout:', error);
+                // Fallback para simulação local
+                this.simulateUpgradeToPremium();
+            }
         } else {
             // Fallback para simulação local
             this.simulateUpgradeToPremium();
