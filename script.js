@@ -300,6 +300,18 @@ function startInteractiveConversation() {
 
 // Finaliza a consultoria e gera a estampa
 async function finalizeConsultation() {
+    // Verifica autenticação e limite de uso
+    if (window.authManager && window.authManager.isAuthenticated) {
+        const usageCheck = window.authManager.canGenerateStamp();
+        if (!usageCheck.canGenerate) {
+            addAIMessage(`❌ ${usageCheck.reason}. ${usageCheck.used}/${usageCheck.limit} estampas usadas hoje. Faça upgrade para gerar mais estampas!`);
+            return;
+        }
+    } else {
+        addAIMessage("❌ Você precisa fazer login para gerar estampas. Crie uma conta gratuita!");
+        return;
+    }
+    
     // Gera resposta fluida da IA sobre o resumo
     const summaryResponse = await generateFluidAIResponse("Agora tenho todas as informações que preciso para criar sua estampa");
     addAIMessage(summaryResponse);
@@ -310,6 +322,11 @@ async function finalizeConsultation() {
     // Gera a estampa
     setTimeout(() => {
         processWithAI("", analysis);
+        
+        // Incrementa uso após gerar estampa
+        if (window.authManager && window.authManager.isAuthenticated) {
+            window.authManager.incrementStampUsage();
+        }
     }, 2000);
 }
 
@@ -644,7 +661,38 @@ function showGenerateStampButton() {
         return;
     }
     
-    // Cria o botão
+    // Verifica autenticação e limite de uso
+    if (window.authManager && window.authManager.isAuthenticated) {
+        const usageCheck = window.authManager.canGenerateStamp();
+        if (!usageCheck.canGenerate) {
+            // Mostra mensagem de limite atingido
+            addAIMessage(`❌ ${usageCheck.reason}. ${usageCheck.used}/${usageCheck.limit} estampas usadas hoje. Faça upgrade para gerar mais estampas!`);
+            return;
+        }
+    } else {
+        // Usuário não autenticado - mostra botão para fazer login
+        const button = document.createElement('button');
+        button.id = 'generateStampBtn';
+        button.className = 'generate-stamp-btn';
+        button.innerHTML = `
+            <span class="btn-icon">🔑</span>
+            <span class="btn-text">Fazer Login para Gerar</span>
+            <span class="btn-subtitle">Crie uma conta gratuita!</span>
+        `;
+        
+        button.addEventListener('click', () => {
+            window.authManager.showLogin();
+        });
+        
+        const messagesContainer = document.getElementById('messages');
+        if (messagesContainer) {
+            messagesContainer.appendChild(button);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        return;
+    }
+    
+    // Cria o botão normal para usuários autenticados
     const button = document.createElement('button');
     button.id = 'generateStampBtn';
     button.className = 'generate-stamp-btn';
