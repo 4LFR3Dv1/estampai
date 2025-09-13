@@ -351,7 +351,10 @@ async function processWithAI(userMessage, predefinedAnalysis = null) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         const analysis = predefinedAnalysis || analyzeUserRequest(userMessage);
-        addAIMessage(CONFIG.ai.responses.processing);
+        
+        // Resposta mais interativa baseada na análise
+        const interactiveResponse = generateInteractiveResponse(userMessage, analysis);
+        addAIMessage(interactiveResponse);
         
         showLoadingOverlay("Criando sua estampa...");
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -382,6 +385,69 @@ async function processWithAI(userMessage, predefinedAnalysis = null) {
     }
 }
 
+function generateInteractiveResponse(message, analysis) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Respostas baseadas no estilo detectado
+    const styleResponses = {
+        'organic': "Perfeito! Vou criar uma estampa orgânica com elementos naturais e formas fluidas. 🌿",
+        'geometric': "Ótimo! Vou fazer uma estampa geométrica com formas precisas e simétricas. 🔷",
+        'abstract': "Excelente! Vou criar uma estampa abstrata com composições expressivas e criativas. 🎨",
+        'figurative': "Perfeito! Vou fazer uma estampa figurativa com elementos reconhecíveis e ilustrativos. 👤",
+        'religious': "Entendido! Vou criar uma estampa com elementos religiosos e sagrados. ✝️",
+        'symbols': "Ótimo! Vou fazer uma estampa com símbolos e ícones marcantes. ⭐"
+    };
+    
+    // Respostas baseadas em palavras-chave específicas
+    if (lowerMessage.includes('graffiti') || lowerMessage.includes('street art')) {
+        return "Que legal! Vou criar uma estampa inspirada em graffiti com estilo urbano e cores vibrantes! 🎨✨";
+    }
+    
+    if (lowerMessage.includes('marca') || lowerMessage.includes('logo')) {
+        return "Perfeito! Vou criar uma estampa perfeita para sua marca com elementos distintivos e memoráveis! 🏷️";
+    }
+    
+    if (lowerMessage.includes('minimalista') || lowerMessage.includes('simples')) {
+        return "Excelente escolha! Vou fazer uma estampa minimalista com linhas limpas e elegantes! ⚪";
+    }
+    
+    if (lowerMessage.includes('vintage') || lowerMessage.includes('retrô')) {
+        return "Que estilo! Vou criar uma estampa vintage com aquele charme nostálgico! 📺";
+    }
+    
+    if (lowerMessage.includes('fogo') || lowerMessage.includes('chamas')) {
+        return "Que energia! Vou fazer uma estampa com elementos de fogo e chamas intensas! 🔥";
+    }
+    
+    if (lowerMessage.includes('dragão') || lowerMessage.includes('dragon')) {
+        return "Incrível! Vou criar uma estampa épica com um dragão flamejante! 🐉🔥";
+    }
+    
+    // Resposta baseada no estilo detectado
+    const styleResponse = styleResponses[analysis.style] || "Perfeito! Vou criar uma estampa única baseada na sua descrição! 🎨";
+    
+    // Adiciona informações sobre cores se detectadas
+    if (analysis.colors && analysis.colors.length > 0) {
+        const colorNames = analysis.colors.map(color => {
+            const colorMap = {
+                '#1A237E': 'azul escuro',
+                '#FF9800': 'laranja',
+                '#F44336': 'vermelho',
+                '#4CAF50': 'verde',
+                '#9C27B0': 'roxo',
+                '#FFEB3B': 'amarelo',
+                '#000000': 'preto',
+                '#FFFFFF': 'branco'
+            };
+            return colorMap[color] || color;
+        }).join(' e ');
+        
+        return `${styleResponse} Usando as cores ${colorNames} que combinei com seu pedido! 🌈`;
+    }
+    
+    return styleResponse;
+}
+
 function analyzeUserRequest(message) {
     const analysis = {
         style: 'geometric',
@@ -399,10 +465,10 @@ function analyzeUserRequest(message) {
     const styleKeywords = {
         'organic': ['floral', 'flor', 'orgânico', 'natureza', 'natural', 'folha', 'planta', 'botânico', 'jardim', 'verde', 'ecológico'],
         'geometric': ['geométrico', 'geometria', 'triângulo', 'quadrado', 'círculo', 'linha', 'forma', 'simétrico', 'preciso', 'matemático', 'angular'],
-        'abstract': ['abstrato', 'abstrata', 'arte', 'moderno', 'contemporâneo', 'expressivo', 'criativo', 'único', 'diferente', 'inovador'],
+        'abstract': ['abstrato', 'abstrata', 'arte', 'moderno', 'contemporâneo', 'expressivo', 'criativo', 'único', 'diferente', 'inovador', 'graffiti', 'street art', 'urbano'],
         'figurative': ['figurativo', 'figura', 'desenho', 'ilustração', 'personagem', 'animal', 'objeto', 'representativo', 'realista', 'estrela', 'coração', 'moto', 'moto', 'bicicleta', 'carro', 'veículo', 'chamas', 'fogo', 'flame', 'burning', 'dragão', 'dragon', 'dragão', 'serpente', 'cobra', 'flamejante'],
         'religious': ['cruz', 'cristo', 'jesus', 'religioso', 'sagrado', 'bíblia', 'igreja', 'fé', 'deus', 'cristianismo'],
-        'symbols': ['símbolo', 'símbolos', 'ícone', 'ícones', 'logo', 'marca', 'emblema', 'insígnia']
+        'symbols': ['símbolo', 'símbolos', 'ícone', 'ícones', 'logo', 'marca', 'emblema', 'insígnia', 'branding', 'identidade']
     };
     
     // Detecta estilo com pontuação
@@ -459,7 +525,9 @@ function analyzeUserRequest(message) {
         'rosa': ['#E91E63', '#F06292', '#F48FB1', '#FFB3BA'],
         'laranja': ['#FF9800', '#FF5722', '#FF6F00', '#E65100'],
         'fogo': ['#FF4500', '#FF6347', '#FF7F50', '#FFA500', '#FFD700'],
-        'chamas': ['#FF4500', '#FF6347', '#FF7F50', '#FFA500', '#FFD700']
+        'chamas': ['#FF4500', '#FF6347', '#FF7F50', '#FFA500', '#FFD700'],
+        'graffiti': ['#FF4500', '#FF6347', '#FF7F50', '#FFA500', '#FFD700', '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5'],
+        'urbano': ['#000000', '#212121', '#424242', '#616161', '#F44336', '#FF4500', '#FF9800']
     };
     
     // Detecta cores primárias e secundárias
@@ -469,6 +537,15 @@ function analyzeUserRequest(message) {
             detectedColors.push(colorKeywords[color][0]); // Pega a primeira cor da paleta
         }
     });
+    
+    // Detecção especial para graffiti e urbano
+    if (lowerMessage.includes('graffiti') || lowerMessage.includes('street art')) {
+        detectedColors = ['#FF4500', '#F44336', '#000000']; // Cores típicas de graffiti
+    }
+    
+    if (lowerMessage.includes('marca') || lowerMessage.includes('logo')) {
+        detectedColors = ['#000000', '#FFFFFF', '#F44336']; // Cores clássicas para marcas
+    }
     
     if (detectedColors.length >= 2) {
         analysis.colors = [detectedColors[0], detectedColors[1]];
