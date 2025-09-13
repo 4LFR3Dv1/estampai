@@ -75,6 +75,20 @@ OPENAI_API_KEY=sk-sua_chave_openai_aqui
 #### **4.2 Copiar Webhook Secret:**
 - Copie o `whsec_...` e adicione nas variáveis de ambiente
 
+### **5. 🎯 Produtos Configurados no Stripe**
+
+#### **5.1 Produto Premium:**
+- **ID do Produto:** `prod_T35TiyH5UIRvy8`
+- **Nome:** Premium - EstampAI
+- **Descrição:** Acesso premium mensal
+- **Preço:** R$ 29,90
+
+#### **5.2 Produto Dia Ilimitado:**
+- **ID do Produto:** `prod_daily_unlimited` (a ser criado)
+- **Nome:** Dia Ilimitado - EstampAI
+- **Descrição:** Acesso ilimitado por 24 horas
+- **Preço:** R$ 9,90
+
 ### **5. ✅ Verificação**
 
 #### **5.1 Logs Esperados:**

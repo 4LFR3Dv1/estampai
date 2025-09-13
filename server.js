@@ -49,7 +49,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
             cancel_url: cancelUrl,
             metadata: {
                 planType: planType,
-                userId: req.body.userId || 'anonymous'
+                userId: req.body.userId || 'anonymous',
+                productId: planType === 'premium' ? 'prod_T35TiyH5UIRvy8' : 'prod_daily_unlimited'
             }
         });
         
