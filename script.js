@@ -1954,28 +1954,18 @@ function displayAvatarWithStamp(stamp) {
     const mockupContainer = document.createElement('div');
     mockupContainer.className = 'avatar-mockup-container';
     
-    // Cria elemento de imagem (mesma lógica do PNG)
-    const img = document.createElement('img');
-    img.className = 'avatar-mockup';
-    img.alt = 'Avatar com estampa gerada pela IA';
+    // Cria canvas para o avatar com estampa aplicada
+    const canvas = document.createElement('canvas');
+    canvas.id = 'avatarDisplayCanvas';
+    canvas.width = 400;
+    canvas.height = 500;
+    canvas.className = 'avatar-mockup';
     
-    if (stamp.imageUrl) {
-        img.src = stamp.imageUrl;
-        img.onload = () => {
-            console.log('✅ Imagem do avatar carregada com sucesso');
-        };
-        img.onerror = () => {
-            console.error('❌ Erro ao carregar imagem do avatar');
-            // Fallback para canvas se a imagem falhar
-            createFallbackAvatar(mockupContainer, stamp);
-        };
-    } else {
-        // Se não há URL da IA, cria fallback
-        createFallbackAvatar(mockupContainer, stamp);
-    }
-    
-    mockupContainer.appendChild(img);
+    mockupContainer.appendChild(canvas);
     avatarContainer.appendChild(mockupContainer);
+    
+    // Aplica a estampa no avatar como mockup
+    applyStampToAvatarMockup(canvas, stamp);
 }
 
 function displayPNGImage(stamp) {
@@ -2052,6 +2042,84 @@ function createFallbackAvatar(container, stamp) {
     drawAvatarWithStamp(canvas, stamp);
     
     container.appendChild(canvas);
+}
+
+function applyStampToAvatarMockup(canvas, stamp) {
+    const ctx = canvas.getContext('2d');
+    
+    // Carrega a imagem do avatar primeiro
+    const avatarImg = new Image();
+    avatarImg.crossOrigin = 'anonymous';
+    
+    avatarImg.onload = function() {
+        // Desenha o avatar de fundo
+        ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
+        
+        // Se há estampa da IA, aplica ela
+        if (stamp.imageUrl) {
+            const stampImg = new Image();
+            stampImg.crossOrigin = 'anonymous';
+            
+            stampImg.onload = function() {
+                // Posição da estampa na camiseta (área do peito)
+                const stampX = canvas.width * 0.25; // 25% da largura
+                const stampY = canvas.height * 0.4;  // 40% da altura
+                const stampWidth = canvas.width * 0.5;  // 50% da largura
+                const stampHeight = canvas.height * 0.3; // 30% da altura
+                
+                // Aplica a estampa com transparência
+                ctx.globalAlpha = 0.9;
+                ctx.drawImage(stampImg, stampX, stampY, stampWidth, stampHeight);
+                ctx.globalAlpha = 1.0;
+                
+                console.log('✅ Estampa aplicada no avatar como mockup');
+            };
+            
+            stampImg.onerror = function() {
+                console.error('❌ Erro ao carregar estampa da IA');
+                // Fallback: desenha estampa simples
+                applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
+            };
+            
+            stampImg.src = stamp.imageUrl;
+        } else {
+            // Se não há estampa da IA, desenha estampa simples
+            applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
+        }
+    };
+    
+    avatarImg.onerror = function() {
+        console.warn('⚠️ Erro ao carregar avatar, usando fallback');
+        // Fallback para avatar desenhado
+        drawAvatarWithStamp(canvas, stamp);
+    };
+    
+    // Carrega a imagem do avatar
+    if (window.ESTAMPAI_CONFIG?.avatar?.imagePath) {
+        avatarImg.src = window.ESTAMPAI_CONFIG.avatar.imagePath;
+    } else {
+        avatarImg.src = 'assets/images/AVATAR.png';
+    }
+}
+
+function applySimpleStampToAvatar(ctx, width, height, stamp) {
+    // Desenha uma estampa simples na área da camiseta
+    const stampX = width * 0.25;
+    const stampY = height * 0.4;
+    const stampWidth = width * 0.5;
+    const stampHeight = height * 0.3;
+    
+    // Cor de fundo da estampa
+    ctx.fillStyle = stamp.colors[0] || '#F44336';
+    ctx.fillRect(stampX, stampY, stampWidth, stampHeight);
+    
+    // Texto da estampa
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(stamp.pattern || 'Estampa', stampX + stampWidth/2, stampY + stampHeight/2);
+    
+    console.log('✅ Estampa simples aplicada no avatar');
 }
 
 function createFallbackStamp(stamp) {
