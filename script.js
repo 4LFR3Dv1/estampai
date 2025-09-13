@@ -2065,8 +2065,8 @@ function applyStampToAvatarMockup(canvas, stamp) {
             document.body.appendChild(tempImg); // Adiciona ao DOM temporariamente
             
             tempImg.onload = function() {
-                // Detecta se a imagem tem mockup e ajusta o corte
-                const cropInfo = detectAndCropStamp(tempImg);
+                // AVATAR.png já está desenhado como mockup base
+                // Agora aplica a estampa transparente sobreposta
                 
                 // Posição da estampa na camiseta (peito, menor e mais proporcional)
                 const stampX = canvas.width * 0.3;   // 30% da largura (mais centralizado)
@@ -2074,29 +2074,15 @@ function applyStampToAvatarMockup(canvas, stamp) {
                 const stampWidth = canvas.width * 0.4;   // 40% da largura (menor)
                 const stampHeight = canvas.height * 0.2; // 20% da altura (muito menor)
                 
-                // Aplica a estampa com transparência
+                // Aplica a estampa transparente sobreposta no mockup base
                 ctx.globalAlpha = 0.9;
-                
-                if (cropInfo.hasMockup) {
-                    // Se tem mockup, corta apenas a área central da estampa
-                    ctx.drawImage(
-                        tempImg,
-                        cropInfo.sourceX, cropInfo.sourceY, cropInfo.sourceWidth, cropInfo.sourceHeight,
-                        stampX, stampY, stampWidth, stampHeight
-                    );
-                    console.log('✅ Estampa cortada e aplicada (detectado mockup)');
-                } else {
-                    // Se não tem mockup, usa a imagem inteira
-                    ctx.drawImage(tempImg, stampX, stampY, stampWidth, stampHeight);
-                    console.log('✅ Estampa aplicada (sem mockup detectado)');
-                }
-                
+                ctx.drawImage(tempImg, stampX, stampY, stampWidth, stampHeight);
                 ctx.globalAlpha = 1.0;
                 
                 // Remove o elemento temporário
                 document.body.removeChild(tempImg);
                 
-                console.log('✅ Estampa aplicada no avatar como mockup');
+                console.log('✅ Estampa transparente aplicada no mockup base (AVATAR.png)');
             };
             
             tempImg.onerror = function() {
@@ -2131,28 +2117,15 @@ function applyStampToAvatarMockup(canvas, stamp) {
     }
 }
 
-function detectAndCropStamp(img) {
-    // Função para detectar se a imagem tem mockup e calcular área de corte
-    const imgWidth = img.naturalWidth;
-    const imgHeight = img.naturalHeight;
-    
-    // Assume que se a imagem tem mockup, a estampa está na área central
-    // Área central: 40% do centro da imagem
-    const centerX = imgWidth * 0.3;  // 30% da largura
-    const centerY = imgHeight * 0.3; // 30% da altura
-    const centerWidth = imgWidth * 0.4;  // 40% da largura
-    const centerHeight = imgHeight * 0.4; // 40% da altura
-    
-    // Por enquanto, sempre assume que tem mockup para cortar a área central
-    // Em uma versão futura, poderia usar análise de imagem para detectar automaticamente
-    return {
-        hasMockup: true, // Sempre corta a área central
-        sourceX: centerX,
-        sourceY: centerY,
-        sourceWidth: centerWidth,
-        sourceHeight: centerHeight
-    };
+function validateStampTransparency(img) {
+    // Valida se a estampa tem transparência (alpha channel)
+    // Por enquanto, assume que sempre tem transparência
+    // Em uma versão futura, poderia analisar os pixels da imagem
+    return true;
 }
+
+// Função removida - agora usamos AVATAR.png como mockup base
+// e a IA gera apenas estampas transparentes
 
 function applySimpleStampToAvatar(ctx, width, height, stamp) {
     // Desenha uma estampa simples na área da camiseta (mesma posição do mockup)
@@ -2673,9 +2646,9 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     const moodDesc = moodDescriptions[mood] || 'balanced';
     
-    // Cria o prompt otimizado
+    // Cria o prompt otimizado para estampa transparente
     const optimizedPrompt = `
-        Create an isolated design element: ${userPrompt}
+        Create a transparent design element: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
@@ -2683,21 +2656,23 @@ function createOptimizedPrompt(userPrompt, analysis) {
         Size: ${size} scale
         
         CRITICAL REQUIREMENTS:
-        - Design element ONLY, no clothing or mockups
-        - Solid black background
+        - Design element ONLY, transparent background
+        - PNG format with alpha channel
         - Square 1024x1024px format
         - High quality illustration
         - Centered composition
+        - No background color or texture
         
         STRICTLY FORBIDDEN:
         - T-shirt, shirt, clothing, garment, apparel
         - Mockup, mannequin, model, person wearing
         - Product photography, lifestyle shots
-        - Colored backgrounds, patterns, textures
+        - Any background color, patterns, textures
         - Text, typography, words, letters
         - Borders, frames, decorative elements
+        - Solid backgrounds of any color
         
-        OUTPUT: Pure design element on black background, ready for t-shirt application.
+        OUTPUT: Transparent design element with alpha channel, ready for overlay on any mockup.
     `.trim();
     
     return optimizedPrompt;
