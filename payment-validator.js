@@ -118,8 +118,17 @@ class PaymentValidator {
     
     // Detecta tipo de plano baseado na sessão (simulação)
     detectPlanTypeFromSession(sessionId) {
-        // Em produção, isso seria determinado pelo webhook
-        // Por enquanto, vamos simular baseado em algum critério
+        // Verificar parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const plan = urlParams.get('plan');
+        
+        if (plan === 'daily_unlimited') {
+            return 'daily_unlimited';
+        }
+        
+        if (plan === 'premium') {
+            return 'premium';
+        }
         
         // Verificar se veio do link de dia ilimitado
         if (document.referrer.includes('bJefZgaji3F0g4J7EG2Nq01')) {

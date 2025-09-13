@@ -365,6 +365,11 @@ class AuthManager {
         return plans[this.usageData.planType] || 'Gratuito';
     }
     
+    getUserEmail() {
+        // Retorna email do usuário se disponível
+        return this.usageData.email || 'usuario@exemplo.com';
+    }
+    
     // ===== MÉTODOS PÚBLICOS =====
     
     showLogin() {

@@ -298,17 +298,36 @@ function startInteractiveConversation() {
 
 // Funções de perguntas removidas - agora a IA gera respostas fluidas
 
+// Função para verificar se pode gerar estampa
+function canGenerateStamp() {
+    // Verifica autenticação
+    if (!window.authManager || !window.authManager.isAuthenticated) {
+        return { canGenerate: false, reason: 'Usuário não autenticado' };
+    }
+    
+    // Verifica limite do authManager
+    const usageCheck = window.authManager.canGenerateStamp();
+    if (!usageCheck.canGenerate) {
+        return usageCheck;
+    }
+    
+    // Verifica paymentValidator se disponível
+    if (window.paymentValidator) {
+        const paymentCheck = window.paymentValidator.canGenerateStamp();
+        if (!paymentCheck.canGenerate) {
+            return paymentCheck;
+        }
+    }
+    
+    return { canGenerate: true };
+}
+
 // Finaliza a consultoria e gera a estampa
 async function finalizeConsultation() {
-    // Verifica autenticação e limite de uso
-    if (window.authManager && window.authManager.isAuthenticated) {
-        const usageCheck = window.authManager.canGenerateStamp();
-        if (!usageCheck.canGenerate) {
-            addAIMessage(`❌ ${usageCheck.reason}. ${usageCheck.used}/${usageCheck.limit} estampas usadas hoje. Faça upgrade para gerar mais estampas!`);
-            return;
-        }
-    } else {
-        addAIMessage("❌ Você precisa fazer login para gerar estampas. Crie uma conta gratuita!");
+    // Verifica se pode gerar estampa
+    const canGenerate = canGenerateStamp();
+    if (!canGenerate.canGenerate) {
+        addAIMessage(`❌ ${canGenerate.reason}. Faça upgrade para gerar estampas!`);
         return;
     }
     
@@ -667,33 +686,31 @@ function showGenerateStampButton() {
         return;
     }
     
-    // Verifica autenticação e limite de uso
-    if (window.authManager && window.authManager.isAuthenticated) {
-        const usageCheck = window.authManager.canGenerateStamp();
-        if (!usageCheck.canGenerate) {
-            // Mostra mensagem de limite atingido
-            addAIMessage(`❌ ${usageCheck.reason}. ${usageCheck.used}/${usageCheck.limit} estampas usadas hoje. Faça upgrade para gerar mais estampas!`);
-            return;
-        }
-    } else {
-        // Usuário não autenticado - mostra botão para fazer login
-        const button = document.createElement('button');
-        button.id = 'generateStampBtn';
-        button.className = 'generate-stamp-btn';
-        button.innerHTML = `
-            <span class="btn-icon">🔑</span>
-            <span class="btn-text">Fazer Login para Gerar</span>
-            <span class="btn-subtitle">Crie uma conta gratuita!</span>
-        `;
-        
-        button.addEventListener('click', () => {
-            window.authManager.showLogin();
-        });
-        
-        const messagesContainer = document.getElementById('messages');
-        if (messagesContainer) {
-            messagesContainer.appendChild(button);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Verifica se pode gerar estampa
+    const canGenerate = canGenerateStamp();
+    if (!canGenerate.canGenerate) {
+        if (canGenerate.reason === 'Usuário não autenticado') {
+            // Usuário não autenticado - mostra botão para fazer login
+            const button = document.createElement('button');
+            button.id = 'generateStampBtn';
+            button.className = 'generate-stamp-btn';
+            button.innerHTML = `
+                <span class="btn-icon">🔑</span>
+                <span class="btn-text">Fazer Login para Gerar</span>
+                <span class="btn-subtitle">Crie uma conta gratuita!</span>
+            `;
+            
+            button.addEventListener('click', () => {
+                window.authManager.showLogin();
+            });
+            
+            const messagesContainer = document.getElementById('messages');
+            if (messagesContainer) {
+                messagesContainer.appendChild(button);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        } else {
+            addAIMessage(`❌ ${canGenerate.reason}. Faça upgrade para gerar estampas!`);
         }
         return;
     }
