@@ -387,56 +387,114 @@ class AuthManager {
         dashboard.id = 'userDashboard';
         dashboard.className = 'user-dashboard';
         dashboard.innerHTML = `
-            <div class="dashboard-header">
-                <h2>Dashboard</h2>
-                <p>Bem-vindo de volta, ${this.currentUser.name}!</p>
-            </div>
-            
-            <div class="dashboard-content">
-                <div class="usage-card">
-                    <h3>Uso Diário</h3>
-                    <div id="usageDisplay"></div>
-                </div>
-                
-                <div class="plan-card">
-                    <h3>Seu Plano</h3>
-                    <div class="plan-info">
-                        <span class="plan-name">${this.getPlanDisplayName()}</span>
-                        ${this.usageData.planType === 'free' ? `
-                            <div class="upgrade-buttons">
-                                <button class="upgrade-btn daily" onclick="authManager.upgradeToDailyUnlimited()">
-                                    Dia Ilimitado
-                                </button>
-                                <button class="upgrade-btn premium" onclick="authManager.upgradeToPremium()">
-                                    Premium
-                                </button>
-                            </div>
-                        ` : `
-                            <button class="upgrade-btn" onclick="authManager.showUpgrade()">
-                                Gerenciar
-                            </button>
-                        `}
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <h1>Bem-vindo de volta, ${this.currentUser.name}!</h1>
+                        <p>Gerencie sua conta e crie estampas incríveis</p>
                     </div>
                 </div>
                 
-                <div class="stats-card">
-                    <h3>Estatísticas</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-number">${this.usageData.stampsGenerated}</span>
-                            <span class="stat-label">Estampas Geradas</span>
+                <div class="dashboard-grid">
+                    <!-- Card de Uso Diário -->
+                    <div class="dashboard-card usage-card">
+                        <div class="card-header">
+                            <div class="card-icon">📊</div>
+                            <h3>Uso Diário</h3>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-number">${this.usageData.planType === 'free' ? this.usageData.dailyLimit : '∞'}</span>
-                            <span class="stat-label">Limite Diário</span>
+                        <div class="card-content">
+                            <div id="usageDisplay"></div>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-number">${this.getSessionDuration()}</span>
-                            <span class="stat-label">Minutos Online</span>
+                    </div>
+                    
+                    <!-- Card de Plano -->
+                    <div class="dashboard-card plan-card">
+                        <div class="card-header">
+                            <div class="card-icon">💎</div>
+                            <h3>Seu Plano</h3>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-number">${this.getDaysSinceRegistration()}</span>
-                            <span class="stat-label">Dias no EstampAI</span>
+                        <div class="card-content">
+                            <div class="plan-info">
+                                <div class="plan-badge ${this.usageData.planType}">
+                                    ${this.getPlanDisplayName()}
+                                </div>
+                                ${this.usageData.planType === 'free' ? `
+                                    <div class="upgrade-section">
+                                        <p class="upgrade-text">Desbloqueie estampas ilimitadas</p>
+                                        <div class="upgrade-buttons">
+                                            <button class="upgrade-btn daily" onclick="authManager.upgradeToDailyUnlimited()">
+                                                <span class="btn-icon">⚡</span>
+                                                <span class="btn-text">
+                                                    <strong>Dia Ilimitado</strong>
+                                                    <small>R$ 9,90</small>
+                                                </span>
+                                            </button>
+                                            <button class="upgrade-btn premium" onclick="authManager.upgradeToPremium()">
+                                                <span class="btn-icon">👑</span>
+                                                <span class="btn-text">
+                                                    <strong>Premium</strong>
+                                                    <small>R$ 29,90/mês</small>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div class="plan-details">
+                                        <div class="plan-price">
+                                            ${this.usageData.planType === 'daily_unlimited' ? 'R$ 9,90/dia' : 'R$ 29,90/mês'}
+                                        </div>
+                                        ${this.usageData.expiresAt ? `
+                                            <div class="plan-expires">
+                                                Expira em: ${new Date(this.usageData.expiresAt).toLocaleDateString()}
+                                            </div>
+                                        ` : ''}
+                                        <button class="manage-btn" onclick="authManager.showUpgrade()">
+                                            <span>⚙️</span>
+                                            Gerenciar Assinatura
+                                        </button>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card de Estatísticas -->
+                    <div class="dashboard-card stats-card">
+                        <div class="card-header">
+                            <div class="card-icon">📈</div>
+                            <h3>Estatísticas</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-icon">🎨</div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">${this.usageData.stampsGenerated}</span>
+                                        <span class="stat-label">Estampas</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon">⏱️</div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">${this.getSessionDuration()}</span>
+                                        <span class="stat-label">Min Online</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon">📅</div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">${this.getDaysSinceRegistration()}</span>
+                                        <span class="stat-label">Dias</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon">🎯</div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">${this.usageData.planType === 'free' ? this.usageData.dailyLimit : '∞'}</span>
+                                        <span class="stat-label">Limite</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -725,9 +783,84 @@ class AuthManager {
         return diffDays;
     }
     
+    showUpgradeLoading(planName) {
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'upgradeLoading';
+        loadingOverlay.className = 'upgrade-loading-overlay';
+        loadingOverlay.innerHTML = `
+            <div class="upgrade-loading-content">
+                <div class="loading-spinner"></div>
+                <h3>Processando ${planName}...</h3>
+                <p>Aguarde enquanto processamos seu upgrade</p>
+            </div>
+        `;
+        
+        // Adicionar CSS se não existir
+        if (!document.getElementById('upgradeLoadingCSS')) {
+            const style = document.createElement('style');
+            style.id = 'upgradeLoadingCSS';
+            style.textContent = `
+                .upgrade-loading-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.9);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                }
+                
+                .upgrade-loading-content {
+                    text-align: center;
+                    color: white;
+                }
+                
+                .loading-spinner {
+                    width: 50px;
+                    height: 50px;
+                    border: 4px solid #333;
+                    border-top: 4px solid #4CAF50;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 20px;
+                }
+                
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                
+                .upgrade-loading-content h3 {
+                    margin: 0 0 10px 0;
+                    font-size: 1.5rem;
+                }
+                
+                .upgrade-loading-content p {
+                    margin: 0;
+                    color: #ccc;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(loadingOverlay);
+    }
+    
+    hideUpgradeLoading() {
+        const loadingOverlay = document.getElementById('upgradeLoading');
+        if (loadingOverlay) {
+            loadingOverlay.remove();
+        }
+    }
+    
     // ===== FUNÇÕES DE PLANOS =====
     
     upgradeToDailyUnlimited() {
+        console.log('upgradeToDailyUnlimited chamado');
+        
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
             return;
@@ -738,19 +871,14 @@ class AuthManager {
             window.estampaiAnalytics.trackUpgradeClick('daily_unlimited', 9.90);
         }
         
-        // Redireciona para checkout do Stripe
-        if (window.redirectToCheckout) {
-            try {
-                window.redirectToCheckout('daily_unlimited');
-            } catch (error) {
-                console.error('Erro no checkout:', error);
-                // Fallback para simulação local
-                this.simulateUpgradeToDailyUnlimited();
-            }
-        } else {
-            // Fallback para simulação local
+        // Mostra loading
+        this.showUpgradeLoading('Dia Ilimitado');
+        
+        // Simula delay e ativa o plano
+        setTimeout(() => {
             this.simulateUpgradeToDailyUnlimited();
-        }
+            this.hideUpgradeLoading();
+        }, 2000);
     }
     
     simulateUpgradeToDailyUnlimited() {
@@ -774,6 +902,8 @@ class AuthManager {
     }
     
     upgradeToPremium() {
+        console.log('upgradeToPremium chamado');
+        
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
             return;
@@ -784,19 +914,14 @@ class AuthManager {
             window.estampaiAnalytics.trackUpgradeClick('premium', 29.90);
         }
         
-        // Redireciona para checkout do Stripe
-        if (window.redirectToCheckout) {
-            try {
-                window.redirectToCheckout('premium');
-            } catch (error) {
-                console.error('Erro no checkout:', error);
-                // Fallback para simulação local
-                this.simulateUpgradeToPremium();
-            }
-        } else {
-            // Fallback para simulação local
+        // Mostra loading
+        this.showUpgradeLoading('Premium');
+        
+        // Simula delay e ativa o plano
+        setTimeout(() => {
             this.simulateUpgradeToPremium();
-        }
+            this.hideUpgradeLoading();
+        }, 2000);
     }
     
     simulateUpgradeToPremium() {
