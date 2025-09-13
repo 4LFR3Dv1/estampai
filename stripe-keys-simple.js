@@ -35,19 +35,25 @@ async function loadEnvVars() {
     }
 }
 
-// Carregar variáveis de ambiente
-await loadEnvVars();
+// Função principal para inicializar
+async function initializeStripeKeys() {
+    // Carregar variáveis de ambiente
+    await loadEnvVars();
 
-// Chaves do Stripe
-const STRIPE_KEYS = {
-    publishableKey: getEnvVar('STRIPE_PUBLISHABLE_KEY'),
-    secretKey: getEnvVar('STRIPE_SECRET_KEY'),
-    mode: getEnvVar('STRIPE_MODE')
-};
+    // Chaves do Stripe
+    const STRIPE_KEYS = {
+        publishableKey: getEnvVar('STRIPE_PUBLISHABLE_KEY'),
+        secretKey: getEnvVar('STRIPE_SECRET_KEY'),
+        mode: getEnvVar('STRIPE_MODE')
+    };
 
-// Exportar para uso global
-window.STRIPE_KEYS = STRIPE_KEYS;
+    // Exportar para uso global
+    window.STRIPE_KEYS = STRIPE_KEYS;
 
-// Log de segurança
-console.log('🔑 Chaves do Stripe carregadas:', STRIPE_KEYS.mode);
-console.log('🔑 Chave pública:', STRIPE_KEYS.publishableKey);
+    // Log de segurança
+    console.log('🔑 Chaves do Stripe carregadas:', STRIPE_KEYS.mode);
+    console.log('🔑 Chave pública:', STRIPE_KEYS.publishableKey);
+}
+
+// Inicializar
+initializeStripeKeys();

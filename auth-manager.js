@@ -1088,16 +1088,15 @@ class AuthManager {
                         }
                     });
                 } else {
-                    console.log('⚠️ Stripe não disponível, usando fallback');
-                    // Fallback para simulação se Stripe não estiver disponível
-                    this.processSimulatedPayment(planType, planName);
+                    console.log('⚠️ Stripe não disponível');
+                    this.hideUpgradeLoading();
+                    this.showMessage('Erro: Stripe não disponível. Tente novamente.', 'error');
                 }
             })
             .catch(error => {
                 console.error('Erro ao criar sessão de checkout:', error);
                 this.hideUpgradeLoading();
-                this.showMessage('Erro ao processar pagamento. Tentando simulação...', 'error');
-                this.processSimulatedPayment(planType, planName);
+                this.showMessage('Erro ao processar pagamento. Tente novamente.', 'error');
             });
     }
     
@@ -1118,12 +1117,14 @@ class AuthManager {
                     this.processRealPayment(planType, planName);
                 } else {
                     console.log('⚠️ Chaves do Stripe não disponíveis');
-                    this.processSimulatedPayment(planType, planName);
+                    this.hideUpgradeLoading();
+                    this.showMessage('Erro: Chaves do Stripe não configuradas.', 'error');
                 }
             };
             script.onerror = () => {
                 console.error('❌ Erro ao carregar Stripe.js');
-                this.processSimulatedPayment(planType, planName);
+                this.hideUpgradeLoading();
+                this.showMessage('Erro ao carregar Stripe.js. Tente novamente.', 'error');
             };
             document.head.appendChild(script);
         } else {
