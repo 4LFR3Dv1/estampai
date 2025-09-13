@@ -399,7 +399,7 @@ function generateInteractiveResponse(message, analysis) {
     };
     
     // Respostas baseadas em palavras-chave específicas
-    if (lowerMessage.includes('graffiti') || lowerMessage.includes('street art')) {
+    if (lowerMessage.includes('graffiti') || lowerMessage.includes('grafite') || lowerMessage.includes('street art') || lowerMessage.includes('streetwear')) {
         return "Que legal! Vou criar uma estampa inspirada em graffiti com estilo urbano e cores vibrantes! 🎨✨";
     }
     
@@ -465,7 +465,7 @@ function analyzeUserRequest(message) {
     const styleKeywords = {
         'organic': ['floral', 'flor', 'orgânico', 'natureza', 'natural', 'folha', 'planta', 'botânico', 'jardim', 'verde', 'ecológico'],
         'geometric': ['geométrico', 'geometria', 'triângulo', 'quadrado', 'círculo', 'linha', 'forma', 'simétrico', 'preciso', 'matemático', 'angular'],
-        'abstract': ['abstrato', 'abstrata', 'arte', 'moderno', 'contemporâneo', 'expressivo', 'criativo', 'único', 'diferente', 'inovador', 'graffiti', 'street art', 'urbano'],
+        'abstract': ['abstrato', 'abstrata', 'arte', 'moderno', 'contemporâneo', 'expressivo', 'criativo', 'único', 'diferente', 'inovador', 'graffiti', 'grafite', 'street art', 'streetwear', 'urbano'],
         'figurative': ['figurativo', 'figura', 'desenho', 'ilustração', 'personagem', 'animal', 'objeto', 'representativo', 'realista', 'estrela', 'coração', 'moto', 'moto', 'bicicleta', 'carro', 'veículo', 'chamas', 'fogo', 'flame', 'burning', 'dragão', 'dragon', 'dragão', 'serpente', 'cobra', 'flamejante'],
         'religious': ['cruz', 'cristo', 'jesus', 'religioso', 'sagrado', 'bíblia', 'igreja', 'fé', 'deus', 'cristianismo'],
         'symbols': ['símbolo', 'símbolos', 'ícone', 'ícones', 'logo', 'marca', 'emblema', 'insígnia', 'branding', 'identidade']
@@ -483,7 +483,11 @@ function analyzeUserRequest(message) {
     });
     
     // Escolhe o estilo com maior pontuação
-    const bestStyle = Object.keys(styleScore).reduce((a, b) => styleScore[a] > styleScore[b] ? a : b);
+    const maxScore = Math.max(...Object.values(styleScore));
+    const bestStyle = maxScore > 0 ? 
+        Object.keys(styleScore).find(style => styleScore[style] === maxScore) : 
+        'abstract'; // Padrão para graffiti/arte
+    
     analysis.style = bestStyle;
     
     // Define padrão baseado no estilo
@@ -539,7 +543,7 @@ function analyzeUserRequest(message) {
     });
     
     // Detecção especial para graffiti e urbano
-    if (lowerMessage.includes('graffiti') || lowerMessage.includes('street art')) {
+    if (lowerMessage.includes('graffiti') || lowerMessage.includes('grafite') || lowerMessage.includes('street art') || lowerMessage.includes('streetwear')) {
         detectedColors = ['#FF4500', '#F44336', '#000000']; // Cores típicas de graffiti
     }
     
