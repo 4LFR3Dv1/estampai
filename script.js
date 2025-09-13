@@ -2055,17 +2055,18 @@ function applyStampToAvatarMockup(canvas, stamp) {
         // Desenha o avatar de fundo
         ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
         
-        // Se há estampa da IA, aplica ela
+        // Se há estampa da IA, aplica ela usando a mesma lógica do PNG
         if (stamp.imageUrl) {
+            // Usa a mesma lógica do PNG que funciona
             const stampImg = new Image();
             stampImg.crossOrigin = 'anonymous';
             
             stampImg.onload = function() {
-                // Posição da estampa na camiseta (área do peito)
-                const stampX = canvas.width * 0.25; // 25% da largura
-                const stampY = canvas.height * 0.4;  // 40% da altura
-                const stampWidth = canvas.width * 0.5;  // 50% da largura
-                const stampHeight = canvas.height * 0.3; // 30% da altura
+                // Posição da estampa na camiseta (um pouco mais para cima)
+                const stampX = canvas.width * 0.2;  // 20% da largura (mais centralizado)
+                const stampY = canvas.height * 0.3; // 30% da altura (mais para cima)
+                const stampWidth = canvas.width * 0.6;  // 60% da largura
+                const stampHeight = canvas.height * 0.4; // 40% da altura
                 
                 // Aplica a estampa com transparência
                 ctx.globalAlpha = 0.9;
@@ -2076,11 +2077,12 @@ function applyStampToAvatarMockup(canvas, stamp) {
             };
             
             stampImg.onerror = function() {
-                console.error('❌ Erro ao carregar estampa da IA');
+                console.error('❌ Erro ao carregar estampa da IA, usando fallback');
                 // Fallback: desenha estampa simples
                 applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
             };
             
+            // Usa a mesma abordagem do PNG que funciona
             stampImg.src = stamp.imageUrl;
         } else {
             // Se não há estampa da IA, desenha estampa simples
@@ -2103,11 +2105,11 @@ function applyStampToAvatarMockup(canvas, stamp) {
 }
 
 function applySimpleStampToAvatar(ctx, width, height, stamp) {
-    // Desenha uma estampa simples na área da camiseta
-    const stampX = width * 0.25;
-    const stampY = height * 0.4;
-    const stampWidth = width * 0.5;
-    const stampHeight = height * 0.3;
+    // Desenha uma estampa simples na área da camiseta (mesma posição do mockup)
+    const stampX = width * 0.2;  // 20% da largura (mais centralizado)
+    const stampY = height * 0.3; // 30% da altura (mais para cima)
+    const stampWidth = width * 0.6;  // 60% da largura
+    const stampHeight = height * 0.4; // 40% da altura
     
     // Cor de fundo da estampa
     ctx.fillStyle = stamp.colors[0] || '#F44336';
@@ -2115,7 +2117,7 @@ function applySimpleStampToAvatar(ctx, width, height, stamp) {
     
     // Texto da estampa
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 16px Arial';
+    ctx.font = 'bold 18px Arial';
     ctx.textAlign = 'center';
     ctx.fillText(stamp.pattern || 'Estampa', stampX + stampWidth/2, stampY + stampHeight/2);
     
