@@ -180,14 +180,45 @@ function hidePaymentLoading() {
     }
 }
 
+// Carregar Stripe.js dinamicamente
+function loadStripeJS() {
+    return new Promise((resolve, reject) => {
+        if (window.Stripe) {
+            console.log('✅ Stripe.js já carregado');
+            resolve();
+            return;
+        }
+        
+        console.log('🔑 Carregando Stripe.js...');
+        const script = document.createElement('script');
+        script.src = 'https://js.stripe.com/v3/';
+        script.onload = () => {
+            console.log('✅ Stripe.js carregado com sucesso');
+            resolve();
+        };
+        script.onerror = () => {
+            console.error('❌ Erro ao carregar Stripe.js');
+            reject(new Error('Falha ao carregar Stripe.js'));
+        };
+        document.head.appendChild(script);
+    });
+}
+
 // Inicializar Stripe quando as chaves estiverem disponíveis
-function initializeStripeWithKeys() {
-    if (window.STRIPE_KEYS && window.STRIPE_KEYS.publishableKey && window.Stripe) {
-        console.log('🔑 Inicializando Stripe com chave:', window.STRIPE_KEYS.publishableKey);
-        window.stripe = Stripe(window.STRIPE_KEYS.publishableKey);
-        console.log('✅ Stripe inicializado:', window.stripe);
-    } else {
-        console.log('⚠️ Chaves do Stripe ou Stripe.js não disponíveis');
+async function initializeStripeWithKeys() {
+    try {
+        // Carregar Stripe.js primeiro
+        await loadStripeJS();
+        
+        if (window.STRIPE_KEYS && window.STRIPE_KEYS.publishableKey) {
+            console.log('🔑 Inicializando Stripe com chave:', window.STRIPE_KEYS.publishableKey);
+            window.stripe = Stripe(window.STRIPE_KEYS.publishableKey);
+            console.log('✅ Stripe inicializado:', window.stripe);
+        } else {
+            console.log('⚠️ Chaves do Stripe não disponíveis');
+        }
+    } catch (error) {
+        console.error('❌ Erro ao inicializar Stripe:', error);
     }
 }
 
@@ -202,3 +233,4 @@ window.STRIPE_CONFIG = STRIPE_CONFIG;
 window.initializeStripe = initializeStripe;
 window.redirectToCheckout = redirectToCheckout;
 window.initializeStripeWithKeys = initializeStripeWithKeys;
+window.loadStripeJS = loadStripeJS;

@@ -1100,38 +1100,41 @@ class AuthManager {
             });
     }
     
-    loadStripeAndProcess(planType, planName) {
+    async loadStripeAndProcess(planType, planName) {
         console.log('Carregando Stripe.js...');
         
-        // Carregar Stripe.js se não estiver carregado
-        if (!document.querySelector('script[src*="stripe.js"]')) {
-            const script = document.createElement('script');
-            script.src = 'https://js.stripe.com/v3/';
-            script.onload = () => {
-                console.log('✅ Stripe.js carregado');
-                // Inicializar Stripe
-                if (window.STRIPE_KEYS && window.STRIPE_KEYS.publishableKey) {
-                    window.stripe = Stripe(window.STRIPE_KEYS.publishableKey);
-                    console.log('✅ Stripe inicializado com chave:', window.STRIPE_KEYS.publishableKey);
-                    // Processar pagamento após carregar
-                    this.processRealPayment(planType, planName);
-                } else {
-                    console.log('⚠️ Chaves do Stripe não disponíveis');
-                    this.hideUpgradeLoading();
-                    this.showMessage('Erro: Chaves do Stripe não configuradas.', 'error');
+        try {
+            // Usar a função global para carregar Stripe.js
+            if (window.loadStripeJS) {
+                await window.loadStripeJS();
+            } else {
+                // Fallback se a função não estiver disponível
+                if (!window.Stripe) {
+                    const script = document.createElement('script');
+                    script.src = 'https://js.stripe.com/v3/';
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
                 }
-            };
-            script.onerror = () => {
-                console.error('❌ Erro ao carregar Stripe.js');
-                this.hideUpgradeLoading();
-                this.showMessage('Erro ao carregar Stripe.js. Tente novamente.', 'error');
-            };
-            document.head.appendChild(script);
-        } else {
-            // Stripe.js já está carregado, tentar novamente
-            setTimeout(() => {
+            }
+            
+            console.log('✅ Stripe.js carregado');
+            if (window.STRIPE_KEYS && window.STRIPE_KEYS.publishableKey) {
+                window.stripe = Stripe(window.STRIPE_KEYS.publishableKey);
+                console.log('✅ Stripe inicializado com chave:', window.STRIPE_KEYS.publishableKey);
+                // Processar pagamento após carregar
                 this.processRealPayment(planType, planName);
-            }, 1000);
+            } else {
+                console.log('⚠️ Chaves do Stripe não disponíveis');
+                this.hideUpgradeLoading();
+                this.showMessage('Erro: Chaves do Stripe não configuradas.', 'error');
+            }
+        } catch (error) {
+            console.error('❌ Erro ao carregar Stripe.js:', error);
+            this.hideUpgradeLoading();
+            this.showMessage('Erro ao carregar Stripe.js. Tente novamente.', 'error');
         }
     }
     
