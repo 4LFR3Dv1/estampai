@@ -305,21 +305,26 @@ function canGenerateStamp() {
         return { canGenerate: false, reason: 'Usuário não autenticado' };
     }
     
-    // Verifica limite do authManager
+    // Verifica limite do authManager PRIMEIRO
     const usageCheck = window.authManager.canGenerateStamp();
-    if (!usageCheck.canGenerate) {
-        return usageCheck;
+    console.log('🔍 AuthManager check:', usageCheck);
+    
+    if (usageCheck.canGenerate) {
+        // Se authManager permite, não precisa verificar paymentValidator
+        console.log('✅ AuthManager permite gerar estampa');
+        return { canGenerate: true };
     }
     
-    // Verifica paymentValidator se disponível
+    // Se authManager não permite, verifica paymentValidator como fallback
     if (window.paymentValidator) {
         const paymentCheck = window.paymentValidator.canGenerateStamp();
-        if (!paymentCheck.canGenerate) {
-            return paymentCheck;
+        if (paymentCheck.canGenerate) {
+            return { canGenerate: true };
         }
     }
     
-    return { canGenerate: true };
+    // Se nenhum sistema permite, retorna o erro do authManager
+    return usageCheck;
 }
 
 // Finaliza a consultoria e gera a estampa
