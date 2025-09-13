@@ -2055,13 +2055,11 @@ function applyStampToAvatarMockup(canvas, stamp) {
         // Desenha o avatar de fundo
         ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
         
-        // Se há estampa da IA, aplica ela usando proxy para contornar CORS
+        // Se há estampa da IA, aplica ela usando a mesma lógica do PNG
         if (stamp.imageUrl) {
             console.log('🔄 Baixando estampa da IA para avatar...');
             
-            // Usa proxy para contornar CORS
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(stamp.imageUrl)}`;
-            
+            // Usa a mesma abordagem do PNG que funciona
             const stampImg = new Image();
             stampImg.crossOrigin = 'anonymous';
             
@@ -2081,13 +2079,13 @@ function applyStampToAvatarMockup(canvas, stamp) {
             };
             
             stampImg.onerror = function() {
-                console.error('❌ Erro ao carregar estampa via proxy, usando fallback');
+                console.error('❌ Erro ao carregar estampa da IA, usando fallback');
                 // Fallback: desenha estampa simples
                 applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
             };
             
-            // Tenta primeiro com proxy
-            stampImg.src = proxyUrl;
+            // Usa a mesma abordagem do PNG - carregamento direto
+            stampImg.src = stamp.imageUrl;
         } else {
             // Se não há estampa da IA, desenha estampa simples
             applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
