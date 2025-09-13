@@ -2065,6 +2065,9 @@ function applyStampToAvatarMockup(canvas, stamp) {
             document.body.appendChild(tempImg); // Adiciona ao DOM temporariamente
             
             tempImg.onload = function() {
+                // Detecta se a imagem tem mockup e ajusta o corte
+                const cropInfo = detectAndCropStamp(tempImg);
+                
                 // Posição da estampa na camiseta (peito, menor e mais proporcional)
                 const stampX = canvas.width * 0.3;   // 30% da largura (mais centralizado)
                 const stampY = canvas.height * 0.28; // 28% da altura (peito)
@@ -2073,7 +2076,21 @@ function applyStampToAvatarMockup(canvas, stamp) {
                 
                 // Aplica a estampa com transparência
                 ctx.globalAlpha = 0.9;
-                ctx.drawImage(tempImg, stampX, stampY, stampWidth, stampHeight);
+                
+                if (cropInfo.hasMockup) {
+                    // Se tem mockup, corta apenas a área central da estampa
+                    ctx.drawImage(
+                        tempImg,
+                        cropInfo.sourceX, cropInfo.sourceY, cropInfo.sourceWidth, cropInfo.sourceHeight,
+                        stampX, stampY, stampWidth, stampHeight
+                    );
+                    console.log('✅ Estampa cortada e aplicada (detectado mockup)');
+                } else {
+                    // Se não tem mockup, usa a imagem inteira
+                    ctx.drawImage(tempImg, stampX, stampY, stampWidth, stampHeight);
+                    console.log('✅ Estampa aplicada (sem mockup detectado)');
+                }
+                
                 ctx.globalAlpha = 1.0;
                 
                 // Remove o elemento temporário
@@ -2112,6 +2129,29 @@ function applyStampToAvatarMockup(canvas, stamp) {
     } else {
         avatarImg.src = 'assets/images/AVATAR.png';
     }
+}
+
+function detectAndCropStamp(img) {
+    // Função para detectar se a imagem tem mockup e calcular área de corte
+    const imgWidth = img.naturalWidth;
+    const imgHeight = img.naturalHeight;
+    
+    // Assume que se a imagem tem mockup, a estampa está na área central
+    // Área central: 40% do centro da imagem
+    const centerX = imgWidth * 0.3;  // 30% da largura
+    const centerY = imgHeight * 0.3; // 30% da altura
+    const centerWidth = imgWidth * 0.4;  // 40% da largura
+    const centerHeight = imgHeight * 0.4; // 40% da altura
+    
+    // Por enquanto, sempre assume que tem mockup para cortar a área central
+    // Em uma versão futura, poderia usar análise de imagem para detectar automaticamente
+    return {
+        hasMockup: true, // Sempre corta a área central
+        sourceX: centerX,
+        sourceY: centerY,
+        sourceWidth: centerWidth,
+        sourceHeight: centerHeight
+    };
 }
 
 function applySimpleStampToAvatar(ctx, width, height, stamp) {
@@ -2635,28 +2675,29 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     // Cria o prompt otimizado
     const optimizedPrompt = `
-        Isolated illustration of ${userPrompt}
+        Create an isolated design element: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
         Mood: ${moodDesc}
         Size: ${size} scale
         
-        Technical specifications:
-        - Format: Square 1024x1024px
-        - Resolution: High quality (HD)
-        - Style: Modern, dynamic and versatile
-        - Colors: Vibrant and contrasting
-        - Composition: Centered and balanced
+        CRITICAL REQUIREMENTS:
+        - Design element ONLY, no clothing or mockups
+        - Solid black background
+        - Square 1024x1024px format
+        - High quality illustration
+        - Centered composition
         
-        DO NOT include:
-        - T-shirt, clothing, mockup, product or mannequin
-        - Colored or patterned background
-        - Text or typography
-        - Borders or frames
-        - Product design elements
+        STRICTLY FORBIDDEN:
+        - T-shirt, shirt, clothing, garment, apparel
+        - Mockup, mannequin, model, person wearing
+        - Product photography, lifestyle shots
+        - Colored backgrounds, patterns, textures
+        - Text, typography, words, letters
+        - Borders, frames, decorative elements
         
-        RESULT: Isolated illustration, solid black background, high quality, perfect for t-shirt printing.
+        OUTPUT: Pure design element on black background, ready for t-shirt application.
     `.trim();
     
     return optimizedPrompt;
