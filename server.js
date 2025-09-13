@@ -130,14 +130,24 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, r
 
 // Rota para servir variáveis de ambiente (apenas chave pública)
 app.get('/api/env-vars', (req, res) => {
+    console.log('🔑 Endpoint /api/env-vars chamado');
+    console.log('🔑 STRIPE_PUBLISHABLE_KEY:', process.env.STRIPE_PUBLISHABLE_KEY ? 'configurado' : 'não configurado');
+    console.log('🔑 STRIPE_MODE:', process.env.STRIPE_MODE || 'não configurado');
+    
     res.json({
         STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
         STRIPE_MODE: process.env.STRIPE_MODE
     });
 });
 
-// Servir arquivos estáticos
+// Servir arquivos estáticos (apenas para rotas que não são API)
 app.get('*', (req, res) => {
+    // Se for uma rota de API, retornar 404
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    
+    // Para outras rotas, servir index.html
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
