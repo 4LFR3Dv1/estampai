@@ -194,9 +194,7 @@ class EstampAIAnalytics {
                 const buttonClass = button.className;
                 
                 // Trackear botões específicos
-                if (buttonText.includes('Dia Ilimitado') || buttonText.includes('Premium')) {
-                    this.trackUpgradeClick(buttonText.toLowerCase().includes('dia') ? 'daily_unlimited' : 'premium', 0);
-                } else if (buttonText.includes('Gerar') || buttonText.includes('Criar')) {
+                if (buttonText.includes('Gerar') || buttonText.includes('Criar')) {
                     this.trackButtonClick('generate_stamp', 'chat');
                 } else if (buttonText.includes('Download') || buttonText.includes('Baixar')) {
                     this.trackButtonClick('download', 'results');

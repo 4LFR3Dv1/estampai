@@ -546,7 +546,7 @@ class AuthManager {
                                 <h5>Dia Ilimitado</h5>
                                 <p class="price">R$ 9,90</p>
                                 <p class="description">Estampas ilimitadas por 24 horas</p>
-                                <button class="btn-upgrade" onclick="authManager.upgradeToDailyUnlimited(); this.closest('.modal-overlay').remove();">
+                                <button class="btn-upgrade" onclick="authManager.showUpgradeConfirmation('daily_unlimited', 'Dia Ilimitado', 9.90); this.closest('.modal-overlay').remove();">
                                     Comprar Agora
                                 </button>
                             </div>
@@ -554,7 +554,7 @@ class AuthManager {
                                 <h5>Premium</h5>
                                 <p class="price">R$ 29,90/mês</p>
                                 <p class="description">Estampas ilimitadas por 30 dias</p>
-                                <button class="btn-upgrade" onclick="authManager.upgradeToPremium(); this.closest('.modal-overlay').remove();">
+                                <button class="btn-upgrade" onclick="authManager.showUpgradeConfirmation('premium', 'Premium', 29.90); this.closest('.modal-overlay').remove();">
                                     Comprar Agora
                                 </button>
                             </div>
@@ -857,6 +857,8 @@ class AuthManager {
     }
     
     showUpgradeConfirmation(planType, planName, price) {
+        console.log(`showUpgradeConfirmation chamado: ${planType} - ${planName} - R$ ${price}`);
+        
         const modal = document.createElement('div');
         modal.id = 'upgradeConfirmation';
         modal.className = 'modal-overlay';
@@ -893,7 +895,7 @@ class AuthManager {
                         <button class="btn-cancel" onclick="this.closest('.modal-overlay').remove()">
                             Cancelar
                         </button>
-                        <button class="btn-confirm" onclick="authManager.confirmUpgrade('${planType}', '${planName}'); this.closest('.modal-overlay').remove();">
+                        <button class="btn-confirm" onclick="authManager.confirmUpgrade('${planType}', '${planName}'); document.getElementById('upgradeConfirmation').remove();">
                             Confirmar Compra
                         </button>
                     </div>
@@ -1000,9 +1002,15 @@ class AuthManager {
     }
     
     confirmUpgrade(planType, planName) {
+        console.log(`confirmUpgrade chamado: ${planType} - ${planName}`);
+        
         // Trackear clique em upgrade
         if (window.estampaiAnalytics) {
-            window.estampaiAnalytics.trackUpgradeClick(planType, planType === 'daily_unlimited' ? 9.90 : 29.90);
+            try {
+                window.estampaiAnalytics.trackUpgradeClick(planType, planType === 'daily_unlimited' ? 9.90 : 29.90);
+            } catch (error) {
+                console.log('Erro ao trackear upgrade:', error);
+            }
         }
         
         // Mostra loading
@@ -1010,6 +1018,7 @@ class AuthManager {
         
         // Simula delay e ativa o plano
         setTimeout(() => {
+            console.log(`Processando upgrade: ${planType}`);
             if (planType === 'daily_unlimited') {
                 this.simulateUpgradeToDailyUnlimited();
             } else {
@@ -1022,7 +1031,7 @@ class AuthManager {
     // ===== FUNÇÕES DE PLANOS =====
     
     upgradeToDailyUnlimited() {
-        console.log('upgradeToDailyUnlimited chamado');
+        console.log('upgradeToDailyUnlimited chamado - APENAS MOSTRANDO CONFIRMAÇÃO');
         
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
@@ -1054,7 +1063,7 @@ class AuthManager {
     }
     
     upgradeToPremium() {
-        console.log('upgradeToPremium chamado');
+        console.log('upgradeToPremium chamado - APENAS MOSTRANDO CONFIRMAÇÃO');
         
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
