@@ -4,13 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// Inicializar Stripe com logs de debug
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-console.log('🔑 Inicializando Stripe...');
-console.log('🔑 Chave secreta disponível:', stripeSecretKey ? 'SIM' : 'NÃO');
-console.log('🔑 Início da chave:', stripeSecretKey ? stripeSecretKey.substring(0, 20) + '...' : 'undefined');
-
-const stripe = require('stripe')(stripeSecretKey);
+// Stripe será inicializado dentro das rotas para garantir que as variáveis estejam carregadas
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +20,10 @@ app.post('/api/create-checkout-session', async (req, res) => {
         console.log('🔑 Criando sessão de checkout:', req.body);
         console.log('🔑 STRIPE_SECRET_KEY configurado:', process.env.STRIPE_SECRET_KEY ? 'SIM' : 'NÃO');
         console.log('🔑 STRIPE_SECRET_KEY início:', process.env.STRIPE_SECRET_KEY ? process.env.STRIPE_SECRET_KEY.substring(0, 20) + '...' : 'undefined');
+        
+        // Inicializar Stripe dinamicamente
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        console.log('🔑 Stripe inicializado dinamicamente');
         
         const { planType, amount, currency, successUrl, cancelUrl } = req.body;
         
@@ -108,6 +106,9 @@ app.get('/api/payment-status/:sessionId', async (req, res) => {
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, res) => {
     const sig = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    // Inicializar Stripe dinamicamente
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     
     let event;
     
