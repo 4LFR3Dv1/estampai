@@ -6,17 +6,68 @@ class StripeAPI {
         this.baseUrl = '/api'; // Em produção seria uma URL real
     }
     
-    // Simula criação de sessão de checkout
+    // Cria sessão de checkout (real ou simulada)
     async createCheckoutSession(planType, successUrl, cancelUrl) {
         console.log(`Criando sessão de checkout para: ${planType}`);
+        
+        // Verificar se temos chaves reais do Stripe
+        if (window.STRIPE_KEYS && window.STRIPE_KEYS.mode === 'live' && window.STRIPE_KEYS.publishableKey.startsWith('pk_live_')) {
+            return await this.createRealCheckoutSession(planType, successUrl, cancelUrl);
+        } else {
+            return await this.createSimulatedCheckoutSession(planType, successUrl, cancelUrl);
+        }
+    }
+    
+    // Cria sessão real do Stripe
+    async createRealCheckoutSession(planType, successUrl, cancelUrl) {
+        console.log(`[Stripe Real] Criando sessão real para ${planType}`);
+        
+        const priceId = planType === 'daily_unlimited' ? 'price_daily_unlimited' : 'price_premium';
+        const amount = this.getPlanAmount(planType);
+        
+        try {
+            // Tentar criar sessão real via backend
+            const response = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    priceId: priceId,
+                    amount: amount,
+                    currency: 'brl',
+                    successUrl: successUrl,
+                    cancelUrl: cancelUrl,
+                    planType: planType
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const session = await response.json();
+            console.log('Sessão real criada:', session);
+            return session;
+            
+        } catch (error) {
+            console.error('Erro ao criar sessão real:', error);
+            console.log('Fallback para simulação');
+            return await this.createSimulatedCheckoutSession(planType, successUrl, cancelUrl);
+        }
+    }
+    
+    // Cria sessão simulada
+    async createSimulatedCheckoutSession(planType, successUrl, cancelUrl) {
+        console.log(`[Stripe Simulado] Criando sessão simulada para ${planType}`);
         
         // Simula delay de API
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Retorna sessão simulada
         return {
-            id: `cs_test_${Date.now()}`,
-            url: successUrl, // Em produção seria a URL do Stripe
+            id: `cs_simulated_${Date.now()}`,
+            url: successUrl, // Em simulação, redireciona direto para sucesso
             planType: planType,
             amount: this.getPlanAmount(planType),
             currency: 'brl'

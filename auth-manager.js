@@ -890,6 +890,15 @@ class AuthManager {
                             <div class="feature">✅ Download em múltiplos formatos</div>
                             <div class="feature">✅ Suporte prioritário</div>
                         </div>
+                        <div class="payment-info">
+                            <div class="payment-method">
+                                <span class="payment-icon">💳</span>
+                                <span class="payment-text">Pagamento seguro via Stripe</span>
+                            </div>
+                            <div class="payment-note">
+                                Você será redirecionado para uma página segura de pagamento
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-actions">
                         <button class="btn-cancel" onclick="this.closest('.modal-overlay').remove()">
@@ -994,6 +1003,36 @@ class AuthManager {
                 .btn-confirm:hover {
                     background: #45a049;
                 }
+                
+                .payment-info {
+                    background: #2a2a2a;
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    margin-bottom: 1.5rem;
+                    border: 1px solid #333;
+                }
+                
+                .payment-method {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .payment-icon {
+                    font-size: 1.2rem;
+                }
+                
+                .payment-text {
+                    color: #4CAF50;
+                    font-weight: 600;
+                }
+                
+                .payment-note {
+                    color: #ccc;
+                    font-size: 0.9rem;
+                    text-align: center;
+                }
             `;
             document.head.appendChild(style);
         }
@@ -1013,12 +1052,56 @@ class AuthManager {
             }
         }
         
+        // Verificar se temos chaves reais do Stripe
+        if (window.STRIPE_KEYS && window.STRIPE_KEYS.mode === 'live' && window.STRIPE_KEYS.publishableKey.startsWith('pk_live_')) {
+            console.log('Usando Stripe real para checkout');
+            this.processRealPayment(planType, planName);
+        } else {
+            console.log('Usando simulação de pagamento');
+            this.processSimulatedPayment(planType, planName);
+        }
+    }
+    
+    processRealPayment(planType, planName) {
+        // Mostra loading
+        this.showUpgradeLoading(planName);
+        
+        // Criar sessão de checkout do Stripe
+        this.createStripeCheckoutSession(planType)
+            .then(session => {
+                console.log('Sessão de checkout criada:', session);
+                this.hideUpgradeLoading();
+                
+                // Redirecionar para checkout do Stripe
+                if (window.stripe && session.id) {
+                    window.stripe.redirectToCheckout({
+                        sessionId: session.id
+                    }).then(result => {
+                        if (result.error) {
+                            console.error('Erro no checkout:', result.error);
+                            this.showMessage('Erro no checkout: ' + result.error.message, 'error');
+                        }
+                    });
+                } else {
+                    // Fallback para simulação se Stripe não estiver disponível
+                    this.processSimulatedPayment(planType, planName);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao criar sessão de checkout:', error);
+                this.hideUpgradeLoading();
+                this.showMessage('Erro ao processar pagamento. Tentando simulação...', 'error');
+                this.processSimulatedPayment(planType, planName);
+            });
+    }
+    
+    processSimulatedPayment(planType, planName) {
         // Mostra loading
         this.showUpgradeLoading(planName);
         
         // Simula delay e ativa o plano
         setTimeout(() => {
-            console.log(`Processando upgrade: ${planType}`);
+            console.log(`Processando upgrade simulado: ${planType}`);
             if (planType === 'daily_unlimited') {
                 this.simulateUpgradeToDailyUnlimited();
             } else {
@@ -1026,6 +1109,28 @@ class AuthManager {
             }
             this.hideUpgradeLoading();
         }, 2000);
+    }
+    
+    async createStripeCheckoutSession(planType) {
+        const priceId = planType === 'daily_unlimited' ? 'price_daily_unlimited' : 'price_premium';
+        const amount = planType === 'daily_unlimited' ? 990 : 2990; // em centavos
+        
+        try {
+            // Tentar usar API real do Stripe
+            if (window.stripeAPI && window.stripeAPI.createCheckoutSession) {
+                return await window.stripeAPI.createCheckoutSession(
+                    planType,
+                    `${window.location.origin}/chat.html?payment=success`,
+                    `${window.location.origin}/landing.html?payment=cancelled`
+                );
+            } else {
+                // Fallback para simulação
+                throw new Error('API do Stripe não disponível');
+            }
+        } catch (error) {
+            console.error('Erro ao criar sessão de checkout:', error);
+            throw error;
+        }
     }
     
     // ===== FUNÇÕES DE PLANOS =====
