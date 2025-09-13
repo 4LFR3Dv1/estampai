@@ -2648,20 +2648,22 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     // Cria o prompt otimizado - EXTREMAMENTE específico para evitar cenas
     const optimizedPrompt = `
-        Create a SIMPLE LOGO-STYLE SYMBOL: ${userPrompt}
+        Create a DETAILED STAMP DESIGN: ${userPrompt}
+        
+        REMEMBER: This is for a T-SHIRT PRINT, so create a detailed, elaborate design that works as a stamp.
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
         Mood: ${moodDesc}
         
         MANDATORY FORMAT:
-        - ONE single symbol/icon only (like a logo)
+        - Detailed stamp design (can be complex and elaborate)
         - Pure black background (#000000) - NO other colors in background
         - 1024x1024px square format
-        - Symbol centered in middle of frame
-        - Flat design with solid colors only
-        - Clean geometric shapes
-        - No details, no shading, no textures
+        - Design centered in middle of frame
+        - High quality illustration with details
+        - Rich colors and textures
+        - Professional stamp quality
         
         ABSOLUTELY FORBIDDEN:
         - NO scenes, NO landscapes, NO environments
@@ -2670,9 +2672,6 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - NO text or words
         - NO grid lines or overlays
         - NO product mockups or clothing
-        - NO complex illustrations
-        - NO gradients or shadows
-        - NO multiple elements
         - NO software interfaces (Photoshop, Illustrator, etc.)
         - NO computer screens or monitors
         - NO UI elements or buttons
@@ -2680,16 +2679,24 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - NO toolbars or menus
         
         EXAMPLES OF WHAT TO CREATE:
-        - A single geometric symbol
-        - A simple icon
-        - A minimalist logo
-        - A basic shape with pattern
-        - A single character silhouette (not a scene)
+        - A detailed character design (single character)
+        - An elaborate symbol or emblem
+        - A complex illustration
+        - A detailed pattern or motif
+        - A rich, detailed stamp design
         
-        IMPORTANT: If the request mentions "fighting", "war", "battle", "scene", or multiple characters, 
-        create ONLY a single symbol representing the main element (like a samurai helmet, sword, or shield).
+        IMPORTANT: If the request mentions "fighting", "war", "battle", "scene", "against", "versus", or multiple characters, 
+        create a detailed design that represents the theme but focuses on ONE main element or character.
         
-        Result: ONE simple logo-style symbol on pure black background, like a brand logo.
+        CRITICAL RULE: For complex themes, create detailed designs:
+        - "samurai" → detailed samurai character or helmet design
+        - "zombie" → detailed zombie character or skull design
+        - "dragon" → detailed dragon head or full dragon design
+        - "eagle" → detailed eagle illustration
+        - "heart" → detailed heart design with patterns
+        - "star" → detailed star with decorative elements
+        
+        Result: ONE detailed, elaborate stamp design on pure black background, perfect for t-shirt printing.
         
         CRITICAL: Generate ONLY the design itself, NOT a screenshot of software or interface.
         The image should be the pure design element, not displayed on any screen or software.
