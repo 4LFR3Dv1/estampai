@@ -1,10 +1,10 @@
 // Configuração do Stripe
 const STRIPE_CONFIG = {
-    // Chaves de API (carregadas do arquivo stripe-keys.js)
-    publishableKey: window.STRIPE_KEYS?.publishableKey || 'pk_test_51...',
-    secretKey: window.STRIPE_KEYS?.secretKey || 'sk_test_51...',
-    webhookSecret: window.STRIPE_KEYS?.webhookSecret || 'whsec_...',
-    mode: window.STRIPE_KEYS?.mode || 'test'
+    // Chaves de API (carregadas do arquivo stripe-keys.js ou fallback)
+    publishableKey: window.STRIPE_KEYS?.publishableKey || 'pk_test_fallback',
+    secretKey: window.STRIPE_KEYS?.secretKey || 'sk_test_fallback',
+    webhookSecret: window.STRIPE_KEYS?.webhookSecret || 'whsec_fallback',
+    mode: window.STRIPE_KEYS?.mode || 'test',
     
     // Configurações de preços
     prices: {

@@ -856,6 +856,169 @@ class AuthManager {
         }
     }
     
+    showUpgradeConfirmation(planType, planName, price) {
+        const modal = document.createElement('div');
+        modal.id = 'upgradeConfirmation';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Confirmar Upgrade</h3>
+                    <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="confirmation-content">
+                        <div class="plan-icon">
+                            ${planType === 'daily_unlimited' ? '⚡' : '👑'}
+                        </div>
+                        <h4>Upgrade para ${planName}</h4>
+                        <p class="plan-description">
+                            ${planType === 'daily_unlimited' 
+                                ? 'Estampas ilimitadas por 24 horas' 
+                                : 'Estampas ilimitadas por 30 dias'
+                            }
+                        </p>
+                        <div class="price-display">
+                            <span class="price">R$ ${price.toFixed(2).replace('.', ',')}</span>
+                            <span class="period">${planType === 'daily_unlimited' ? 'por dia' : 'por mês'}</span>
+                        </div>
+                        <div class="features-list">
+                            <div class="feature">✅ Estampas ilimitadas</div>
+                            <div class="feature">✅ Chat com IA avançado</div>
+                            <div class="feature">✅ Download em múltiplos formatos</div>
+                            <div class="feature">✅ Suporte prioritário</div>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-cancel" onclick="this.closest('.modal-overlay').remove()">
+                            Cancelar
+                        </button>
+                        <button class="btn-confirm" onclick="authManager.confirmUpgrade('${planType}', '${planName}'); this.closest('.modal-overlay').remove();">
+                            Confirmar Compra
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Adicionar CSS se não existir
+        if (!document.getElementById('upgradeConfirmationCSS')) {
+            const style = document.createElement('style');
+            style.id = 'upgradeConfirmationCSS';
+            style.textContent = `
+                .confirmation-content {
+                    text-align: center;
+                    padding: 2rem 0;
+                }
+                
+                .plan-icon {
+                    font-size: 4rem;
+                    margin-bottom: 1rem;
+                }
+                
+                .confirmation-content h4 {
+                    color: #fff;
+                    font-size: 1.5rem;
+                    margin-bottom: 1rem;
+                }
+                
+                .plan-description {
+                    color: #ccc;
+                    margin-bottom: 1.5rem;
+                }
+                
+                .price-display {
+                    background: #2a2a2a;
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                    margin-bottom: 1.5rem;
+                    border: 1px solid #333;
+                }
+                
+                .price {
+                    display: block;
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: #4CAF50;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .period {
+                    color: #ccc;
+                    font-size: 0.9rem;
+                }
+                
+                .features-list {
+                    text-align: left;
+                    margin-bottom: 2rem;
+                }
+                
+                .feature {
+                    color: #ccc;
+                    margin-bottom: 0.5rem;
+                    padding: 0.5rem 0;
+                }
+                
+                .modal-actions {
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: center;
+                }
+                
+                .btn-cancel {
+                    background: #333;
+                    color: #fff;
+                    border: none;
+                    padding: 0.75rem 2rem;
+                    border-radius: 0.5rem;
+                    cursor: pointer;
+                    font-weight: 500;
+                }
+                
+                .btn-cancel:hover {
+                    background: #444;
+                }
+                
+                .btn-confirm {
+                    background: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 2rem;
+                    border-radius: 0.5rem;
+                    cursor: pointer;
+                    font-weight: 600;
+                }
+                
+                .btn-confirm:hover {
+                    background: #45a049;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(modal);
+    }
+    
+    confirmUpgrade(planType, planName) {
+        // Trackear clique em upgrade
+        if (window.estampaiAnalytics) {
+            window.estampaiAnalytics.trackUpgradeClick(planType, planType === 'daily_unlimited' ? 9.90 : 29.90);
+        }
+        
+        // Mostra loading
+        this.showUpgradeLoading(planName);
+        
+        // Simula delay e ativa o plano
+        setTimeout(() => {
+            if (planType === 'daily_unlimited') {
+                this.simulateUpgradeToDailyUnlimited();
+            } else {
+                this.simulateUpgradeToPremium();
+            }
+            this.hideUpgradeLoading();
+        }, 2000);
+    }
+    
     // ===== FUNÇÕES DE PLANOS =====
     
     upgradeToDailyUnlimited() {
@@ -866,19 +1029,8 @@ class AuthManager {
             return;
         }
         
-        // Trackear clique em upgrade
-        if (window.estampaiAnalytics) {
-            window.estampaiAnalytics.trackUpgradeClick('daily_unlimited', 9.90);
-        }
-        
-        // Mostra loading
-        this.showUpgradeLoading('Dia Ilimitado');
-        
-        // Simula delay e ativa o plano
-        setTimeout(() => {
-            this.simulateUpgradeToDailyUnlimited();
-            this.hideUpgradeLoading();
-        }, 2000);
+        // Mostra modal de confirmação
+        this.showUpgradeConfirmation('daily_unlimited', 'Dia Ilimitado', 9.90);
     }
     
     simulateUpgradeToDailyUnlimited() {
@@ -909,19 +1061,8 @@ class AuthManager {
             return;
         }
         
-        // Trackear clique em upgrade
-        if (window.estampaiAnalytics) {
-            window.estampaiAnalytics.trackUpgradeClick('premium', 29.90);
-        }
-        
-        // Mostra loading
-        this.showUpgradeLoading('Premium');
-        
-        // Simula delay e ativa o plano
-        setTimeout(() => {
-            this.simulateUpgradeToPremium();
-            this.hideUpgradeLoading();
-        }, 2000);
+        // Mostra modal de confirmação
+        this.showUpgradeConfirmation('premium', 'Premium', 29.90);
     }
     
     simulateUpgradeToPremium() {
