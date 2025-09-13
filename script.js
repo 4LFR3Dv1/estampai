@@ -356,13 +356,43 @@ function finalizeConsultation() {
 function createAnalysisFromContext() {
     const analysis = {
         style: 'abstract',
-        colors: ['#1A237E', '#FF9800'],
+        colors: ['#000000', '#FFFFFF'], // Padrão preto e branco
         pattern: 'custom',
         description: `Estampa para ${conversationContext.brandName}`,
         intensity: 0.8,
         mood: 'neutral',
         size: 'medium'
     };
+    
+    // Mapeia cores do contexto para códigos hex
+    if (conversationContext.colors) {
+        const colorMap = {
+            'preto': '#000000',
+            'black': '#000000',
+            'branco': '#FFFFFF',
+            'white': '#FFFFFF',
+            'vermelho': '#F44336',
+            'red': '#F44336',
+            'azul': '#1A237E',
+            'blue': '#1A237E',
+            'verde': '#4CAF50',
+            'green': '#4CAF50',
+            'amarelo': '#FFEB3B',
+            'yellow': '#FFEB3B',
+            'laranja': '#FF9800',
+            'orange': '#FF9800'
+        };
+        
+        const detectedColors = conversationContext.colors.split(', ').map(color => 
+            colorMap[color.toLowerCase()] || color
+        ).filter(color => color.startsWith('#'));
+        
+        if (detectedColors.length >= 2) {
+            analysis.colors = [detectedColors[0], detectedColors[1]];
+        } else if (detectedColors.length === 1) {
+            analysis.colors = [detectedColors[0], '#FFFFFF'];
+        }
+    }
     
     // Mapeia estilo da marca para estilo da estampa
     const brandStyleMap = {
@@ -376,6 +406,15 @@ function createAnalysisFromContext() {
     
     if (conversationContext.brandStyle && brandStyleMap[conversationContext.brandStyle.toLowerCase()]) {
         analysis.style = brandStyleMap[conversationContext.brandStyle.toLowerCase()];
+    }
+    
+    // Detecta estética militar na inspiração
+    if (conversationContext.inspiration && 
+        conversationContext.inspiration.toLowerCase().includes('militar')) {
+        analysis.style = 'symbols';
+        analysis.pattern = 'military';
+        analysis.mood = 'energetic';
+        analysis.intensity = 0.9;
     }
     
     // Mapeia mood para intensidade
@@ -410,9 +449,23 @@ function createAnalysisFromContext() {
             analysis.pattern = 'crosses';
             break;
         case 'symbols':
-            analysis.pattern = 'icons';
+            analysis.pattern = 'military';
             break;
     }
+    
+    // Cria descrição mais específica baseada no contexto
+    let description = `Estampa para ${conversationContext.brandName || 'sua marca'}`;
+    if (conversationContext.brandStyle) {
+        description += ` - Estilo ${conversationContext.brandStyle}`;
+    }
+    if (conversationContext.inspiration) {
+        description += ` - Inspirado em ${conversationContext.inspiration}`;
+    }
+    if (conversationContext.colors) {
+        description += ` - Cores ${conversationContext.colors}`;
+    }
+    
+    analysis.description = description;
     
     return analysis;
 }
@@ -424,7 +477,8 @@ function processConsultativeMessage(message) {
     switch(conversationStep) {
         case 'brand_info':
             // Extrai nome da marca e tipo de negócio
-            if (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('negócio')) {
+            if (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('negócio') || 
+                lowerMessage.includes('streetwear') || lowerMessage.includes('roupa') || lowerMessage.includes('moda')) {
                 conversationContext.brandName = extractBrandName(message);
                 askAboutStyle();
             } else {
@@ -546,10 +600,15 @@ function restartConsultation() {
 // Melhora a extração do nome da marca
 function extractBrandName(message) {
     // Remove palavras comuns e extrai o nome
-    const commonWords = ['minha', 'nossa', 'a', 'o', 'de', 'da', 'do', 'para', 'com', 'em', 'é', 'são'];
+    const commonWords = ['minha', 'nossa', 'a', 'o', 'de', 'da', 'do', 'para', 'com', 'em', 'é', 'são', 'uma', 'de', 'streetwear', 'marca', 'empresa', 'negócio', 'roupa', 'moda'];
     const words = message.split(' ').filter(word => 
         word.length > 2 && !commonWords.includes(word.toLowerCase())
     );
+    
+    // Se não encontrou palavras específicas, usa uma descrição genérica
+    if (words.length === 0) {
+        return 'Sua Marca de Streetwear';
+    }
     
     // Pega as primeiras 2-3 palavras como nome da marca
     return words.slice(0, 2).join(' ') || 'Sua Marca';
@@ -1383,6 +1442,9 @@ function drawPattern(ctx, x, y, width, height, stamp) {
         case 'symbols':
             drawSymbolPattern(ctx, x, y, width, height, primaryColor, secondaryColor);
             break;
+        case 'military':
+            drawMilitaryPattern(ctx, x, y, width, height, primaryColor, secondaryColor);
+            break;
         default:
             drawTrianglePattern(ctx, x, y, width, height, primaryColor, secondaryColor);
     }
@@ -1936,6 +1998,74 @@ function drawDiamondSymbol(ctx, x, y, color, size) {
     ctx.shadowOffsetY = 2;
     ctx.fill();
     ctx.shadowBlur = 0;
+}
+
+function drawMilitaryPattern(ctx, x, y, width, height, primary, secondary) {
+    // Fundo com gradiente militar
+    const bgGradient = ctx.createLinearGradient(x, y, x + width, y + height);
+    bgGradient.addColorStop(0, adjustColor(secondary, 10));
+    bgGradient.addColorStop(1, adjustColor(secondary, -10));
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(x, y, width, height);
+    
+    // Padrão de camuflagem militar
+    const camoSize = 20;
+    const spacing = 5;
+    
+    // Cria padrão de camuflagem
+    for(let i = 0; i < width; i += camoSize + spacing) {
+        for(let j = 0; j < height; j += camoSize + spacing) {
+            const variation = Math.sin(i * 0.1) * Math.cos(j * 0.1);
+            const currentSize = camoSize + variation * 5;
+            
+            // Formas irregulares de camuflagem
+            ctx.fillStyle = adjustColor(primary, variation * 20);
+            ctx.beginPath();
+            ctx.ellipse(x + i, y + j, currentSize * 0.6, currentSize * 0.4, variation * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Detalhes militares
+            if (Math.random() > 0.7) {
+                drawMilitarySymbol(ctx, x + i, y + j, primary, currentSize * 0.3);
+            }
+        }
+    }
+    
+    // Bordas militares
+    ctx.strokeStyle = primary;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, width, height);
+    
+    // Linha central militar
+    ctx.beginPath();
+    ctx.moveTo(x + width/2, y);
+    ctx.lineTo(x + width/2, y + height);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(x, y + height/2);
+    ctx.lineTo(x + width, y + height/2);
+    ctx.stroke();
+}
+
+function drawMilitarySymbol(ctx, x, y, color, size) {
+    // Símbolos militares simples
+    const symbolType = Math.floor(Math.random() * 3);
+    
+    switch(symbolType) {
+        case 0: // Estrela militar
+            drawStar(ctx, x, y, color, size);
+            break;
+        case 1: // Cruz militar
+            drawCross(ctx, x, y, color, size);
+            break;
+        case 2: // Círculo militar
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, size/2, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+    }
 }
 
 // ===== SISTEMA DE VISUALIZAÇÃO =====
@@ -2725,7 +2855,7 @@ function createOptimizedPrompt(userPrompt, analysis) {
     const moodDesc = moodDescriptions[mood] || 'balanced';
     
     // Cria o prompt otimizado - EXTREMAMENTE específico para evitar cenas
-    const optimizedPrompt = `
+    let optimizedPrompt = `
         Create a DETAILED STAMP DESIGN: ${userPrompt}
         
         REMEMBER: This is for a T-SHIRT PRINT, so create a detailed, elaborate design that works as a stamp.
@@ -2773,12 +2903,30 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - "eagle" → detailed eagle illustration
         - "heart" → detailed heart design with patterns
         - "star" → detailed star with decorative elements
+        - "military" → detailed military emblem, badge, or tactical symbol
+        - "camouflage" → detailed camouflage pattern or military insignia
         
         Result: ONE detailed, elaborate stamp design on pure black background, perfect for t-shirt printing.
         
         CRITICAL: Generate ONLY the design itself, NOT a screenshot of software or interface.
         The image should be the pure design element, not displayed on any screen or software.
     `.trim();
+    
+    // Adiciona instruções específicas para estética militar
+    if (userPrompt.toLowerCase().includes('militar') || userPrompt.toLowerCase().includes('military')) {
+        optimizedPrompt += `
+        
+        MILITARY AESTHETIC SPECIFICATIONS:
+        - Create a military-inspired design with tactical elements
+        - Use sharp, angular lines and geometric shapes
+        - Include military symbols like stars, crosses, or tactical emblems
+        - Apply camouflage patterns or military color schemes
+        - Make it look authoritative and strong
+        - Focus on symbols of strength, discipline, and tactical precision
+        - Use bold, contrasting colors for maximum impact
+        - Create a design that conveys military power and authority
+        `;
+    }
     
     return optimizedPrompt;
 }
