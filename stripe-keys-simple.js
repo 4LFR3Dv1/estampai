@@ -5,7 +5,7 @@ console.log('🔑 Carregando chaves do Stripe...');
 
 // Função para obter variáveis de ambiente
 function getEnvVar(key, defaultValue = null) {
-    // Em produção, isso viria do backend
+    // Em produção, isso viria do backend via API
     // Por enquanto, vamos usar valores padrão que serão substituídos pelas variáveis de ambiente
     const envVars = {
         'STRIPE_PUBLISHABLE_KEY': 'pk_live_PLACEHOLDER',
@@ -13,8 +13,30 @@ function getEnvVar(key, defaultValue = null) {
         'STRIPE_MODE': 'live'
     };
     
+    // Tentar obter do window (se injetado pelo backend)
+    if (window.ENV_VARS && window.ENV_VARS[key]) {
+        return window.ENV_VARS[key];
+    }
+    
     return envVars[key] || defaultValue;
 }
+
+// Função para carregar variáveis de ambiente do backend
+async function loadEnvVars() {
+    try {
+        const response = await fetch('/api/env-vars');
+        if (response.ok) {
+            const envVars = await response.json();
+            window.ENV_VARS = envVars;
+            console.log('✅ Variáveis de ambiente carregadas do backend:', envVars);
+        }
+    } catch (error) {
+        console.log('⚠️ Não foi possível carregar variáveis do backend:', error);
+    }
+}
+
+// Carregar variáveis de ambiente
+await loadEnvVars();
 
 // Chaves do Stripe
 const STRIPE_KEYS = {

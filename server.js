@@ -124,6 +124,14 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, r
     res.json({received: true});
 });
 
+// Rota para servir variáveis de ambiente (apenas chave pública)
+app.get('/api/env-vars', (req, res) => {
+    res.json({
+        STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+        STRIPE_MODE: process.env.STRIPE_MODE
+    });
+});
+
 // Servir arquivos estáticos
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

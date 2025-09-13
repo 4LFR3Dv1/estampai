@@ -1,4 +1,9 @@
-# 💳 Integração Stripe - EstampAI
+[Error] CheckoutInitError: ID not set
+	(anonymous function) (cs_sim_1757789142527_dl9ce4u5m:6:360858)
+[Info] Successfully preconnected to https://api.stripe.com/
+[Info] Successfully preconnected to https://merchant-ui-api.stripe.com/
+[Info] Successfully preconnected to https://r.stripe.com/
+[Info] Successfully preconnected to https://checkout-cookies.link.com/# 💳 Integração Stripe - EstampAI
 
 ## 🚀 **Sistema de Pagamento Implementado**
 
