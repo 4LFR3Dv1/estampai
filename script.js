@@ -2646,21 +2646,23 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     const moodDesc = moodDescriptions[mood] || 'balanced';
     
-    // Cria o prompt otimizado - focado em elementos gráficos isolados
+    // Cria o prompt otimizado - focado em elementos gráficos vetoriais
     const optimizedPrompt = `
-        Create a graphic design element: ${userPrompt}
+        Create a vector graphic design element: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
         Mood: ${moodDesc}
         
         CRITICAL REQUIREMENTS:
-        - Single graphic element only (symbol, icon, pattern, or illustration)
+        - Vector-style graphic element (clean lines, solid shapes, geometric forms)
         - Pure black background (#000000)
         - 1024x1024px square format
         - Element centered in frame
         - High contrast design
         - Clean, simple composition
+        - Vector art style (flat design, solid colors, sharp edges)
+        - Scalable design elements
         
         STRICTLY FORBIDDEN:
         - Scenes or landscapes
@@ -2671,8 +2673,10 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - Product mockups
         - Clothing or garments
         - Environmental elements
+        - Photorealistic elements
+        - Gradients or complex shading
         
-        Result: Single graphic element on pure black background, ready for print.
+        Result: Vector-style graphic element on pure black background, clean and scalable.
     `.trim();
     
     return optimizedPrompt;
