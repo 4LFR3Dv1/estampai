@@ -180,7 +180,25 @@ function hidePaymentLoading() {
     }
 }
 
+// Inicializar Stripe quando as chaves estiverem disponíveis
+function initializeStripeWithKeys() {
+    if (window.STRIPE_KEYS && window.STRIPE_KEYS.publishableKey && window.Stripe) {
+        console.log('🔑 Inicializando Stripe com chave:', window.STRIPE_KEYS.publishableKey);
+        window.stripe = Stripe(window.STRIPE_KEYS.publishableKey);
+        console.log('✅ Stripe inicializado:', window.stripe);
+    } else {
+        console.log('⚠️ Chaves do Stripe ou Stripe.js não disponíveis');
+    }
+}
+
+// Tentar inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+    // Aguardar um pouco para as chaves serem carregadas
+    setTimeout(initializeStripeWithKeys, 1000);
+});
+
 // Exportar configurações
 window.STRIPE_CONFIG = STRIPE_CONFIG;
 window.initializeStripe = initializeStripe;
 window.redirectToCheckout = redirectToCheckout;
+window.initializeStripeWithKeys = initializeStripeWithKeys;

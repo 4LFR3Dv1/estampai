@@ -1053,16 +1053,32 @@ class AuthManager {
         }
         
         // Verificar se temos chaves reais do Stripe
+        console.log('Verificando chaves do Stripe:', {
+            hasKeys: !!window.STRIPE_KEYS,
+            mode: window.STRIPE_KEYS?.mode,
+            publishableKey: window.STRIPE_KEYS?.publishableKey,
+            startsWithPkLive: window.STRIPE_KEYS?.publishableKey?.startsWith('pk_live_')
+        });
+        
         if (window.STRIPE_KEYS && window.STRIPE_KEYS.mode === 'live' && window.STRIPE_KEYS.publishableKey.startsWith('pk_live_')) {
-            console.log('Usando Stripe real para checkout');
+            console.log('✅ Usando Stripe real para checkout');
             this.processRealPayment(planType, planName);
         } else {
-            console.log('Usando simulação de pagamento');
+            console.log('⚠️ Usando simulação de pagamento - Chaves não configuradas ou modo teste');
             this.processSimulatedPayment(planType, planName);
         }
     }
     
     processRealPayment(planType, planName) {
+        console.log('processRealPayment chamado para:', planType, planName);
+        
+        // Verificar se Stripe.js está carregado
+        if (!window.stripe) {
+            console.log('⚠️ Stripe.js não está carregado, carregando...');
+            this.loadStripeAndProcess(planType, planName);
+            return;
+        }
+        
         // Mostra loading
         this.showUpgradeLoading(planName);
         
@@ -1074,6 +1090,7 @@ class AuthManager {
                 
                 // Redirecionar para checkout do Stripe
                 if (window.stripe && session.id) {
+                    console.log('Redirecionando para checkout do Stripe...');
                     window.stripe.redirectToCheckout({
                         sessionId: session.id
                     }).then(result => {
@@ -1083,6 +1100,7 @@ class AuthManager {
                         }
                     });
                 } else {
+                    console.log('⚠️ Stripe não disponível, usando fallback');
                     // Fallback para simulação se Stripe não estiver disponível
                     this.processSimulatedPayment(planType, planName);
                 }
@@ -1093,6 +1111,39 @@ class AuthManager {
                 this.showMessage('Erro ao processar pagamento. Tentando simulação...', 'error');
                 this.processSimulatedPayment(planType, planName);
             });
+    }
+    
+    loadStripeAndProcess(planType, planName) {
+        console.log('Carregando Stripe.js...');
+        
+        // Carregar Stripe.js se não estiver carregado
+        if (!document.querySelector('script[src*="stripe.js"]')) {
+            const script = document.createElement('script');
+            script.src = 'https://js.stripe.com/v3/';
+            script.onload = () => {
+                console.log('✅ Stripe.js carregado');
+                // Inicializar Stripe
+                if (window.STRIPE_KEYS && window.STRIPE_KEYS.publishableKey) {
+                    window.stripe = Stripe(window.STRIPE_KEYS.publishableKey);
+                    console.log('✅ Stripe inicializado com chave:', window.STRIPE_KEYS.publishableKey);
+                    // Processar pagamento após carregar
+                    this.processRealPayment(planType, planName);
+                } else {
+                    console.log('⚠️ Chaves do Stripe não disponíveis');
+                    this.processSimulatedPayment(planType, planName);
+                }
+            };
+            script.onerror = () => {
+                console.error('❌ Erro ao carregar Stripe.js');
+                this.processSimulatedPayment(planType, planName);
+            };
+            document.head.appendChild(script);
+        } else {
+            // Stripe.js já está carregado, tentar novamente
+            setTimeout(() => {
+                this.processRealPayment(planType, planName);
+            }, 1000);
+        }
     }
     
     processSimulatedPayment(planType, planName) {
