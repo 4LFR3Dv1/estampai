@@ -147,9 +147,6 @@ function loadInitialAvatar() {
     
     // Desenha o avatar sem estampa
     drawInitialAvatar(canvas);
-    
-    // Adiciona mensagem explicativa
-    addAvatarExplanation();
 }
 
 function drawInitialAvatar(canvas) {
@@ -251,22 +248,6 @@ function addStampPreviewOverlay(ctx, width, height) {
     ctx.fillText('Sua estampa aparecerá aqui', width/2, stampY + stampHeight/2);
 }
 
-function addAvatarExplanation() {
-    const avatarContainer = document.getElementById('avatarContainer');
-    if (!avatarContainer) return;
-    
-    // Cria elemento de explicação
-    const explanation = document.createElement('div');
-    explanation.className = 'avatar-explanation';
-    explanation.innerHTML = `
-        <div class="explanation-content">
-            <h4>👤 Seu Avatar</h4>
-            <p>Esta é uma prévia do seu avatar. Quando você gerar uma estampa, ela aparecerá na área destacada da camiseta!</p>
-        </div>
-    `;
-    
-    avatarContainer.appendChild(explanation);
-}
 
 // ===== SISTEMA DE CHAT =====
 function showWelcomeMessage() {
@@ -1927,8 +1908,6 @@ function displayAvatarWithStamp(stamp) {
     
     // Remove avatar inicial e overlay se existirem
     const initialCanvas = avatarContainer.querySelector('#initialAvatarCanvas');
-    const overlay = avatarContainer.querySelector('.avatar-overlay');
-    const explanation = avatarContainer.querySelector('.avatar-explanation');
     
     // Remove todo o container do avatar inicial
     if (initialCanvas && initialCanvas.parentElement) {
@@ -1938,10 +1917,6 @@ function displayAvatarWithStamp(stamp) {
     // Remove overlays que possam ter ficado
     const allOverlays = avatarContainer.querySelectorAll('.avatar-overlay');
     allOverlays.forEach(overlay => overlay.remove());
-    
-    if (explanation) {
-        explanation.remove();
-    }
     
     // Remove estado vazio se existir
     const emptyState = avatarContainer.querySelector('.empty-state');
