@@ -287,39 +287,10 @@ async function sendMessage() {
     messageInput.value = '';
     messageInput.style.height = 'auto';
     
-    // Se estamos em modo de coleta de informações, processa a resposta
-    if (currentConversation.stage === 'collecting_info') {
-        processTextResponse(message);
-    } else {
-        // Modo livre - processa diretamente
+    // Processa diretamente com IA
     await processWithAI(message);
-    }
 }
 
-function processTextResponse(message) {
-    const currentQuestion = currentConversation.questions[currentConversation.currentQuestion];
-    if (currentQuestion) {
-        // Salva a resposta
-        currentConversation.collectedInfo[currentQuestion.type] = message;
-        currentConversation.currentQuestion++;
-        
-        // Adiciona confirmação da IA
-        const confirmations = {
-            theme: `Perfeito! Tema "${message}" escolhido.`,
-            style: `Ótimo! Estilo "${message}" selecionado.`,
-            colors: `Excelente! Cores "${message}" definidas.`,
-            mood: `Perfeito! Humor "${message}" escolhido.`,
-            size: `Ótimo! Tamanho "${message}" definido.`
-        };
-        
-        addAIMessage(confirmations[currentQuestion.type]);
-        
-        // Continua para próxima pergunta
-        setTimeout(() => {
-            askNextQuestion();
-        }, 1000);
-    }
-}
 
 function addUserMessage(text) {
     const message = {
