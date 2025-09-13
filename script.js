@@ -127,7 +127,12 @@ function loadInitialAvatar() {
     
     const overlayText = document.createElement('div');
     overlayText.className = 'avatar-overlay-text';
-    overlayText.textContent = 'Seu avatar';
+    overlayText.innerHTML = `
+        <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;">👤 Seu Avatar</div>
+        <div style="font-size: 1rem; font-weight: 400; line-height: 1.5; max-width: 400px;">
+            Esta é uma prévia do seu avatar. Quando você gerar uma estampa, ela aparecerá na área destacada da camiseta!
+        </div>
+    `;
     
     overlay.appendChild(overlayText);
     mockupContainer.appendChild(canvas);
