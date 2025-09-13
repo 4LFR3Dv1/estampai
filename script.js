@@ -290,61 +290,22 @@ function startInteractiveConversation() {
     
     addAIMessage("Olá! Sou a EstampAI, sua consultora especializada em criação de estampas para marcas. Vou te ajudar a criar uma estampa única que represente perfeitamente sua marca! 🎨✨");
     
-    setTimeout(() => {
-        askAboutBrand();
+    setTimeout(async () => {
+        const welcomeResponse = await generateFluidAIResponse("Olá, preciso de uma estampa para minha marca");
+        addAIMessage(welcomeResponse);
     }, 1500);
 }
 
-// Pergunta sobre a marca
-function askAboutBrand() {
-    addAIMessage("Primeiro, me conta um pouco sobre sua marca! Qual é o nome da sua marca e que tipo de negócio vocês fazem? 🏷️");
-    conversationStep = 'brand_info';
-}
-
-// Pergunta sobre estilo e referências
-function askAboutStyle() {
-    addAIMessage("Perfeito! Agora me conta sobre o estilo da sua marca. Vocês são mais streetwear, minimalista, vintage, ou têm alguma referência específica? 🎭");
-    addAIMessage("Por exemplo, algumas marcas que admiro: Supreme (streetwear), Uniqlo (minimalista), Stüssy (vintage), Off-White (futurista)... Qual se aproxima mais do que vocês buscam? 💭");
-    conversationStep = 'style_references';
-}
-
-// Pergunta sobre público-alvo
-function askAboutAudience() {
-    addAIMessage("Ótimo! Agora me conta sobre o público da sua marca. Quem são seus clientes? Jovens, adultos, qual faixa etária? E que estilo de vida eles têm? 👥");
-    conversationStep = 'audience';
-}
-
-// Pergunta sobre cores e mood
-function askAboutColors() {
-    addAIMessage("Perfeito! Agora vamos falar de cores e mood. Que cores representam sua marca? E que sensação vocês querem passar? Energia, sofisticação, rebeldia, elegância? 🌈");
-    conversationStep = 'colors_mood';
-}
-
-// Pergunta sobre inspiração específica
-function askAboutInspiration() {
-    addAIMessage("Excelente! Agora me conta sobre a inspiração específica para esta estampa. É para uma coleção especial? Tem algum tema, evento ou conceito que vocês querem explorar? 🎨");
-    conversationStep = 'inspiration';
-}
+// Funções de perguntas removidas - agora a IA gera respostas fluidas
 
 // Finaliza a consultoria e gera a estampa
-function finalizeConsultation() {
-    addAIMessage("Perfeito! Agora tenho todas as informações que preciso para criar uma estampa única para sua marca! 🎯");
+async function finalizeConsultation() {
+    // Gera resposta fluida da IA sobre o resumo
+    const summaryResponse = await generateFluidAIResponse("Agora tenho todas as informações que preciso para criar sua estampa");
+    addAIMessage(summaryResponse);
     
     // Cria análise baseada no contexto da conversa
     const analysis = createAnalysisFromContext();
-    
-    addAIMessage("Vou criar uma estampa que combine:");
-    addAIMessage(`🏷️ **Marca**: ${conversationContext.brandName}`);
-    addAIMessage(`🎭 **Estilo**: ${conversationContext.brandStyle}`);
-    addAIMessage(`👥 **Público**: ${conversationContext.targetAudience}`);
-    addAIMessage(`🌈 **Cores**: ${conversationContext.colors}`);
-    addAIMessage(`💭 **Mood**: ${conversationContext.mood}`);
-    
-    if (conversationContext.references.length > 0) {
-        addAIMessage(`✨ **Inspirações**: ${conversationContext.references.join(', ')}`);
-    }
-    
-    addAIMessage("Agora vou criar sua estampa personalizada! 🚀");
     
     // Gera a estampa
     setTimeout(() => {
@@ -471,47 +432,209 @@ function createAnalysisFromContext() {
 }
 
 // Processa mensagens do usuário durante a consultoria
-function processConsultativeMessage(message) {
+async function processConsultativeMessage(message) {
     const lowerMessage = message.toLowerCase();
     
-    switch(conversationStep) {
-        case 'brand_info':
-            // Extrai nome da marca e tipo de negócio
-            if (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('negócio') || 
-                lowerMessage.includes('streetwear') || lowerMessage.includes('roupa') || lowerMessage.includes('moda')) {
-                conversationContext.brandName = extractBrandName(message);
-                askAboutStyle();
-            } else {
-                addAIMessage("Me conta mais sobre sua marca! Qual é o nome e que tipo de negócio vocês fazem? 🏷️");
-            }
-            break;
-            
-        case 'style_references':
-            // Detecta estilo e referências
-            conversationContext.brandStyle = detectBrandStyle(message);
-            conversationContext.references = detectReferences(message);
-            askAboutAudience();
-            break;
-            
-        case 'audience':
-            // Detecta público-alvo
-            conversationContext.targetAudience = detectAudience(message);
-            askAboutColors();
-            break;
-            
-        case 'colors_mood':
-            // Detecta cores e mood
-            conversationContext.colors = detectColors(message);
-            conversationContext.mood = detectMood(message);
-            askAboutInspiration();
-            break;
-            
-        case 'inspiration':
-            // Detecta inspiração específica
-            conversationContext.inspiration = message;
+    // Atualiza o contexto com as informações da mensagem
+    updateConversationContext(message);
+    
+    // Gera resposta fluida da IA baseada no contexto
+    const aiResponse = await generateFluidAIResponse(message);
+    addAIMessage(aiResponse);
+    
+    // Verifica se tem informações suficientes para gerar estampa
+    if (hasEnoughInfoForStamp()) {
+        setTimeout(() => {
             finalizeConsultation();
-            break;
+        }, 2000);
     }
+}
+
+// Atualiza o contexto da conversa com informações da mensagem
+function updateConversationContext(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Detecta e atualiza informações automaticamente
+    if (!conversationContext.brandName && (lowerMessage.includes('marca') || lowerMessage.includes('empresa') || lowerMessage.includes('streetwear'))) {
+        conversationContext.brandName = extractBrandName(message);
+    }
+    
+    if (!conversationContext.brandStyle && (lowerMessage.includes('streetwear') || lowerMessage.includes('minimalista') || lowerMessage.includes('vintage'))) {
+        conversationContext.brandStyle = detectBrandStyle(message);
+    }
+    
+    if (!conversationContext.targetAudience && (lowerMessage.includes('jovem') || lowerMessage.includes('adulto') || lowerMessage.includes('criança'))) {
+        conversationContext.targetAudience = detectAudience(message);
+    }
+    
+    if (!conversationContext.colors && (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('vermelho'))) {
+        conversationContext.colors = detectColors(message);
+    }
+    
+    if (!conversationContext.mood && (lowerMessage.includes('energia') || lowerMessage.includes('sofisticação') || lowerMessage.includes('rebeldia'))) {
+        conversationContext.mood = detectMood(message);
+    }
+    
+    if (!conversationContext.inspiration && (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design'))) {
+        conversationContext.inspiration = message;
+    }
+    
+    // Detecta referências de marcas
+    const references = detectReferences(message);
+    if (references.length > 0) {
+        conversationContext.references = [...(conversationContext.references || []), ...references];
+    }
+}
+
+// Gera resposta fluida da IA baseada no contexto
+async function generateFluidAIResponse(userMessage) {
+    try {
+        const config = window.ESTAMPAI_CONFIG?.ai?.openai;
+        
+        if (!config?.apiKey) {
+            return generateFallbackResponse(userMessage);
+        }
+        
+        // Cria contexto da conversa para a IA
+        const conversationContext = buildConversationContext();
+        
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${config.apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-4',
+                messages: [
+                    {
+                        role: 'system',
+                        content: `Você é a EstampAI, uma consultora especializada em criação de estampas para marcas de moda e streetwear.
+
+CONTEXTO DA CONVERSA:
+${conversationContext}
+
+SUA PERSONALIDADE:
+- Criativa e entusiasmada
+- Conhece tendências de moda e streetwear
+- Faz perguntas inteligentes para entender melhor o que o usuário quer
+- Sugere melhorias e variações
+- É conversacional e natural
+
+OBJETIVO:
+- Entender a marca do usuário
+- Coletar informações sobre estilo, público, cores, mood
+- Fazer perguntas relevantes e interessantes
+- Manter a conversa fluida e natural
+- Quando tiver informações suficientes, sugerir criar a estampa
+
+IMPORTANTE:
+- Seja natural e conversacional
+- Faça perguntas inteligentes baseadas no que o usuário disse
+- Mostre conhecimento sobre moda e streetwear
+- Seja específica e detalhada
+- Mantenha o foco na criação de estampas
+
+Responda de forma natural e engajante!`
+                    },
+                    {
+                        role: 'user',
+                        content: userMessage
+                    }
+                ],
+                max_tokens: 300,
+                temperature: 0.8
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.choices[0].message.content;
+        
+    } catch (error) {
+        console.error('Erro ao gerar resposta da IA:', error);
+        return generateFallbackResponse(userMessage);
+    }
+}
+
+// Constrói o contexto da conversa para a IA
+function buildConversationContext() {
+    let context = "INFORMAÇÕES COLETADAS:\n";
+    
+    if (conversationContext.brandName) {
+        context += `- Marca: ${conversationContext.brandName}\n`;
+    }
+    
+    if (conversationContext.brandStyle) {
+        context += `- Estilo: ${conversationContext.brandStyle}\n`;
+    }
+    
+    if (conversationContext.targetAudience) {
+        context += `- Público: ${conversationContext.targetAudience}\n`;
+    }
+    
+    if (conversationContext.colors) {
+        context += `- Cores: ${conversationContext.colors}\n`;
+    }
+    
+    if (conversationContext.mood) {
+        context += `- Mood: ${conversationContext.mood}\n`;
+    }
+    
+    if (conversationContext.inspiration) {
+        context += `- Inspiração: ${conversationContext.inspiration}\n`;
+    }
+    
+    if (conversationContext.references && conversationContext.references.length > 0) {
+        context += `- Referências: ${conversationContext.references.join(', ')}\n`;
+    }
+    
+    return context;
+}
+
+// Gera resposta de fallback quando a IA não está disponível
+function generateFallbackResponse(userMessage) {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    if (lowerMessage.includes('marca') || lowerMessage.includes('empresa')) {
+        return "Que legal! Me conta mais sobre sua marca. Qual é o nome e que tipo de negócio vocês fazem? 🏷️";
+    }
+    
+    if (lowerMessage.includes('streetwear') || lowerMessage.includes('moda')) {
+        return "Perfeito! Streetwear é uma área incrível. Que estilo vocês buscam? Mais minimalista, vintage, ou algo mais ousado? 🎭";
+    }
+    
+    if (lowerMessage.includes('jovem') || lowerMessage.includes('adulto')) {
+        return "Ótimo! Agora me conta sobre as cores da sua marca. Que paleta vocês usam? E que sensação querem passar? 🌈";
+    }
+    
+    if (lowerMessage.includes('preto') || lowerMessage.includes('branco') || lowerMessage.includes('cor')) {
+        return "Excelente escolha de cores! Agora me conta sobre a inspiração para esta estampa. Tem algum tema específico em mente? 🎨";
+    }
+    
+    if (lowerMessage.includes('militar') || lowerMessage.includes('arte') || lowerMessage.includes('design')) {
+        return "Que inspiração interessante! Agora tenho uma boa ideia do que você quer. Vou criar uma estampa única para sua marca! 🚀";
+    }
+    
+    return "Interessante! Me conta mais sobre isso. Como isso se relaciona com a estampa que você quer criar? 💭";
+}
+
+// Verifica se tem informações suficientes para gerar estampa
+function hasEnoughInfoForStamp() {
+    // Conta quantas informações temos
+    let infoCount = 0;
+    if (conversationContext.brandName) infoCount++;
+    if (conversationContext.brandStyle) infoCount++;
+    if (conversationContext.targetAudience) infoCount++;
+    if (conversationContext.colors) infoCount++;
+    if (conversationContext.mood) infoCount++;
+    if (conversationContext.inspiration) infoCount++;
+    
+    // Precisa de pelo menos 4 informações para gerar estampa
+    return infoCount >= 4;
 }
 
 // Funções auxiliares para extrair informações
