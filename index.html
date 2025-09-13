@@ -14,21 +14,22 @@
     <link rel="stylesheet" href="design-system.css">
     
     <style>
-        /* Estilos específicos do EstampAI */
+        /* Estilos específicos do EstampAI - Tema Escuro */
         body {
-            background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+            background: #000000;
+            color: #ffffff;
             min-height: 100vh;
         }
         
-        /* Header moderno */
+        /* Header Premium Redesenhado - Tema Escuro */
         .header {
-            background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-600) 100%);
+            background: #000000;
             color: white;
-            padding: var(--space-6) 0;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
+            padding: var(--space-8) 0;
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1), 0 10px 10px -5px rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid #333333;
         }
         
         .header::before {
@@ -38,29 +39,97 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.05"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
             opacity: 0.3;
         }
         
         .header-content {
             position: relative;
             z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .header h1 {
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 1px solid #333333;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-text h1 {
             font-size: var(--font-size-4xl);
             font-weight: 700;
-            margin-bottom: var(--space-2);
-            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: var(--space-1);
+            color: #ffffff;
         }
         
-        .header p {
-            font-size: var(--font-size-lg);
-            opacity: 0.9;
+        .logo-text p {
+            font-size: var(--font-size-sm);
+            color: #cccccc;
             font-weight: 400;
+            margin: 0;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: var(--space-3);
+            align-items: center;
+        }
+        
+        .btn-header {
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .btn-secondary {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+        }
+        
+        .btn-secondary:hover {
+            background: #2a2a2a;
+            border-color: #444444;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 4px 14px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(255, 255, 255, 0.3);
         }
         
         /* Main layout */
@@ -74,13 +143,13 @@
             margin: 0 auto;
         }
         
-        /* Chat section modernizada */
+        /* Chat section modernizada - Tema Escuro */
         .chat-section {
-            background: white;
+            background: #1a1a1a;
             border-radius: var(--radius-2xl);
             padding: var(--space-8);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--gray-100);
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1), 0 10px 10px -5px rgba(255, 255, 255, 0.05);
+            border: 1px solid #333333;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -94,7 +163,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+            background: linear-gradient(90deg, #ffffff, #cccccc);
         }
         
         .chat-header {
@@ -103,41 +172,42 @@
             gap: var(--space-3);
             margin-bottom: var(--space-6);
             padding-bottom: var(--space-4);
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid #333333;
         }
         
         .chat-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            background: #2a2a2a;
             border-radius: var(--radius-full);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: var(--font-size-lg);
+            border: 1px solid #444444;
         }
         
         .chat-title {
             font-size: var(--font-size-xl);
             font-weight: 600;
-            color: var(--gray-900);
+            color: #ffffff;
         }
         
         .chat-subtitle {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #cccccc;
         }
         
-        /* Messages modernizadas */
+        /* Messages modernizadas - Tema Escuro */
         .messages {
             flex: 1;
-            background: var(--gray-50);
+            background: #0a0a0a;
             border-radius: var(--radius-xl);
             padding: var(--space-6);
             margin-bottom: var(--space-6);
             overflow-y: auto;
             max-height: 500px;
-            border: 1px solid var(--gray-200);
+            border: 1px solid #333333;
         }
         
         .message {
@@ -165,13 +235,14 @@
         }
         
         .message.user .message-avatar {
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white;
+            background: #ffffff;
+            color: #000000;
         }
         
         .message.ai .message-avatar {
-            background: linear-gradient(135deg, var(--secondary-500), var(--secondary-600));
-            color: white;
+            background: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #444444;
         }
         
         .message-content {
@@ -184,17 +255,17 @@
         }
         
         .message.user .message-content {
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white;
+            background: #ffffff;
+            color: #000000;
             border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
         }
         
         .message.ai .message-content {
-            background: white;
-            color: var(--gray-900);
-            border: 1px solid var(--gray-200);
+            background: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #444444;
             border-radius: var(--radius-xl) var(--radius-xl) var(--radius-xl) var(--radius-sm);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
         }
         
         /* Input area modernizada */
@@ -207,11 +278,12 @@
         .input-field {
             flex: 1;
             padding: var(--space-4);
-            border: 2px solid var(--gray-300);
+            border: 2px solid #333333;
             border-radius: var(--radius-xl);
             font-family: inherit;
             font-size: var(--font-size-sm);
-            background: white;
+            background: #0a0a0a;
+            color: #ffffff;
             resize: vertical;
             min-height: 60px;
             max-height: 120px;
@@ -220,18 +292,18 @@
         
         .input-field:focus {
             outline: none;
-            border-color: var(--primary-500);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
         }
         
         .input-field::placeholder {
-            color: var(--gray-400);
+            color: #666666;
         }
         
         .send-btn {
             padding: var(--space-4) var(--space-6);
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white;
+            background: #ffffff;
+            color: #000000;
             border: none;
             border-radius: var(--radius-xl);
             font-weight: 600;
@@ -245,8 +317,8 @@
         
         .send-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+            background: #f0f0f0;
         }
         
         .send-btn:disabled {
@@ -255,13 +327,13 @@
             transform: none;
         }
         
-        /* Results section modernizada */
+        /* Results section modernizada - Tema Escuro */
         .results-section {
-            background: white;
+            background: #1a1a1a;
             border-radius: var(--radius-2xl);
             padding: var(--space-8);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--gray-100);
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1), 0 10px 10px -5px rgba(255, 255, 255, 0.05);
+            border: 1px solid #333333;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -275,7 +347,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--secondary-500), var(--primary-500));
+            background: linear-gradient(90deg, #cccccc, #ffffff);
         }
         
         .results-header {
@@ -284,39 +356,41 @@
             gap: var(--space-3);
             margin-bottom: var(--space-6);
             padding-bottom: var(--space-4);
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid #333333;
         }
         
         .results-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--secondary-500), var(--primary-500));
+            background: #2a2a2a;
             border-radius: var(--radius-full);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: var(--font-size-lg);
+            border: 1px solid #444444;
         }
         
         .results-title {
             font-size: var(--font-size-xl);
             font-weight: 600;
-            color: var(--gray-900);
+            color: #ffffff;
         }
         
         .results-subtitle {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #cccccc;
         }
         
-        /* View buttons modernizados */
+        /* View buttons modernizados - Tema Escuro */
         .view-buttons {
             display: flex;
             gap: var(--space-2);
             margin-bottom: var(--space-6);
-            background: var(--gray-100);
+            background: #0a0a0a;
             padding: var(--space-1);
             border-radius: var(--radius-xl);
+            border: 1px solid #333333;
         }
         
         .view-btn {
@@ -328,28 +402,28 @@
             cursor: pointer;
             font-weight: 500;
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #cccccc;
             transition: all var(--transition-fast);
         }
         
         .view-btn.active {
-            background: white;
-            color: var(--primary-600);
-            box-shadow: var(--shadow-sm);
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
         }
         
         .view-btn:hover:not(.active) {
-            color: var(--gray-900);
+            color: #ffffff;
         }
         
-        /* Canvas container modernizado */
+        /* Canvas container modernizado - Tema Escuro */
         .canvas-container {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: var(--gray-50);
-            border: 2px dashed var(--gray-300);
+            background: #0a0a0a;
+            border: 2px dashed #333333;
             border-radius: var(--radius-xl);
             position: relative;
             min-height: 400px;
@@ -357,14 +431,14 @@
         }
         
         .canvas-container:hover {
-            border-color: var(--primary-400);
-            background: var(--primary-50);
+            border-color: #666666;
+            background: #1a1a1a;
         }
         
         .canvas-container.has-content {
             border-style: solid;
-            border-color: var(--gray-200);
-            background: white;
+            border-color: #333333;
+            background: #1a1a1a;
         }
         
         canvas {
@@ -374,46 +448,270 @@
             height: auto;
         }
         
-        /* Loading states */
-        .loading {
+        /* Loading States Elegantes */
+        .loading-premium {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: var(--space-4);
-            color: var(--gray-600);
+            gap: var(--space-6);
+            padding: var(--space-8);
+            color: var(--gray-700);
         }
         
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
+        .loading-spinner-premium {
+            width: 60px;
+            height: 60px;
             border: 4px solid var(--gray-200);
             border-top: 4px solid var(--primary-500);
+            border-right: 4px solid var(--secondary-500);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin-premium 1.2s linear infinite;
+            position: relative;
         }
         
-        /* Empty state */
-        .empty-state {
+        .loading-spinner-premium::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--primary-300);
+            border-radius: 50%;
+            animation: spin-premium 2s linear infinite reverse;
+        }
+        
+        .loading-text {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--gray-800);
+            text-align: center;
+            margin-bottom: var(--space-2);
+        }
+        
+        .loading-subtext {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            text-align: center;
+            opacity: 0.8;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-top: var(--space-4);
+        }
+        
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+            border-radius: var(--radius-full);
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        /* Animações */
+        @keyframes spin-premium {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        /* Loading específico para geração de estampas */
+        .stamp-loading {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            text-align: center;
+            border: 2px dashed var(--gray-300);
+        }
+        
+        .stamp-loading-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-4);
+            animation: pulse 2s infinite;
+        }
+        
+        .stamp-loading-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: var(--space-2);
+        }
+        
+        .stamp-loading-desc {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            margin-bottom: var(--space-4);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        /* Estados Vazios Atrativos - Tema Escuro */
+        .empty-state-premium {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: var(--space-4);
-            color: var(--gray-500);
+            gap: var(--space-6);
+            padding: var(--space-8);
             text-align: center;
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            border: 2px dashed #333333;
+            position: relative;
+            overflow: hidden;
         }
         
-        .empty-state-icon {
-            font-size: var(--font-size-4xl);
+        .empty-state-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23333333" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
             opacity: 0.5;
         }
         
-        /* Download button modernizado */
+        .empty-state-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .empty-state-animation {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+        
+        .empty-state-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: var(--space-2);
+        }
+        
+        .empty-state-subtitle {
+            font-size: var(--font-size-lg);
+            color: #cccccc;
+            margin-bottom: var(--space-4);
+            line-height: 1.5;
+        }
+        
+        .empty-state-cta {
+            background: #ffffff;
+            color: #000000;
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            box-shadow: 0 4px 14px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .empty-state-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(255, 255, 255, 0.3);
+            background: #f0f0f0;
+        }
+        
+        .empty-state-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-6);
+            width: 100%;
+        }
+        
+        .empty-state-feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: #2a2a2a;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+            transition: all var(--transition-fast);
+            border: 1px solid #333333;
+        }
+        
+        .empty-state-feature:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+        
+        .empty-state-feature-icon {
+            font-size: 1.5rem;
+        }
+        
+        .empty-state-feature-text {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Estados específicos - Tema Escuro */
+        .empty-state-avatar {
+            background: #1a1a0a;
+            border-color: #fbbf24;
+        }
+        
+        .empty-state-avatar .empty-state-animation {
+            color: #f59e0b;
+        }
+        
+        .empty-state-png {
+            background: #0a0a1a;
+            border-color: #3b82f6;
+        }
+        
+        .empty-state-png .empty-state-animation {
+            color: #2563eb;
+        }
+        
+        /* Download button modernizado - Tema Escuro */
         .download-btn {
             margin-top: var(--space-6);
             width: 100%;
             padding: var(--space-4) var(--space-6);
-            background: linear-gradient(135deg, var(--success-500), var(--success-600));
-            color: white;
+            background: #ffffff;
+            color: #000000;
             border: none;
             border-radius: var(--radius-xl);
             font-weight: 600;
@@ -427,48 +725,125 @@
         
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            background: linear-gradient(135deg, var(--success-600), var(--success-700));
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+            background: #f0f0f0;
         }
         
-        /* Chat interativo */
+        /* Sugestões Visuais Premium - Tema Escuro */
         .suggestions-container {
-            margin: var(--space-4) 0;
-            padding: var(--space-4);
-            background: var(--gray-50);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--gray-200);
+            margin: var(--space-6) 0;
+            padding: var(--space-6);
+            background: #1a1a1a;
+            border-radius: var(--radius-2xl);
+            border: 1px solid #333333;
+            box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1);
         }
         
         .suggestions-label {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--gray-600);
-            margin-bottom: var(--space-3);
-        }
-        
-        .suggestions-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
             gap: var(--space-2);
         }
         
-        .suggestion-btn {
-            padding: var(--space-2) var(--space-3);
-            background: white;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-md);
-            font-size: var(--font-size-sm);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            color: var(--gray-700);
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--space-4);
         }
         
-        .suggestion-btn:hover {
-            background: var(--primary-50);
-            border-color: var(--primary-300);
-            color: var(--primary-700);
-            transform: translateY(-1px);
+        .suggestion-card {
+            background: #2a2a2a;
+            border: 2px solid #333333;
+            border-radius: var(--radius-xl);
+            padding: var(--space-4);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+        }
+        
+        .suggestion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffffff, #cccccc);
+            transform: scaleX(0);
+            transition: transform var(--transition-fast);
+        }
+        
+        .suggestion-card:hover {
+            border-color: #666666;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        .suggestion-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .suggestion-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-2);
+            display: block;
+        }
+        
+        .suggestion-title {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: var(--space-1);
+        }
+        
+        .suggestion-desc {
+            font-size: var(--font-size-xs);
+            color: #cccccc;
+            line-height: 1.4;
+        }
+        
+        /* Categorias específicas - Tema Escuro */
+        .suggestion-card.floral {
+            border-color: #fbbf24;
+        }
+        
+        .suggestion-card.floral:hover {
+            border-color: #f59e0b;
+            background: #2a2a1a;
+        }
+        
+        .suggestion-card.geometric {
+            border-color: #3b82f6;
+        }
+        
+        .suggestion-card.geometric:hover {
+            border-color: #2563eb;
+            background: #1a1a2a;
+        }
+        
+        .suggestion-card.abstract {
+            border-color: #8b5cf6;
+        }
+        
+        .suggestion-card.abstract:hover {
+            border-color: #7c3aed;
+            background: #2a1a2a;
+        }
+        
+        .suggestion-card.figurative {
+            border-color: #ef4444;
+        }
+        
+        .suggestion-card.figurative:hover {
+            border-color: #dc2626;
+            background: #2a1a1a;
         }
         
         .actions-container {
@@ -724,11 +1099,21 @@
         
         @media (max-width: 768px) {
             .header {
-                padding: var(--space-4) 0;
+                padding: var(--space-6) 0;
             }
             
-            .header h1 {
-                font-size: var(--font-size-3xl);
+            .header-content {
+                flex-direction: column;
+                gap: var(--space-4);
+                text-align: center;
+            }
+            
+            .logo-section {
+                justify-content: center;
+            }
+            
+            .header-actions {
+                justify-content: center;
             }
             
             .main {
@@ -754,11 +1139,44 @@
             .view-buttons {
                 flex-direction: column;
             }
+            
+            .suggestions-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-3);
+            }
+            
+            .suggestion-card {
+                padding: var(--space-3);
+            }
+            
+            .empty-state-features {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--space-2);
+            }
+            
+            .empty-state-feature {
+                padding: var(--space-3);
+            }
         }
         
         @media (max-width: 480px) {
-            .header h1 {
-                font-size: var(--font-size-2xl);
+            .header {
+                padding: var(--space-4) 0;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: var(--font-size-3xl);
+            }
+            
+            .btn-header {
+                padding: var(--space-2) var(--space-4);
+                font-size: var(--font-size-xs);
             }
             
             .chat-section,
@@ -768,6 +1186,22 @@
             
             .message-content {
                 max-width: 90%;
+            }
+            
+            .suggestions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .empty-state-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .empty-state-animation {
+                font-size: 3rem;
+            }
+            
+            .empty-state-title {
+                font-size: var(--font-size-xl);
             }
         }
         
@@ -811,14 +1245,25 @@
     </style>
 </head>
 <body>
-    <!-- Header modernizado -->
+    <!-- Header Premium Redesenhado -->
     <header class="header">
         <div class="header-content">
-            <h1>🎨 EstampAI</h1>
-            <p>Crie estampas incríveis com Inteligência Artificial</p>
-            <div class="status-indicator status-online">
-                <div class="status-dot"></div>
-                <span>Sistema Online</span>
+            <div class="logo-section">
+                <div class="logo-icon">🎨</div>
+                <div class="logo-text">
+                    <h1>EstampAI</h1>
+                    <p>Desenvolvido por Renan Melo</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-header btn-secondary" onclick="showPortfolio()">
+                    <span>👨‍🎨</span>
+                    <span>Portfolio</span>
+                </button>
+                <button class="btn-header btn-primary" onclick="startTrial()">
+                    <span>🚀</span>
+                    <span>Começar Grátis</span>
+                </button>
             </div>
         </div>
     </header>
@@ -841,6 +1286,36 @@
                     <div class="message-content">
                         Olá! Sou a EstampAI. Conte-me sobre a estampa que você gostaria de criar. 
                         Seja específico sobre cores, estilo, tema e qualquer detalhe importante!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sugestões Visuais Premium -->
+            <div class="suggestions-container" id="suggestionsContainer">
+                <div class="suggestions-label">
+                    <span>💡</span>
+                    <span>Sugestões Rápidas</span>
+                </div>
+                <div class="suggestions-grid">
+                    <div class="suggestion-card floral" data-prompt="Estampa floral elegante com tons de rosa pastel">
+                        <div class="suggestion-icon">🌸</div>
+                        <div class="suggestion-title">Floral Elegante</div>
+                        <div class="suggestion-desc">Flores delicadas em tons suaves</div>
+                    </div>
+                    <div class="suggestion-card geometric" data-prompt="Design geométrico moderno em azul e branco">
+                        <div class="suggestion-icon">🔷</div>
+                        <div class="suggestion-title">Geométrico</div>
+                        <div class="suggestion-desc">Formas precisas e simétricas</div>
+                    </div>
+                    <div class="suggestion-card abstract" data-prompt="Arte abstrata vibrante e colorida">
+                        <div class="suggestion-icon">🎨</div>
+                        <div class="suggestion-title">Abstrato</div>
+                        <div class="suggestion-desc">Composições expressivas</div>
+                    </div>
+                    <div class="suggestion-card figurative" data-prompt="Estrelas e corações em preto e vermelho">
+                        <div class="suggestion-icon">⭐</div>
+                        <div class="suggestion-title">Figurativo</div>
+                        <div class="suggestion-desc">Símbolos e figuras reconhecíveis</div>
                     </div>
                 </div>
             </div>
@@ -877,10 +1352,29 @@
             <!-- Aba Avatar -->
             <div class="stamp-view active" id="avatarView">
                 <div class="canvas-container" id="avatarContainer">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">👤</div>
-                        <h3>Nenhuma estampa gerada ainda</h3>
-                        <p>Comece uma conversa com a IA para ver sua estampa no avatar!</p>
+                    <div class="empty-state-premium empty-state-avatar">
+                        <div class="empty-state-content">
+                            <div class="empty-state-animation">👤</div>
+                            <h3 class="empty-state-title">Pronto para criar?</h3>
+                            <p class="empty-state-subtitle">Comece uma conversa com a IA para ver sua estampa aplicada no avatar!</p>
+                            <button class="empty-state-cta" onclick="document.getElementById('messageInput').focus()">
+                                Começar Agora
+                            </button>
+                            <div class="empty-state-features">
+                                <div class="empty-state-feature">
+                                    <div class="empty-state-feature-icon">🤖</div>
+                                    <div class="empty-state-feature-text">IA Avançada</div>
+                                </div>
+                                <div class="empty-state-feature">
+                                    <div class="empty-state-feature-icon">⚡</div>
+                                    <div class="empty-state-feature-text">Rápido</div>
+                                </div>
+                                <div class="empty-state-feature">
+                                    <div class="empty-state-feature-icon">🎨</div>
+                                    <div class="empty-state-feature-text">Profissional</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -888,10 +1382,29 @@
             <!-- Aba PNG -->
             <div class="stamp-view" id="pngView">
                 <div class="canvas-container" id="pngContainer">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🖼️</div>
-                        <h3>Nenhuma estampa gerada ainda</h3>
-                        <p>Comece uma conversa com a IA para ver a imagem PNG!</p>
+                    <div class="empty-state-premium empty-state-png">
+                        <div class="empty-state-content">
+                            <div class="empty-state-animation">🖼️</div>
+                            <h3 class="empty-state-title">Sua estampa PNG</h3>
+                            <p class="empty-state-subtitle">Aqui você verá a estampa isolada, pronta para download e uso!</p>
+                            <button class="empty-state-cta" onclick="document.getElementById('messageInput').focus()">
+                                Criar Estampa
+                            </button>
+                            <div class="empty-state-features">
+                                <div class="empty-state-feature">
+                                    <div class="empty-state-feature-icon">📥</div>
+                                    <div class="empty-state-feature-text">Download</div>
+                                </div>
+                                <div class="empty-state-feature">
+                                    <div class="empty-state-feature-icon">🎯</div>
+                                    <div class="empty-state-feature-text">Alta Qualidade</div>
+                                </div>
+                                <div class="empty-state-feature">
+                                    <div class="empty-state-feature-icon">💼</div>
+                                    <div class="empty-state-feature-text">Comercial</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -919,5 +1432,92 @@
     <script src="conversation-history.js?v=3"></script>
     <script src="social-sharing.js?v=3"></script>
     <script src="integration.js?v=3"></script>
+    
+    <!-- Scripts das Melhorias Fase 1 -->
+    <script>
+        // Funções para as melhorias da interface
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSuggestions();
+            initializeHeaderActions();
+        });
+        
+        // Inicializar sugestões visuais
+        function initializeSuggestions() {
+            const suggestionCards = document.querySelectorAll('.suggestion-card');
+            suggestionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    if (prompt) {
+                        document.getElementById('messageInput').value = prompt;
+                        document.getElementById('messageInput').focus();
+                        
+                        // Adicionar animação de clique
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    }
+                });
+            });
+        }
+        
+        // Inicializar ações do header
+        function initializeHeaderActions() {
+            // Função para mostrar portfolio
+            window.showPortfolio = function() {
+                // Aqui você pode redirecionar para seu portfolio
+                window.open('https://seu-portfolio.com', '_blank');
+            };
+            
+            // Função para começar trial
+            window.startTrial = function() {
+                // Focar no input de mensagem
+                document.getElementById('messageInput').focus();
+                
+                // Scroll suave para o chat
+                document.querySelector('.chat-section').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            };
+        }
+        
+        // Função para mostrar loading elegante
+        function showElegantLoading(container, message = 'Gerando sua estampa...') {
+            const loadingHTML = `
+                <div class="stamp-loading">
+                    <div class="stamp-loading-icon">🎨</div>
+                    <h3 class="stamp-loading-title">${message}</h3>
+                    <p class="stamp-loading-desc">A IA está criando algo incrível para você</p>
+                    <div class="loading-spinner-premium"></div>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = loadingHTML;
+        }
+        
+        // Função para esconder sugestões após primeira interação
+        function hideSuggestions() {
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+            if (suggestionsContainer) {
+                suggestionsContainer.style.opacity = '0';
+                suggestionsContainer.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    suggestionsContainer.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        // Interceptar envio de mensagem para esconder sugestões
+        const originalSendMessage = window.sendMessage;
+        if (originalSendMessage) {
+            window.sendMessage = function() {
+                hideSuggestions();
+                return originalSendMessage.apply(this, arguments);
+            };
+        }
+    </script>
 </body>
 </html>
