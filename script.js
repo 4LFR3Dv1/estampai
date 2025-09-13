@@ -2673,6 +2673,11 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - NO complex illustrations
         - NO gradients or shadows
         - NO multiple elements
+        - NO software interfaces (Photoshop, Illustrator, etc.)
+        - NO computer screens or monitors
+        - NO UI elements or buttons
+        - NO workspace backgrounds
+        - NO toolbars or menus
         
         EXAMPLES OF WHAT TO CREATE:
         - A single geometric symbol
@@ -2685,6 +2690,9 @@ function createOptimizedPrompt(userPrompt, analysis) {
         create ONLY a single symbol representing the main element (like a samurai helmet, sword, or shield).
         
         Result: ONE simple logo-style symbol on pure black background, like a brand logo.
+        
+        CRITICAL: Generate ONLY the design itself, NOT a screenshot of software or interface.
+        The image should be the pure design element, not displayed on any screen or software.
     `.trim();
     
     return optimizedPrompt;
