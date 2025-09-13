@@ -4,7 +4,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Inicializar Stripe com logs de debug
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+console.log('🔑 Inicializando Stripe...');
+console.log('🔑 Chave secreta disponível:', stripeSecretKey ? 'SIM' : 'NÃO');
+console.log('🔑 Início da chave:', stripeSecretKey ? stripeSecretKey.substring(0, 20) + '...' : 'undefined');
+
+const stripe = require('stripe')(stripeSecretKey);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +24,8 @@ app.use(express.static('.'));
 app.post('/api/create-checkout-session', async (req, res) => {
     try {
         console.log('🔑 Criando sessão de checkout:', req.body);
+        console.log('🔑 STRIPE_SECRET_KEY configurado:', process.env.STRIPE_SECRET_KEY ? 'SIM' : 'NÃO');
+        console.log('🔑 STRIPE_SECRET_KEY início:', process.env.STRIPE_SECRET_KEY ? process.env.STRIPE_SECRET_KEY.substring(0, 20) + '...' : 'undefined');
         
         const { planType, amount, currency, successUrl, cancelUrl } = req.body;
         
@@ -156,4 +164,6 @@ app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
     console.log(`🔑 Modo Stripe: ${process.env.STRIPE_MODE || 'test'}`);
     console.log(`📊 Analytics: ${process.env.GOOGLE_ANALYTICS_ID || 'não configurado'}`);
+    console.log(`🤖 OpenAI: ${process.env.OPENAI_API_KEY ? 'configurado' : 'não configurado'}`);
+    console.log(`🔑 Stripe Secret: ${process.env.STRIPE_SECRET_KEY ? 'configurado' : 'não configurado'}`);
 });
