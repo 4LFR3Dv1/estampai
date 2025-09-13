@@ -18,8 +18,7 @@ function getEnvVar(key, defaultValue = null) {
         return window.ENV_VARS[key];
     }
     
-    // SEM fallback - apenas variáveis de ambiente reais
-    
+    // Fallback para desenvolvimento local
     return envVars[key] || defaultValue;
 }
 
