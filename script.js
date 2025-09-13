@@ -894,8 +894,10 @@ async function updateAvatarDisplay(stamp) {
             updateStampDisplay(stamp);
         };
         img.onerror = function() {
-            console.error('Erro ao carregar imagem da estampa');
-            updateStampDisplay(stamp);
+            console.error('Erro ao carregar imagem da estampa - CORS ou URL inválida');
+            console.log('Usando fallback: criando estampa desenhada');
+            // Fallback: cria uma estampa desenhada
+            createFallbackStamp(stamp);
         };
         img.src = stamp.imageUrl;
             } else {
@@ -1997,6 +1999,20 @@ function createFallbackPNG(container, stamp) {
     drawStamp(ctx, canvas.width, canvas.height, stamp);
     
     container.appendChild(canvas);
+}
+
+function createFallbackStamp(stamp) {
+    console.log('🎨 Criando estampa de fallback...');
+    
+    // Cria uma estampa simples desenhada
+    const fallbackStamp = {
+        ...stamp,
+        imageUrl: null, // Sem URL da IA
+        isFallback: true
+    };
+    
+    // Atualiza o display com a estampa de fallback
+    updateStampDisplay(fallbackStamp);
 }
 
 function drawAvatarWithStamp(canvas, stamp) {
