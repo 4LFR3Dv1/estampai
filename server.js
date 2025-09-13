@@ -32,21 +32,23 @@ app.post('/api/create-checkout-session', async (req, res) => {
             return res.status(400).json({ error: 'Dados obrigatórios não fornecidos' });
         }
         
+        // IDs dos preços criados no Stripe
+        const priceIds = {
+            'daily_unlimited': 'price_1S711ZBpP43CzzxUQlZz3RIb', // R$ 9,90
+            'premium': 'price_1S711fBpP43CzzxUotDa87Yj' // R$ 29,90
+        };
+        
+        const priceId = priceIds[planType];
+        if (!priceId) {
+            return res.status(400).json({ error: 'Tipo de plano inválido' });
+        }
+        
         // Criar sessão de checkout no Stripe
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
                 {
-                    price_data: {
-                        currency: currency.toLowerCase(),
-                        product_data: {
-                            name: planType === 'daily_unlimited' ? 'Dia Ilimitado - EstampAI' : 'Premium - EstampAI',
-                            description: planType === 'daily_unlimited' 
-                                ? 'Acesso ilimitado por 24 horas' 
-                                : 'Acesso premium mensal',
-                        },
-                        unit_amount: amount, // em centavos
-                    },
+                    price: priceId,
                     quantity: 1,
                 },
             ],
@@ -55,8 +57,7 @@ app.post('/api/create-checkout-session', async (req, res) => {
             cancel_url: cancelUrl,
             metadata: {
                 planType: planType,
-                userId: req.body.userId || 'anonymous',
-                productId: planType === 'premium' ? 'prod_T35TiyH5UIRvy8' : 'prod_daily_unlimited'
+                userId: req.body.userId || 'anonymous'
             }
         });
         
