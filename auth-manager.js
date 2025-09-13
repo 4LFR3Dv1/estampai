@@ -445,6 +445,16 @@ class AuthManager {
             return;
         }
         
+        // Redireciona para checkout do Stripe
+        if (window.redirectToCheckout) {
+            window.redirectToCheckout('daily_unlimited');
+        } else {
+            // Fallback para simulação local
+            this.simulateUpgradeToDailyUnlimited();
+        }
+    }
+    
+    simulateUpgradeToDailyUnlimited() {
         // Simula compra do plano Dia Ilimitado
         this.usageData.planType = 'daily_unlimited';
         this.usageData.dailyLimit = 999999; // Praticamente ilimitado
@@ -465,6 +475,16 @@ class AuthManager {
             return;
         }
         
+        // Redireciona para checkout do Stripe
+        if (window.redirectToCheckout) {
+            window.redirectToCheckout('premium');
+        } else {
+            // Fallback para simulação local
+            this.simulateUpgradeToPremium();
+        }
+    }
+    
+    simulateUpgradeToPremium() {
         // Simula compra do plano Premium
         this.usageData.planType = 'premium';
         this.usageData.dailyLimit = 999999; // Praticamente ilimitado
@@ -499,6 +519,26 @@ class AuthManager {
                 this.showMessage('Seu plano expirou. Voltou para o plano gratuito.', 'error');
             }
         }
+    }
+    
+    // Função para processar pagamento confirmado
+    processPaymentConfirmation(planType, sessionId) {
+        console.log(`Processando confirmação de pagamento: ${planType} - ${sessionId}`);
+        
+        if (planType === 'daily_unlimited') {
+            this.simulateUpgradeToDailyUnlimited();
+        } else if (planType === 'premium') {
+            this.simulateUpgradeToPremium();
+        }
+        
+        // Salva informações da transação
+        this.usageData.lastTransaction = {
+            sessionId: sessionId,
+            planType: planType,
+            timestamp: new Date().toISOString()
+        };
+        
+        this.saveUserData();
     }
     
     // ===== TRATAMENTO DE FORMULÁRIOS =====
