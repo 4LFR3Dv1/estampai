@@ -1140,27 +1140,7 @@ class AuthManager {
     
     // Função de simulação removida - SEMPRE usar pagamento real
     
-    async createStripeCheckoutSession(planType) {
-        const priceId = planType === 'daily_unlimited' ? 'price_daily_unlimited' : 'price_premium';
-        const amount = planType === 'daily_unlimited' ? 990 : 2990; // em centavos
-        
-        try {
-            // Tentar usar API real do Stripe
-            if (window.stripeAPI && window.stripeAPI.createCheckoutSession) {
-                return await window.stripeAPI.createCheckoutSession(
-                    planType,
-                    `${window.location.origin}/chat.html?payment=success`,
-                    `${window.location.origin}/landing.html?payment=cancelled`
-                );
-            } else {
-                // Fallback para simulação
-                throw new Error('API do Stripe não disponível');
-            }
-        } catch (error) {
-            console.error('Erro ao criar sessão de checkout:', error);
-            throw error;
-        }
-    }
+    // Função removida - usando Payment Links diretos
     
     // ===== FUNÇÕES DE PLANOS =====
     

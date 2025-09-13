@@ -1,0 +1,7 @@
+# Netlify redirects
+/*    /index.html   200
+
+# SPA routing
+/chat    /chat.html    200
+/login   /login.html   200
+/landing /landing.html 200
