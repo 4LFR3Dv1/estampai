@@ -546,7 +546,7 @@ class AuthManager {
                                 <h5>Dia Ilimitado</h5>
                                 <p class="price">R$ 9,90</p>
                                 <p class="description">Estampas ilimitadas por 24 horas</p>
-                                <button class="btn-upgrade" onclick="authManager.showUpgradeConfirmation('daily_unlimited', 'Dia Ilimitado', 9.90); this.closest('.modal-overlay').remove();">
+                                <button class="btn-upgrade" onclick="window.open('https://buy.stripe.com/bJefZgaji3F0g4J7EG2Nq01', '_blank'); this.closest('.modal-overlay').remove();">
                                     Comprar Agora
                                 </button>
                             </div>
@@ -554,7 +554,7 @@ class AuthManager {
                                 <h5>Premium</h5>
                                 <p class="price">R$ 29,90/mês</p>
                                 <p class="description">Estampas ilimitadas por 30 dias</p>
-                                <button class="btn-upgrade" onclick="authManager.showUpgradeConfirmation('premium', 'Premium', 29.90); this.closest('.modal-overlay').remove();">
+                                <button class="btn-upgrade" onclick="window.open('https://buy.stripe.com/cNiaEW8baa3o19Pgbc2Nq02', '_blank'); this.closest('.modal-overlay').remove();">
                                     Comprar Agora
                                 </button>
                             </div>
@@ -1165,15 +1165,15 @@ class AuthManager {
     // ===== FUNÇÕES DE PLANOS =====
     
     upgradeToDailyUnlimited() {
-        console.log('upgradeToDailyUnlimited chamado - APENAS MOSTRANDO CONFIRMAÇÃO');
+        console.log('upgradeToDailyUnlimited chamado - REDIRECIONANDO PARA PAYMENT LINK');
         
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
             return;
         }
         
-        // Mostra modal de confirmação
-        this.showUpgradeConfirmation('daily_unlimited', 'Dia Ilimitado', 9.90);
+        // Redireciona para Payment Link do Stripe
+        window.open('https://buy.stripe.com/bJefZgaji3F0g4J7EG2Nq01', '_blank');
     }
     
     simulateUpgradeToDailyUnlimited() {
@@ -1197,15 +1197,15 @@ class AuthManager {
     }
     
     upgradeToPremium() {
-        console.log('upgradeToPremium chamado - APENAS MOSTRANDO CONFIRMAÇÃO');
+        console.log('upgradeToPremium chamado - REDIRECIONANDO PARA PAYMENT LINK');
         
         if (!this.isAuthenticated) {
             this.showMessage('Você precisa fazer login primeiro', 'error');
             return;
         }
         
-        // Mostra modal de confirmação
-        this.showUpgradeConfirmation('premium', 'Premium', 29.90);
+        // Redireciona para Payment Link do Stripe
+        window.open('https://buy.stripe.com/cNiaEW8baa3o19Pgbc2Nq02', '_blank');
     }
     
     simulateUpgradeToPremium() {
