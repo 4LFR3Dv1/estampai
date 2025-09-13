@@ -2646,29 +2646,33 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     const moodDesc = moodDescriptions[mood] || 'balanced';
     
-    // Cria o prompt otimizado - mais equilibrado
+    // Cria o prompt otimizado - focado em elementos gráficos isolados
     const optimizedPrompt = `
-        Create an isolated design: ${userPrompt}
+        Create a graphic design element: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
         Mood: ${moodDesc}
-        Size: ${size} scale
         
-        Requirements:
-        - Isolated design element
-        - Solid black background
-        - Square 1024x1024px format
-        - High quality illustration
-        - Centered composition
+        CRITICAL REQUIREMENTS:
+        - Single graphic element only (symbol, icon, pattern, or illustration)
+        - Pure black background (#000000)
+        - 1024x1024px square format
+        - Element centered in frame
+        - High contrast design
+        - Clean, simple composition
         
-        Do not include:
-        - T-shirt, clothing, mockup, product or mannequin
-        - Colored or patterned background
-        - Text or typography
-        - Borders or frames
+        STRICTLY FORBIDDEN:
+        - Scenes or landscapes
+        - Multiple characters or people
+        - Complex backgrounds
+        - Text or words
+        - Grid lines or overlays
+        - Product mockups
+        - Clothing or garments
+        - Environmental elements
         
-        Result: Clean isolated design on black background, perfect for t-shirt printing.
+        Result: Single graphic element on pure black background, ready for print.
     `.trim();
     
     return optimizedPrompt;
