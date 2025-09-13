@@ -102,7 +102,7 @@ function loadInitialAvatar() {
     console.log('✅ Container do avatar encontrado');
     
     // Remove estado vazio
-    const emptyState = avatarContainer.querySelector('.empty-state');
+    const emptyState = avatarContainer.querySelector('.empty-state-premium');
     if (emptyState) {
         emptyState.remove();
         console.log('✅ Estado vazio removido');
@@ -142,6 +142,9 @@ function loadInitialAvatar() {
     
     mockupContainer.appendChild(canvas);
     avatarContainer.appendChild(mockupContainer);
+    
+    // Adiciona classe para indicar que tem conteúdo
+    avatarContainer.classList.add('has-content');
     
     console.log('✅ Canvas e overlay criados e adicionados ao container');
     
@@ -1945,7 +1948,7 @@ function displayAvatarWithStamp(stamp) {
     allOverlays.forEach(overlay => overlay.remove());
     
     // Remove estado vazio se existir
-    const emptyState = avatarContainer.querySelector('.empty-state');
+    const emptyState = avatarContainer.querySelector('.empty-state-premium');
     if (emptyState) {
         emptyState.remove();
     }
@@ -1964,6 +1967,9 @@ function displayAvatarWithStamp(stamp) {
     mockupContainer.appendChild(canvas);
     avatarContainer.appendChild(mockupContainer);
     
+    // Adiciona classe para indicar que tem conteúdo
+    avatarContainer.classList.add('has-content');
+    
     // Aplica a estampa no avatar como mockup
     applyStampToAvatarMockup(canvas, stamp);
 }
@@ -1973,7 +1979,7 @@ function displayPNGImage(stamp) {
     if (!pngContainer) return;
     
     // Remove estado vazio
-    const emptyState = pngContainer.querySelector('.empty-state');
+    const emptyState = pngContainer.querySelector('.empty-state-premium');
     if (emptyState) {
         emptyState.remove();
     }
@@ -2004,6 +2010,9 @@ function displayPNGImage(stamp) {
     
     imageContainer.appendChild(img);
     pngContainer.appendChild(imageContainer);
+    
+    // Adiciona classe para indicar que tem conteúdo
+    pngContainer.classList.add('has-content');
 }
 
 function createFallbackPNG(container, stamp) {

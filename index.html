@@ -590,6 +590,11 @@
             overflow: hidden;
         }
         
+        /* Esconde estado vazio quando há conteúdo */
+        .canvas-container.has-content .empty-state-premium {
+            display: none;
+        }
+        
         .empty-state-premium::before {
             content: '';
             position: absolute;
