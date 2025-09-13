@@ -2064,11 +2064,11 @@ function applyStampToAvatarMockup(canvas, stamp) {
             stampImg.crossOrigin = 'anonymous';
             
             stampImg.onload = function() {
-                // Posição da estampa na camiseta (um pouco mais para cima)
-                const stampX = canvas.width * 0.2;  // 20% da largura (mais centralizado)
-                const stampY = canvas.height * 0.3; // 30% da altura (mais para cima)
-                const stampWidth = canvas.width * 0.6;  // 60% da largura
-                const stampHeight = canvas.height * 0.4; // 40% da altura
+                // Posição da estampa na camiseta (peito, mais para cima e menor)
+                const stampX = canvas.width * 0.25;  // 25% da largura (centralizado)
+                const stampY = canvas.height * 0.25; // 25% da altura (peito, mais para cima)
+                const stampWidth = canvas.width * 0.5;  // 50% da largura (menor)
+                const stampHeight = canvas.height * 0.25; // 25% da altura (menor)
                 
                 // Aplica a estampa com transparência
                 ctx.globalAlpha = 0.9;
@@ -2108,10 +2108,10 @@ function applyStampToAvatarMockup(canvas, stamp) {
 
 function applySimpleStampToAvatar(ctx, width, height, stamp) {
     // Desenha uma estampa simples na área da camiseta (mesma posição do mockup)
-    const stampX = width * 0.2;  // 20% da largura (mais centralizado)
-    const stampY = height * 0.3; // 30% da altura (mais para cima)
-    const stampWidth = width * 0.6;  // 60% da largura
-    const stampHeight = height * 0.4; // 40% da altura
+    const stampX = width * 0.25;  // 25% da largura (centralizado)
+    const stampY = height * 0.25; // 25% da altura (peito, mais para cima)
+    const stampWidth = width * 0.5;  // 50% da largura (menor)
+    const stampHeight = height * 0.25; // 25% da altura (menor)
     
     // Cor de fundo da estampa
     ctx.fillStyle = stamp.colors[0] || '#F44336';
@@ -2119,7 +2119,7 @@ function applySimpleStampToAvatar(ctx, width, height, stamp) {
     
     // Texto da estampa
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 18px Arial';
+    ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
     ctx.fillText(stamp.pattern || 'Estampa', stampX + stampWidth/2, stampY + stampHeight/2);
     
