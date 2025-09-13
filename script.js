@@ -2648,7 +2648,7 @@ function createOptimizedPrompt(userPrompt, analysis) {
     
     // Cria o prompt otimizado - EXTREMAMENTE específico para evitar cenas
     const optimizedPrompt = `
-        Create a SINGLE SYMBOL or ICON: ${userPrompt}
+        Create a SIMPLE LOGO-STYLE SYMBOL: ${userPrompt}
         
         Style: ${styleDescriptions[style] || 'creative design'}
         Colors: ${primaryColor} and ${secondaryColor}
@@ -2681,7 +2681,10 @@ function createOptimizedPrompt(userPrompt, analysis) {
         - A basic shape with pattern
         - A single character silhouette (not a scene)
         
-        Result: ONE simple symbol/icon on pure black background, like a logo.
+        IMPORTANT: If the request mentions "fighting", "war", "battle", "scene", or multiple characters, 
+        create ONLY a single symbol representing the main element (like a samurai helmet, sword, or shield).
+        
+        Result: ONE simple logo-style symbol on pure black background, like a brand logo.
     `.trim();
     
     return optimizedPrompt;
