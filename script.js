@@ -2059,11 +2059,12 @@ function applyStampToAvatarMockup(canvas, stamp) {
         if (stamp.imageUrl) {
             console.log('🔄 Baixando estampa da IA para avatar...');
             
-            // Usa a mesma abordagem do PNG que funciona
-            const stampImg = new Image();
-            stampImg.crossOrigin = 'anonymous';
+            // Usa a mesma abordagem do PNG - elemento img temporário
+            const tempImg = document.createElement('img');
+            tempImg.style.display = 'none'; // Esconde o elemento
+            document.body.appendChild(tempImg); // Adiciona ao DOM temporariamente
             
-            stampImg.onload = function() {
+            tempImg.onload = function() {
                 // Posição da estampa na camiseta (peito, mais para cima e menor)
                 const stampX = canvas.width * 0.25;  // 25% da largura (centralizado)
                 const stampY = canvas.height * 0.25; // 25% da altura (peito, mais para cima)
@@ -2072,20 +2073,27 @@ function applyStampToAvatarMockup(canvas, stamp) {
                 
                 // Aplica a estampa com transparência
                 ctx.globalAlpha = 0.9;
-                ctx.drawImage(stampImg, stampX, stampY, stampWidth, stampHeight);
+                ctx.drawImage(tempImg, stampX, stampY, stampWidth, stampHeight);
                 ctx.globalAlpha = 1.0;
+                
+                // Remove o elemento temporário
+                document.body.removeChild(tempImg);
                 
                 console.log('✅ Estampa aplicada no avatar como mockup');
             };
             
-            stampImg.onerror = function() {
+            tempImg.onerror = function() {
                 console.error('❌ Erro ao carregar estampa da IA, usando fallback');
+                // Remove o elemento temporário
+                if (document.body.contains(tempImg)) {
+                    document.body.removeChild(tempImg);
+                }
                 // Fallback: desenha estampa simples
                 applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
             };
             
             // Usa a mesma abordagem do PNG - carregamento direto
-            stampImg.src = stamp.imageUrl;
+            tempImg.src = stamp.imageUrl;
         } else {
             // Se não há estampa da IA, desenha estampa simples
             applySimpleStampToAvatar(ctx, canvas.width, canvas.height, stamp);
